@@ -15,10 +15,10 @@ import Box from '@material-ui/core/Box';
 import Home from './Authentication/Home';
 import Register from './Authentication/Register';
 import Login from './Authentication/Login';
-import Admin from './Dashboard/Admin';
+import Admin from './Dashboard/Admin/Admin';
 import CustomerContainer from './Dashboard/customers/CustomerContainer';
-import Product from './Dashboard/Product';
-import Billing from './Dashboard/Billing';
+import Product from './Dashboard/products/Product';
+import Billing from './Dashboard/bills/Billing';
 import { Link, Route, Switch, withRouter } from 'react-router-dom';
 
 function TabPanel(props) {
@@ -73,15 +73,15 @@ function Navigation(props) {
 
    return (
       <div className={classes.root}>
-         <AppBar position="static" style={{ backgroundColor: '#f5f5f5' }}>
+         <AppBar position="static" style={{ backgroundColor: '#e8eaf6' }}>
             <Tabs
                value={value}
                onChange={handleChange}
+               style={{ color: 'white' }}
                variant="scrollable"
                scrollButtons="on"
                indicatorColor="primary"
                textColor="primary"
-               centered
                aria-label="scrollable force tabs example"
             >
                {!isLoggedIn ? (

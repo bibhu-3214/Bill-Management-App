@@ -4,21 +4,21 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
    root: {
       width: '100%',
       '& > * + *': {
-         marginTop: theme.spacing(2),
+         marginTop: '20px',
       },
    },
 }));
 
 const CustomerForm = (props) => {
+   const classes = useStyles();
    const { formSubmission, handleToggle } = props;
    const [name, setName] = useState(props.name ? props.name : '');
    const [email, setEmail] = useState(props.email ? props.email : '');
    const [contact, setContact] = useState(props.contact ? props.contact : '');
-   const classes = useStyles();
 
    const handleSubmit = (e) => {
       e.preventDefault();
@@ -27,14 +27,12 @@ const CustomerForm = (props) => {
          mobile: contact,
          email: email,
       };
-
       formSubmission(formData);
       if (formSubmission) {
          setContact('');
          setEmail('');
          setName('');
       }
-
       if (handleToggle) {
          handleToggle();
       }
@@ -42,7 +40,12 @@ const CustomerForm = (props) => {
 
    return (
       <div style={{ textAlign: 'center' }}>
-         <Typography variant="h4" color="primary" gutterBottom>
+         <Typography
+            variant="h4"
+            color="primary"
+            gutterBottom
+            style={{ marginBottom: '30px' }}
+         >
             Add Customers
          </Typography>
          <form
@@ -53,7 +56,6 @@ const CustomerForm = (props) => {
          >
             <div>
                <TextField
-                  style={{ width: '40%' }}
                   required
                   label="Name"
                   type="name"
@@ -63,11 +65,11 @@ const CustomerForm = (props) => {
                   size="small"
                   variant="outlined"
                   onChange={(e) => setName(e.target.value)}
+                  style={{ width: '80%' }}
                />
             </div>
             <div>
                <TextField
-                  style={{ width: '40%' }}
                   required
                   label="Email"
                   type="email"
@@ -77,28 +79,29 @@ const CustomerForm = (props) => {
                   size="small"
                   variant="outlined"
                   onChange={(e) => setEmail(e.target.value)}
+                  style={{ width: '80%' }}
                />
             </div>
             <div>
                <TextField
-                  style={{ width: '40%' }}
                   required
                   label="Contact"
-                  type="contact"
+                  type="number"
                   name="contact"
                   value={contact}
                   placeholder="enter Contact Number"
                   size="small"
                   variant="outlined"
                   onChange={(e) => setContact(e.target.value)}
+                  style={{ width: '80%' }}
                />
             </div>
             <div>
                <Button
-                  style={{ width: '40%', marginTop: '20px' }}
                   variant="contained"
                   color="primary"
                   type="submit"
+                  style={{ width: '80%', marginTop: '10px' }}
                >
                   ADD
                </Button>

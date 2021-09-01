@@ -15,9 +15,9 @@ export default function CenteredGrid() {
    const classes = useStyles();
 
    return (
-      <Container maxWidth="sm">
+      <Container style={{ marginTop: '50px' }}>
          <div className={classes.root}>
-            <Grid container spacing={5}>
+            <Grid container spacing={8}>
                <Grid item xs={6}>
                   <CustomerList />
                </Grid>
