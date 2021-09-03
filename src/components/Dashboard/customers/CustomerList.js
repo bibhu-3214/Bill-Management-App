@@ -14,7 +14,7 @@ import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TableContainer from '@material-ui/core/TableContainer';
 import ConfirmDialog from './ConfirmDialog';
-import Popup from './Popup';
+import Popup from '../../Popup';
 import EditCustomer from './EditCustomer';
 import ActionButton from '../../controls/ActionButton';
 
@@ -43,7 +43,7 @@ const useStyles = makeStyles({
    },
 });
 
-const CustomerList = () => {
+const CustomerList = ({ searchResult }) => {
    const [openPopup, setOpenPopup] = useState(false);
    const classes = useStyles();
    const classes1 = useStyles1();
@@ -96,7 +96,7 @@ const CustomerList = () => {
                         </TableRow>
                      </TableHead>
                      <TableBody>
-                        {customers.map((customer) => (
+                        {searchResult.map((customer) => (
                            <TableRow key={customer._id} hover tabIndex={-1}>
                               <TableCell
                                  style={{ textTransform: 'capitalize' }}

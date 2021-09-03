@@ -20,6 +20,7 @@ import CustomerContainer from './Dashboard/customers/CustomerContainer';
 import ProductContainer from './Dashboard/products/ProductContainer';
 import Billing from './Dashboard/bills/Billing';
 import { Link, Route, Switch, withRouter } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function TabPanel(props) {
    const { children, value, index, ...other } = props;
@@ -86,7 +87,7 @@ function Navigation(props) {
                textColor="secondary"
             >
                {!isLoggedIn ? (
-                  <>
+                  <ul>
                      <Link to="/" style={{ textDecoration: 'none' }}>
                         <Tab
                            label="Home"
@@ -108,7 +109,7 @@ function Navigation(props) {
                            {...a11yProps(2)}
                         />
                      </Link>
-                  </>
+                  </ul>
                ) : (
                   <ul>
                      <Link to="/admin" style={{ textDecoration: 'none' }}>
@@ -144,7 +145,11 @@ function Navigation(props) {
                         style={{ textDecoration: 'none' }}
                         onClick={() => {
                            localStorage.removeItem('token');
-                           alert('successfully logged out');
+                           Swal.fire(
+                              'successfully logged out',
+                              "we'd like you to visit again",
+                              'success',
+                           );
                            handleAuth();
                            props.history.push('/');
                         }}
@@ -159,6 +164,7 @@ function Navigation(props) {
                )}
             </Tabs>
          </AppBar>
+
          <Switch>
             <Route
                path="/billing"
@@ -215,7 +221,7 @@ function Navigation(props) {
                render={(props) => {
                   return (
                      <TabPanel value={value} index={0}>
-                        <Register />
+                        <Register {...props} />
                      </TabPanel>
                   );
                }}

@@ -4,7 +4,7 @@ import { editProduct } from '../../../Redux/Actions/productAction';
 import ProductForm from './ProductForm';
 
 const EditProduct = (props) => {
-   const { id, name, price, handleToggle, setOpenPopup } = props;
+   const { id, name, price, editData, handleToggle, setOpenPopup } = props;
    const dispatch = useDispatch();
 
    const formSubmission = (result) => {
@@ -17,6 +17,7 @@ const EditProduct = (props) => {
             name={name}
             price={price}
             formSubmission={formSubmission}
+            editData={editData}
             handleToggle={handleToggle}
             setOpenPopup={setOpenPopup}
          />

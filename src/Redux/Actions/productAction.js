@@ -20,12 +20,12 @@ export const addProduct = (formData) => {
 
 export const addItem = (Product) => {
    return {
-      type: 'ADD_Product',
+      type: 'ADD_PRODUCT',
       payload: Product,
    };
 };
 
-export const removeProduct = (_id) => {
+export const removeProducts = (_id) => {
    return (dispatch) => {
       axios({
          method: 'delete',

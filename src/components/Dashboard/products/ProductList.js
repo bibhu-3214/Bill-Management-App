@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
    getProducts,
-   removeProduct,
+   removeProducts,
 } from '../../../Redux/Actions/productAction';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -14,7 +14,7 @@ import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TableContainer from '@material-ui/core/TableContainer';
 import ConfirmDialog from './ConfirmDialog';
-import Popup from './Popup';
+import Popup from '../../Popup';
 import EditProduct from './EditProduct';
 import ActionButton from '../../controls/ActionButton';
 
@@ -43,18 +43,19 @@ const useStyles = makeStyles({
    },
 });
 
-const ProductList = () => {
-   const [openPopup, setOpenPopup] = useState(false);
+const ProductList = ({ searchResult }) => {
    const classes = useStyles();
    const classes1 = useStyles1();
-   const products = useSelector((state) => state.products);
    const dispatch = useDispatch();
+   const [openPopup, setOpenPopup] = useState(false);
+   const [editData, setEditData] = useState({});
    const [toggle, setToggle] = useState(false);
    const [confirmDialog, setConfirmDialog] = useState({
       isOpen: false,
       title: '',
       subTitle: '',
    });
+   const products = useSelector((state) => state.products);
 
    const handleToggle = () => {
       setToggle(!toggle);
@@ -66,7 +67,12 @@ const ProductList = () => {
          ...confirmDialog,
          isOpen: false,
       });
-      dispatch(removeProduct(_id));
+      dispatch(removeProducts(_id));
+   };
+
+   const handleEdit = (data) => {
+      setEditData(data);
+      handleToggle();
    };
 
    useEffect(() => {
@@ -76,7 +82,7 @@ const ProductList = () => {
    return (
       <>
          {products.length === 0 ? (
-            <h4 className="display-5">No Product found...</h4>
+            <h4 className="display-5">No products found...</h4>
          ) : (
             <>
                <TableContainer className={classes.container}>
@@ -89,19 +95,19 @@ const ProductList = () => {
                         </TableRow>
                      </TableHead>
                      <TableBody>
-                        {products.map((Product) => (
-                           <TableRow key={Product._id} hover tabIndex={-1}>
+                        {searchResult.map((product) => (
+                           <TableRow key={product._id} hover tabIndex={-1}>
                               <TableCell
                                  style={{ textTransform: 'capitalize' }}
                               >
-                                 {Product.name}
+                                 {product.name}
                               </TableCell>
-                              <TableCell>{Product.price}</TableCell>
+                              <TableCell>{product.price}</TableCell>
                               <TableCell style={{ display: 'flex' }}>
                                  <ActionButton
                                     aria-label="edit"
                                     color="primary"
-                                    onClick={handleToggle}
+                                    onClick={() => handleEdit(product)}
                                  >
                                     <EditTwoToneIcon />
                                  </ActionButton>
@@ -113,7 +119,7 @@ const ProductList = () => {
                                           isOpen: true,
                                           title: 'Are you sure to delete this record?',
                                           onConfirm: () => {
-                                             handleRemove(Product._id);
+                                             handleRemove(product._id);
                                           },
                                        });
                                     }}
@@ -127,22 +133,23 @@ const ProductList = () => {
                   </Table>
                </TableContainer>
 
-               {toggle && (
+               {Object.keys(editData).length > 0 && toggle ? (
                   <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
-                     {products.map((Product, _id) => {
+                     {products.map((product, _id) => {
                         return (
                            <EditProduct
                               key={_id}
-                              id={Product._id}
-                              name={Product.name}
-                              price={Product.price}
+                              id={product._id}
+                              name={product.name}
+                              price={product.price}
+                              editData={editData}
                               handleToggle={handleToggle}
                               setOpenPopup={setOpenPopup}
                            />
                         );
                      })}
                   </Popup>
-               )}
+               ) : null}
                <ConfirmDialog
                   confirmDialog={confirmDialog}
                   setConfirmDialog={setConfirmDialog}

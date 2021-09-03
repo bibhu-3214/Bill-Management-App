@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
    },
 }));
 
-const CustomerForm = (props) => {
+const ProductForm = (props) => {
    const classes = useStyles();
    const { formSubmission, handleToggle, editData, setOpenPopup } = props;
    const [name, setName] = useState(props.name ? editData.name : '');
@@ -44,7 +44,7 @@ const CustomerForm = (props) => {
             gutterBottom
             style={{ marginBottom: '30px' }}
          >
-            Add Customers
+            Add Product
          </Typography>
          <form
             className={classes.root}
@@ -59,7 +59,7 @@ const CustomerForm = (props) => {
                   type="text"
                   name="name"
                   value={name}
-                  placeholder="Enter Customer Name"
+                  placeholder="Enter Product Name"
                   size="small"
                   variant="outlined"
                   onChange={(e) => setName(e.target.value)}
@@ -70,7 +70,7 @@ const CustomerForm = (props) => {
                <TextField
                   required
                   label="price"
-                  type="price"
+                  type="text"
                   name="price"
                   value={price}
                   placeholder="enter your price"
@@ -95,4 +95,4 @@ const CustomerForm = (props) => {
    );
 };
 
-export default CustomerForm;
+export default ProductForm;

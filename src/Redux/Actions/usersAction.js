@@ -1,20 +1,19 @@
 import axios from 'axios';
-import Alert from '@material-ui/lab/Alert';
+import Swal from 'sweetalert2';
 
-export const register = (formData, resetForm, redirectToLogin) => {
+export const register = (values, redirectToLogin) => {
    return (dispatch) => {
       axios
          .post(
             'http://dct-billing-app.herokuapp.com/api/users/register',
-            formData,
+            values,
          )
          .then((resp) => {
             const result = resp.data;
             if (result.hasOwnProperty('errors')) {
                alert(result.message);
             } else {
-               alert('successfully created user');
-               resetForm();
+               Swal.fire('successfully created user', '', 'success');
                redirectToLogin();
             }
             dispatch(isRegister(result));
@@ -41,7 +40,11 @@ export const login = (formData, redirectToAdmin) => {
             if (res.hasOwnProperty('errors')) {
                alert(res.errors);
             } else {
-               // alert('Login Successful');
+               Swal.fire(
+                  'Logged In Successful',
+                  'welcome to Dashboard',
+                  'success',
+               );
                localStorage.setItem('token', res.token);
                redirectToAdmin();
             }

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export const addCustomer = (formData) => {
    return (dispatch) => {

@@ -6,7 +6,7 @@ import {
    makeStyles,
    Typography,
 } from '@material-ui/core';
-import ActionButton from '../../controls/ActionButton';
+import ActionButton from './controls/ActionButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Popup(props) {
-   const { children, openPopup, setOpenPopup } = props;
+   const { title, children, openPopup, setOpenPopup } = props;
    const classes = useStyles();
 
    return (
