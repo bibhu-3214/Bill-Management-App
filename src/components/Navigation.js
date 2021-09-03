@@ -17,7 +17,7 @@ import Register from './Authentication/Register';
 import Login from './Authentication/Login';
 import Admin from './Dashboard/Admin/Admin';
 import CustomerContainer from './Dashboard/customers/CustomerContainer';
-import Product from './Dashboard/products/Product';
+import ProductContainer from './Dashboard/products/ProductContainer';
 import Billing from './Dashboard/bills/Billing';
 import { Link, Route, Switch, withRouter } from 'react-router-dom';
 
@@ -58,13 +58,16 @@ const useStyles = makeStyles((theme) => ({
    root: {
       flexGrow: 1,
       width: '100%',
-      backgroundColor: theme.palette.background.paper,
+      backgroundColor: '#f5f5f5',
+   },
+   Tabs: {
+      backgroundColor: '#c5cae9',
    },
 }));
 
 function Navigation(props) {
-   const { isLoggedIn, handleAuth } = props;
    const classes = useStyles();
+   const { isLoggedIn, handleAuth } = props;
    const [value, setValue] = React.useState(0);
 
    const handleChange = (event, newValue) => {
@@ -73,19 +76,17 @@ function Navigation(props) {
 
    return (
       <div className={classes.root}>
-         <AppBar position="static" style={{ backgroundColor: '#e8eaf6' }}>
+         <AppBar position="static">
             <Tabs
+               className={classes.Tabs}
                value={value}
                onChange={handleChange}
-               style={{ color: 'white' }}
                variant="scrollable"
-               scrollButtons="on"
                indicatorColor="primary"
-               textColor="primary"
-               aria-label="scrollable force tabs example"
+               textColor="secondary"
             >
                {!isLoggedIn ? (
-                  <ul>
+                  <>
                      <Link to="/" style={{ textDecoration: 'none' }}>
                         <Tab
                            label="Home"
@@ -107,7 +108,7 @@ function Navigation(props) {
                            {...a11yProps(2)}
                         />
                      </Link>
-                  </ul>
+                  </>
                ) : (
                   <ul>
                      <Link to="/admin" style={{ textDecoration: 'none' }}>
@@ -174,7 +175,7 @@ function Navigation(props) {
                render={(props) => {
                   return (
                      <TabPanel value={value} index={0}>
-                        <Product />
+                        <ProductContainer />
                      </TabPanel>
                   );
                }}

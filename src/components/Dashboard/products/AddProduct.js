@@ -1,19 +1,19 @@
 import React from 'react';
-import CustomerForm from './CustomerForm';
+import ProductForm from './ProductForm';
 import { useDispatch } from 'react-redux';
-import { addCustomer } from '../../../Redux/Actions/customersAction';
+import { addProduct } from '../../../Redux/Actions/productAction';
 
-const AddCustomer = (props) => {
+const AddProduct = (props) => {
    const { setOpenPopup } = props;
    const dispatch = useDispatch();
 
    const formSubmission = (formData) => {
-      dispatch(addCustomer(formData));
+      dispatch(addProduct(formData));
    };
 
    return (
       <div>
-         <CustomerForm
+         <ProductForm
             formSubmission={formSubmission}
             setOpenPopup={setOpenPopup}
          />
@@ -21,4 +21,4 @@ const AddCustomer = (props) => {
    );
 };
 
-export default AddCustomer;
+export default AddProduct;

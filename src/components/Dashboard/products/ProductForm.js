@@ -17,20 +17,17 @@ const CustomerForm = (props) => {
    const classes = useStyles();
    const { formSubmission, handleToggle, editData, setOpenPopup } = props;
    const [name, setName] = useState(props.name ? editData.name : '');
-   const [email, setEmail] = useState(props.email ? editData.email : '');
-   const [contact, setContact] = useState(props.contact ? editData.mobile : '');
+   const [price, setPrice] = useState(props.price ? editData.price : '');
 
    const handleSubmit = (e) => {
       e.preventDefault();
       const formData = {
          name: name,
-         mobile: contact,
-         email: email,
+         price: price,
       };
       formSubmission(formData);
       if (formSubmission) {
-         setContact('');
-         setEmail('');
+         setPrice('');
          setName('');
       }
       if (handleToggle) {
@@ -72,28 +69,14 @@ const CustomerForm = (props) => {
             <div>
                <TextField
                   required
-                  label="Email"
-                  type="email"
-                  name="email"
-                  value={email}
-                  placeholder="enter your email"
+                  label="price"
+                  type="price"
+                  name="price"
+                  value={price}
+                  placeholder="enter your price"
                   size="small"
                   variant="outlined"
-                  onChange={(e) => setEmail(e.target.value)}
-                  style={{ width: '80%' }}
-               />
-            </div>
-            <div>
-               <TextField
-                  required
-                  label="Contact"
-                  type="text"
-                  name="contact"
-                  value={contact}
-                  placeholder="enter Contact Number"
-                  size="small"
-                  variant="outlined"
-                  onChange={(e) => setContact(e.target.value)}
+                  onChange={(e) => setPrice(e.target.value)}
                   style={{ width: '80%' }}
                />
             </div>

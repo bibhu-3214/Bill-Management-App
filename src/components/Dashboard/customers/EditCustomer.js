@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux';
 import { editCustomer } from '../../../Redux/Actions/customersAction';
 import CustomerForm from './CustomerForm';
 
-const EditNote = (props) => {
-   const { id, title, body, handleToggle } = props;
-
+const EditCustomer = (props) => {
+   const { id, name, email, contact, handleToggle, editData, setOpenPopup } =
+      props;
    const dispatch = useDispatch();
 
    const formSubmission = (result) => {
@@ -15,13 +15,16 @@ const EditNote = (props) => {
    return (
       <div>
          <CustomerForm
-            title={title}
-            body={body}
+            name={name}
+            email={email}
+            contact={contact}
             formSubmission={formSubmission}
+            editData={editData}
             handleToggle={handleToggle}
+            setOpenPopup={setOpenPopup}
          />
       </div>
    );
 };
 
-export default EditNote;
+export default EditCustomer;

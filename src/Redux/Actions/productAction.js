@@ -1,16 +1,16 @@
 import axios from 'axios';
 
-export const addCustomer = (formData) => {
+export const addProduct = (formData) => {
    return (dispatch) => {
       axios
-         .post('http://dct-billing-app.herokuapp.com/api/customers', formData, {
+         .post('http://dct-billing-app.herokuapp.com/api/products', formData, {
             headers: {
                Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
          })
          .then((resp) => {
-            const customer = resp.data;
-            dispatch(addItem(customer));
+            const Product = resp.data;
+            dispatch(addItem(Product));
          })
          .catch((err) => {
             alert(err.message);
@@ -18,18 +18,18 @@ export const addCustomer = (formData) => {
    };
 };
 
-export const addItem = (customer) => {
+export const addItem = (Product) => {
    return {
-      type: 'ADD_CUSTOMER',
-      payload: customer,
+      type: 'ADD_Product',
+      payload: Product,
    };
 };
 
-export const removeCustomer = (_id) => {
+export const removeProduct = (_id) => {
    return (dispatch) => {
       axios({
          method: 'delete',
-         url: `http://dct-billing-app.herokuapp.com/api/customers/${_id}`,
+         url: `http://dct-billing-app.herokuapp.com/api/products/${_id}`,
          headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
          },
@@ -51,16 +51,16 @@ export const removeItem = (_id) => {
    };
 };
 
-export const getCustomers = () => {
+export const getProducts = () => {
    return (dispatch) => {
       axios({
          method: 'get',
-         url: 'http://dct-billing-app.herokuapp.com/api/customers',
+         url: 'http://dct-billing-app.herokuapp.com/api/products',
          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       })
          .then((resp) => {
-            const allCustomerData = resp.data;
-            dispatch(getItem(allCustomerData));
+            const allProductData = resp.data;
+            dispatch(getItem(allProductData));
          })
          .catch((err) => {
             alert(err.message);
@@ -68,23 +68,23 @@ export const getCustomers = () => {
    };
 };
 
-export const getItem = (allCustomerData) => {
+export const getItem = (allProductData) => {
    return {
       type: 'GET_ITEM',
-      payload: allCustomerData,
+      payload: allProductData,
    };
 };
 
-export const getCustomerById = (_id) => {
+export const getProductById = (_id) => {
    return (dispatch) => {
       axios({
          method: 'get',
-         url: `http://dct-billing-app.herokuapp.com/api/customers/${_id}`,
+         url: `http://dct-billing-app.herokuapp.com/api/products/${_id}`,
          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       })
          .then((resp) => {
-            const singleCustomer = resp.data;
-            dispatch(getById(singleCustomer));
+            const singleProduct = resp.data;
+            dispatch(getById(singleProduct));
          })
          .catch((err) => {
             alert(err.message);
@@ -92,18 +92,18 @@ export const getCustomerById = (_id) => {
    };
 };
 
-export const getById = (singleCustomer) => {
+export const getById = (singleProduct) => {
    return {
       type: 'GETBY_ID',
-      payload: singleCustomer,
+      payload: singleProduct,
    };
 };
 
-export const editCustomer = (result, id) => {
+export const editProduct = (result, id) => {
    return (dispatch) => {
       axios
          .put(
-            `http://dct-billing-app.herokuapp.com/api/customers/${id}`,
+            `http://dct-billing-app.herokuapp.com/api/products/${id}`,
             result,
             {
                headers: {

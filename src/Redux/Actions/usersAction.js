@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Alert from '@material-ui/lab/Alert';
 
 export const register = (formData, resetForm, redirectToLogin) => {
    return (dispatch) => {
@@ -40,7 +41,7 @@ export const login = (formData, redirectToAdmin) => {
             if (res.hasOwnProperty('errors')) {
                alert(res.errors);
             } else {
-               alert('Login Successful');
+               // alert('Login Successful');
                localStorage.setItem('token', res.token);
                redirectToAdmin();
             }

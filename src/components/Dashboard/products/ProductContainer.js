@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import CustomerList from './CustomerList';
+import ProductList from './ProductList';
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import { Paper } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import Popup from './Popup';
-import AddCustomer from './AddCustomer';
+import AddProduct from './AddProduct';
 
 const useStyles = makeStyles((theme) => ({
    pageContent: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
-export default function CustomerContainer() {
+export default function ProductContainer() {
    const classes = useStyles();
    const [openPopup, setOpenPopup] = useState(false);
 
@@ -44,15 +44,15 @@ export default function CustomerContainer() {
                </Button>
             </div>
             <div>
-               <CustomerList />
+               <ProductList />
             </div>
          </Paper>
          <Popup
-            title="Customer Form"
+            title="Product Form"
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
          >
-            <AddCustomer setOpenPopup={setOpenPopup} />
+            <AddProduct setOpenPopup={setOpenPopup} />
          </Popup>
       </div>
    );

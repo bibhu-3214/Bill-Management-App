@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from 'react-redux';
 import { login } from '../../Redux/Actions/usersAction';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
    root: {
@@ -29,6 +30,7 @@ export default function Login(props) {
          props.history.push('/admin');
          props.handleAuth();
       };
+      <Alert severity="success">Login Successful</Alert>;
       dispatch(login(formData, redirectToAdmin));
    };
 
