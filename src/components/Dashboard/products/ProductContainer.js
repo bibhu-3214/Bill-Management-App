@@ -6,9 +6,9 @@ import Button from '@material-ui/core/Button';
 import { InputAdornment, Paper, Toolbar } from '@material-ui/core';
 import Input from '../../controls/Input';
 import Popup from '../../Popup';
-import AddProduct from './AddProduct';
 import { Search } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
+import ProductForm from './ProductForm';
 
 const useStyles = makeStyles((theme) => ({
    pageContent: {
@@ -90,7 +90,7 @@ export default function ProductContainer() {
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
          >
-            <AddProduct setOpenPopup={setOpenPopup} />
+            <ProductForm setOpenPopup={setOpenPopup} />
          </Popup>
       </div>
    );

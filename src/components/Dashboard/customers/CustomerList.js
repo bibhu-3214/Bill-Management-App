@@ -15,8 +15,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import TableContainer from '@material-ui/core/TableContainer';
 import ConfirmDialog from './ConfirmDialog';
 import Popup from '../../Popup';
-import EditCustomer from './EditCustomer';
 import ActionButton from '../../controls/ActionButton';
+import CustomerForm from './CustomerForm';
 
 const useStyles1 = makeStyles((theme) => ({
    table: {
@@ -82,7 +82,7 @@ const CustomerList = ({ searchResult }) => {
    return (
       <>
          {customers.length === 0 ? (
-            <h4 className="display-5">No Customer found...</h4>
+            <h4>No Customer found...</h4>
          ) : (
             <>
                <TableContainer className={classes.container}>
@@ -134,23 +134,13 @@ const CustomerList = ({ searchResult }) => {
                      </TableBody>
                   </Table>
                </TableContainer>
-
                {Object.keys(editData).length > 0 && toggle ? (
                   <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
-                     {customers.map((customer, _id) => {
-                        return (
-                           <EditCustomer
-                              key={_id}
-                              id={customer._id}
-                              name={customer.name}
-                              email={customer.email}
-                              contact={customer.mobile}
-                              editData={editData}
-                              handleToggle={handleToggle}
-                              setOpenPopup={setOpenPopup}
-                           />
-                        );
-                     })}
+                     <CustomerForm
+                        editData={editData}
+                        handleToggle={handleToggle}
+                        setOpenPopup={setOpenPopup}
+                     />
                   </Popup>
                ) : null}
                <ConfirmDialog

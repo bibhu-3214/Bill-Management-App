@@ -100,12 +100,12 @@ export const getById = (singleCustomer) => {
    };
 };
 
-export const editCustomer = (result, id) => {
+export const editCustomer = (values, _id) => {
    return (dispatch) => {
       axios
          .put(
-            `http://dct-billing-app.herokuapp.com/api/customers/${id}`,
-            result,
+            `http://dct-billing-app.herokuapp.com/api/customers/${_id}`,
+            values,
             {
                headers: {
                   Authorization: `Bearer ${localStorage.getItem('token')}`,

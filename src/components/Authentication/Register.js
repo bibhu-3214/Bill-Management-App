@@ -41,7 +41,7 @@ export default function Register(props) {
    const validationSchema = yup.object({
       username: yup
          .string()
-         .min(6, 'Username should be of minimum 6 characters length')
+         .min(5, 'Username should be of minimum 6 characters length')
          .required('Required'),
       email: yup.string().email('Invalid Format').required('Required'),
       password: yup

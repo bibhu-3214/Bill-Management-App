@@ -15,8 +15,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import TableContainer from '@material-ui/core/TableContainer';
 import ConfirmDialog from './ConfirmDialog';
 import Popup from '../../Popup';
-import EditProduct from './EditProduct';
 import ActionButton from '../../controls/ActionButton';
+import ProductForm from './ProductForm';
 
 const useStyles1 = makeStyles((theme) => ({
    table: {
@@ -135,19 +135,10 @@ const ProductList = ({ searchResult }) => {
 
                {Object.keys(editData).length > 0 && toggle ? (
                   <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
-                     {products.map((product, _id) => {
-                        return (
-                           <EditProduct
-                              key={_id}
-                              id={product._id}
-                              name={product.name}
-                              price={product.price}
-                              editData={editData}
-                              handleToggle={handleToggle}
-                              setOpenPopup={setOpenPopup}
-                           />
-                        );
-                     })}
+                     <ProductForm
+                        editData={editData}
+                        setOpenPopup={setOpenPopup}
+                     />
                   </Popup>
                ) : null}
                <ConfirmDialog

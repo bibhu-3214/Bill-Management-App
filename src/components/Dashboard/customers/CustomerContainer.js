@@ -5,10 +5,10 @@ import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import { InputAdornment, Paper, Toolbar } from '@material-ui/core';
 import Popup from '../../Popup';
-import AddCustomer from './AddCustomer';
 import { useSelector } from 'react-redux';
 import Input from '../../controls/Input';
 import Search from '@material-ui/icons/Search';
+import CustomerForm from './CustomerForm';
 
 const useStyles = makeStyles((theme) => ({
    pageContent: {
@@ -90,7 +90,7 @@ export default function CustomerContainer() {
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
          >
-            <AddCustomer setOpenPopup={setOpenPopup} />
+            <CustomerForm setOpenPopup={setOpenPopup} />
          </Popup>
       </div>
    );
