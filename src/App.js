@@ -14,11 +14,7 @@ const App = () => {
       }
    }, []);
 
-   return (
-      <div>
-         <Navigation isLoggedIn={isLoggedIn} handleAuth={handleAuth} />
-      </div>
-   );
+   return <Navigation isLoggedIn={isLoggedIn} handleAuth={handleAuth} />;
 };
 
 export default App;
