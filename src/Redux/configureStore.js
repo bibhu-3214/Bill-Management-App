@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 import customersReducer from './Reducers/customersReducer';
 import userReducer from './Reducers/userReducer';
 import productReducer from './Reducers/productReducer';
+import billReducer from './Reducers/billReducer';
 
 const configureStore = () => {
    const store = createStore(
@@ -10,6 +11,7 @@ const configureStore = () => {
          users: userReducer,
          customers: customersReducer,
          products: productReducer,
+         bills: billReducer,
       }),
       applyMiddleware(thunk),
    );

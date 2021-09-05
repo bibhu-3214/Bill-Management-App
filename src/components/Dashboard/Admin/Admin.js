@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 const useStyles = makeStyles((theme) => ({
    root: {
       flexGrow: 1,
+      margin: '40px',
    },
    paper: {
       padding: theme.spacing(2),
@@ -99,7 +100,7 @@ export default function Admin() {
                   <CardContent>
                      <Typography
                         variant="h4"
-                        component="h2"
+                        component="h3"
                         style={{ color: '#1a237e', marginBottom: '20px' }}
                      >
                         Total Bills

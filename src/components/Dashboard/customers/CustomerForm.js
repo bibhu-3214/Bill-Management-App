@@ -66,7 +66,7 @@ const CustomerForm = (props) => {
             gutterBottom
             style={{ marginBottom: '30px' }}
          >
-            Add Customers
+            {_id ? 'Edit Customer' : 'Add Customers'}
          </Typography>
          <form className={classes.root} onSubmit={formik.handleSubmit}>
             <div>
@@ -130,7 +130,11 @@ const CustomerForm = (props) => {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  style={{ width: '80%', marginTop: '10px' }}
+                  style={{
+                     width: '80%',
+                     marginTop: '10px',
+                     marginBottom: '30px',
+                  }}
                >
                   ADD
                </Button>

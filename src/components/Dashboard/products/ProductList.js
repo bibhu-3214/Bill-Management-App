@@ -75,9 +75,9 @@ const ProductList = ({ searchResult }) => {
       handleToggle();
    };
 
-   useEffect(() => {
-      dispatch(getProducts());
-   }, [dispatch]);
+   // useEffect(() => {
+   //    dispatch(getProducts());
+   // }, [dispatch]);
 
    return (
       <>

@@ -47,7 +47,6 @@ const CustomerList = ({ searchResult }) => {
    const [openPopup, setOpenPopup] = useState(false);
    const classes = useStyles();
    const classes1 = useStyles1();
-   const customers = useSelector((state) => state.customers);
    const dispatch = useDispatch();
    const [editData, setEditData] = useState({});
    const [toggle, setToggle] = useState(false);
@@ -56,6 +55,7 @@ const CustomerList = ({ searchResult }) => {
       title: '',
       subTitle: '',
    });
+   const customers = useSelector((state) => state.customers);
 
    const handleToggle = () => {
       setToggle(!toggle);
@@ -75,9 +75,9 @@ const CustomerList = ({ searchResult }) => {
       handleToggle();
    };
 
-   useEffect(() => {
-      dispatch(getCustomers());
-   }, [dispatch]);
+   // useEffect(() => {
+   //    dispatch(getCustomers());
+   // }, [dispatch]);
 
    return (
       <>

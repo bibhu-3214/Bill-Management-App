@@ -58,7 +58,7 @@ const ProductForm = (props) => {
             gutterBottom
             style={{ marginBottom: '30px' }}
          >
-            Add Product
+            {_id ? 'Edit Product' : 'Add Product'}
          </Typography>
          <form
             className={classes.root}
