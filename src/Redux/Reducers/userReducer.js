@@ -1,16 +1,15 @@
-const userInitialState = [];
+const userInitialState = { isLoggedIn: false, user: {} };
 
 const userReducer = (state = userInitialState, action) => {
    switch (action.payload) {
-      case 'REGISTER': {
-         return [...state, action.payload];
-      }
       case 'LOGIN': {
-         return [...state, action.payload];
+         return { ...state, isLoggedIn: true };
       }
-      default: {
-         return [...state];
+      case 'USER_INFORMATION': {
+         return { ...state, user: action.payload };
       }
+      default:
+         return { ...state };
    }
 };
 

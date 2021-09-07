@@ -3,24 +3,15 @@ const productsInitialState = [];
 const productsReducer = (state = productsInitialState, action) => {
    switch (action.type) {
       case 'ADD_PRODUCT': {
-         return [action.payload, ...state];
+         return [...state, action.payload];
       }
-      case 'GET_ITEM': {
+      case 'GET_PRODUCT': {
          return [...action.payload];
       }
-      case 'REMOVE_ITEM': {
-         return state.filter((ele) => ele._id !== action.payload);
+      case 'REMOVE_PRODUCT': {
+         return state.filter((ele) => ele._id !== action.payload._id);
       }
-      case 'EDIT_ITEM': {
-         return state.map((ele) => {
-            if (ele._id === action.payload._id) {
-               return { ...action.payload };
-            } else {
-               return { ...ele };
-            }
-         });
-      }
-      case 'GETBY_ID': {
+      case 'EDIT_PRODUCT': {
          return state.map((ele) => {
             if (ele._id === action.payload._id) {
                return { ...action.payload };

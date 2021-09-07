@@ -12,14 +12,15 @@ import * as yup from 'yup';
 
 const useStyles = makeStyles((theme) => ({
    root: {
+      marginTop: theme.spacing(3),
       '& .MuiTextField-root': {
          margin: theme.spacing(1),
-         width: 200,
+         width: 100,
       },
    },
 }));
 
-export default function Register(props) {
+export default function Registration(props) {
    const classes = useStyles();
    const dispatch = useDispatch();
 
@@ -67,10 +68,10 @@ export default function Register(props) {
                   alt="bill"
                   style={{
                      display: 'block',
-                     marginTop: '20px',
+                     marginTop: '30px',
                      marginLeft: 'auto',
                      marginRight: 'auto',
-                     width: '110%',
+                     width: '100%',
                   }}
                />
             </Grid>
@@ -194,7 +195,7 @@ export default function Register(props) {
                         style={{
                            width: '50%',
                            marginTop: '20px',
-                           marginBottom: '30px',
+                           marginBottom: '50px',
                         }}
                         variant="contained"
                         color="primary"

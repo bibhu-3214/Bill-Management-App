@@ -39,9 +39,9 @@ const ProductForm = (props) => {
    const validationSchema = yup.object({
       name: yup
          .string()
-         .min(5, 'name should be of minimum 5 characters length')
+         .min(3, 'name should be of minimum 3 characters length')
          .required('Required'),
-      price: yup.string().required('Required'),
+      price: yup.number().required().positive().integer(),
    });
 
    const formik = useFormik({
@@ -88,7 +88,7 @@ const ProductForm = (props) => {
                <TextField
                   required
                   label="price"
-                  type="text"
+                  type="number"
                   name="price"
                   placeholder="enter your price"
                   size="small"
@@ -107,7 +107,11 @@ const ProductForm = (props) => {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  style={{ width: '80%', marginTop: '10px' }}
+                  style={{
+                     width: '80%',
+                     marginTop: '10px',
+                     marginBottom: '30px',
+                  }}
                >
                   ADD
                </Button>

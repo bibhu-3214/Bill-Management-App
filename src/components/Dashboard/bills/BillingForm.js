@@ -1,11 +1,19 @@
-import { Button, makeStyles, TextField, Typography } from '@material-ui/core';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { MenuItem, Select } from '@material-ui/core';
+import {
+   Button,
+   makeStyles,
+   TextField,
+   Select,
+   MenuItem,
+   Typography,
+   IconButton,
+} from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import { addBill } from '../../../Redux/Actions/billAction';
 import RemoveCircleRoundedIcon from '@material-ui/icons/RemoveCircleRounded';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
-import SelectCustomer from './SelectCustomer';
-// import SelectProduct from './SelectProduct';
+
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
    root: {
@@ -19,17 +27,16 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
-const BillingForm = () => {
+const BillingForm = ({ setOpenPopup }) => {
    const classes = useStyles();
-   const [date, setDate] = useState('');
-   const [customerId, setCustomerId] = useState([]);
-   const [productId, setProductId] = useState('');
-   const [quantity, setQuantity] = useState(0);
+   const dispatch = useDispatch();
    const customers = useSelector((state) => state.customers);
    const products = useSelector((state) => state.products);
-
-   console.log('customer', customers);
-   console.log('product', products);
+   const [date, setDate] = useState('');
+   const [customerId, setCustomerId] = useState([]);
+   const [productId, setProductId] = useState([]);
+   const [quantity, setQuantity] = useState(1);
+   // const [openSelectInput, setOpenSelectInput] = useState(false);
 
    const handleSubmit = () => {
       const billData = {
@@ -38,106 +45,137 @@ const BillingForm = () => {
          lineItems: [
             {
                product: productId,
-               quantity: quantity,
+               quantity: Number(quantity),
             },
          ],
       };
+      const resetForm = () => {
+         setDate('');
+         setCustomerId([]);
+         setProductId([]);
+         setQuantity(1);
+      };
+      dispatch(addBill(billData, resetForm));
+      setOpenPopup(false);
       console.log(billData);
    };
 
+   const handleDecrease = () => {
+      const dec = quantity - 1;
+      if (quantity < 2) {
+         return null;
+      } else {
+         setQuantity(dec);
+      }
+   };
+   const handleIncrease = () => {
+      const inc = quantity + 1;
+      setQuantity(inc);
+   };
+   const handleClick = () => {
+      // setOpenSelectInput(true);
+   };
+
    return (
-      <>
-         <div style={{ textAlign: 'justify', margin: '30px' }}>
-            <form className={classes.root} onSubmit={handleSubmit}>
-               <Typography
-                  variant="h3"
-                  color="primary"
-                  gutterBottom
-                  style={{ marginBottom: '30px' }}
+      <div style={{ marginBottom: '30px' }}>
+         <form className={classes.root} onSubmit={handleSubmit}>
+            <Typography
+               variant="h4"
+               color="primary"
+               gutterBottom
+               style={{ textAlign: 'center', marginBottom: '30px' }}
+            >
+               Add to Cart
+            </Typography>
+            <div>
+               <TextField
+                  style={{ width: '100%' }}
+                  required
+                  id="date"
+                  type="date"
+                  name="date"
+                  size="small"
+                  placeholder="Enter date"
+                  variant="outlined"
+                  onChange={(e) => setDate(e.target.value)}
+                  value={date}
+               />
+            </div>
+            <div>
+               <Select
+                  id="customer"
+                  variant="outlined"
+                  value={customerId}
+                  onChange={(e) => setCustomerId(e.target.value)}
+                  style={{ height: '40px', width: '100%' }}
                >
-                  Add to Cart
-               </Typography>
-               <div>
-                  <TextField
-                     style={{ width: '30%' }}
-                     required
-                     id="date"
-                     type="date"
-                     name="date"
-                     size="small"
-                     value={date}
-                     onChange={(e) => setDate(e.target.value)}
-                     placeholder="Enter date"
-                     variant="outlined"
-                  />
-               </div>
-               <div>
-                  <Select
-                     id="customer"
-                     variant="outlined"
-                     value={customerId}
-                     onChange={(e) => setCustomerId(e.target.value)}
-                     style={{ height: '40px', width: '30%' }}
-                  >
-                     {customers.map((customer) => {
-                        return (
-                           <MenuItem key={customer._id} value={customer._id}>
-                              {customer.name}
-                           </MenuItem>
-                        );
-                     })}
-                  </Select>
-               </div>
-               <div>
-                  {/* <Select
-                     id="product"
-                     variant="outlined"
-                     value={productId}
-                     onChange={(e) => setProductId(e.target.value)}
-                  >
-                     {products.map((product) => (
-                        <MenuItem key={product._id} value={product._id}>
-                           {product.name}
+                  {customers.map((customer, _id) => {
+                     return (
+                        <MenuItem key={_id} value={customer._id}>
+                           {customer.name}
                         </MenuItem>
-                     ))}
-                  </Select>
-                  <Button color="primary">
-                     <RemoveCircleRoundedIcon />
-                  </Button>
-                  <Button color="primary">
-                     <AddCircleRoundedIcon />
-                  </Button>
-                  <Button
-                     variant="contained"
-                     color="primary"
-                     type="submit"
-                     style={{ margin: '10px' }}
-                  >
-                     Add
-                  </Button> */}
-               </div>
-               {/* <div>
-                  <SelectProduct
-                     prodIds={prodIds}
-                     prodNames={prodNames}
-                     quantity={quantity}
-                     productId={productId}
-                     setProductId={setProductId}
-                  />
-               </div> */}
-               <div>
-                  <Button
-                     variant="contained"
-                     color="primary"
-                     type="submit"
-                     style={{ width: '30%' }}
-                  >
-                     GENERATE
-                  </Button>
-               </div>
-            </form>
-         </div>
-      </>
+                     );
+                  })}
+               </Select>
+            </div>
+            <div>
+               <Select
+                  id="product"
+                  variant="outlined"
+                  value={productId}
+                  onChange={(e) => setProductId(e.target.value)}
+                  style={{ height: '40px', width: '100%' }}
+               >
+                  {products.map((product, _id) => (
+                     <MenuItem key={_id} value={product._id}>
+                        {product.name}
+                     </MenuItem>
+                  ))}
+               </Select>
+            </div>
+            <div
+               style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-evenly',
+               }}
+            >
+               <IconButton
+                  color="primary"
+                  style={{ marginRight: '10px' }}
+                  onClick={handleDecrease}
+               >
+                  <RemoveCircleRoundedIcon />
+               </IconButton>
+               <IconButton style={{ marginTop: 'auto', marginRight: '10px' }}>
+                  {quantity}
+               </IconButton>
+               <IconButton color="primary" onClick={handleIncrease}>
+                  <AddCircleRoundedIcon />
+               </IconButton>
+               <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleClick}
+                  style={{ margin: '10px' }}
+               >
+                  Add
+               </Button>
+            </div>
+
+            <div>
+               <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  // onClick={handleSubmit}
+                  style={{ width: '100%' }}
+               >
+                  GENERATE
+               </Button>
+            </div>
+         </form>
+      </div>
    );
 };
 

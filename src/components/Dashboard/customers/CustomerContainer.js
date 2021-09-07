@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CustomerList from './CustomerList';
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
-import { InputAdornment, Paper, Toolbar } from '@material-ui/core';
+import { InputAdornment, Paper, Toolbar, Typography } from '@material-ui/core';
 import Popup from '../../Popup';
 import { useSelector } from 'react-redux';
 import Input from '../../controls/Input';
@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
       margin: theme.spacing(5),
       padding: theme.spacing(3),
+      boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
    },
    searchInput: {
       width: '80%',
@@ -39,10 +40,6 @@ export default function CustomerContainer() {
       setSearchResult(results);
    }, [customers, searchInput]);
 
-   const handleSearch = (e) => {
-      setSearchInput(e.target.value);
-   };
-
    return (
       <div style={{ display: 'flex', width: '60%', margin: 'auto' }}>
          <Paper
@@ -62,7 +59,7 @@ export default function CustomerContainer() {
                            </InputAdornment>
                         ),
                      }}
-                     onChange={handleSearch}
+                     onChange={(e) => setSearchInput(e.target.value)}
                   />
                   <Button
                      variant="contained"
@@ -82,7 +79,18 @@ export default function CustomerContainer() {
                </Toolbar>
             </div>
             <div>
-               <CustomerList searchResult={searchResult} />
+               {customers.length > 0 ? (
+                  <CustomerList searchResult={searchResult} />
+               ) : (
+                  <Typography
+                     variant="h5"
+                     color="textSecondary"
+                     gutterBottom
+                     style={{ textAlign: 'center', margin: '30px' }}
+                  >
+                     Add a customer ...
+                  </Typography>
+               )}
             </div>
          </Paper>
          <Popup

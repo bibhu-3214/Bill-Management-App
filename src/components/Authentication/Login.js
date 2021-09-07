@@ -30,14 +30,13 @@ export default function Login(props) {
    const dispatch = useDispatch();
 
    const initialValues = {
-      email: '',
-      password: '',
+      email: 'bibhu098@gmail.com',
+      password: 'bibhu1920',
    };
 
    const onSubmit = (values) => {
       const redirectToAdmin = () => {
          props.history.push('/admin');
-         props.handleAuth();
       };
       dispatch(login(values, redirectToAdmin));
    };

@@ -12,9 +12,7 @@ export const addCustomer = (formData) => {
             const customer = resp.data;
             dispatch(addItem(customer));
          })
-         .catch((err) => {
-            alert(err.message);
-         });
+         .catch((err) => alert(err.message));
    };
 };
 
@@ -36,66 +34,39 @@ export const removeCustomer = (_id) => {
       })
          .then((resp) => {
             const removed = resp.data;
-            dispatch(removeItem(removed._id));
+            dispatch(removeItem(removed));
          })
-         .catch((err) => {
-            alert(err.message);
-         });
+         .catch((err) => alert(err.message));
    };
 };
 
-export const removeItem = (_id) => {
+export const removeItem = (removed) => {
    return {
-      type: 'REMOVE_ITEM',
-      payload: _id,
+      type: 'REMOVE_CUSTOMER',
+      payload: removed,
    };
 };
 
 export const getCustomers = () => {
    return (dispatch) => {
-      axios({
-         method: 'get',
-         url: 'http://dct-billing-app.herokuapp.com/api/customers',
-         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      })
+      axios
+         .get('http://dct-billing-app.herokuapp.com/api/customers', {
+            headers: {
+               Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+         })
          .then((resp) => {
             const allCustomerData = resp.data;
             dispatch(getItem(allCustomerData));
          })
-         .catch((err) => {
-            alert(err.message);
-         });
+         .catch((err) => alert(err.message));
    };
 };
 
 export const getItem = (allCustomerData) => {
    return {
-      type: 'GET_ITEM',
+      type: 'GET_CUSTOMER',
       payload: allCustomerData,
-   };
-};
-
-export const getCustomerById = (_id) => {
-   return (dispatch) => {
-      axios({
-         method: 'get',
-         url: `http://dct-billing-app.herokuapp.com/api/customers/${_id}`,
-         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      })
-         .then((resp) => {
-            const singleCustomer = resp.data;
-            dispatch(getById(singleCustomer));
-         })
-         .catch((err) => {
-            alert(err.message);
-         });
-   };
-};
-
-export const getById = (singleCustomer) => {
-   return {
-      type: 'GETBY_ID',
-      payload: singleCustomer,
    };
 };
 
@@ -115,15 +86,13 @@ export const editCustomer = (values, _id) => {
             const editedData = response.data;
             dispatch(editItem(editedData));
          })
-         .catch((err) => {
-            alert(err.message);
-         });
+         .catch((err) => alert(err.message));
    };
 };
 
 export const editItem = (editedData) => {
    return {
-      type: 'EDIT_ITEM',
+      type: 'EDIT_CUSTOMER',
       payload: editedData,
    };
 };

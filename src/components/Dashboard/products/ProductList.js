@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-   getProducts,
-   removeProducts,
-} from '../../../Redux/Actions/productAction';
+// import { removeProducts } from '../../../Redux/Actions/productAction';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -46,7 +43,7 @@ const useStyles = makeStyles({
 const ProductList = ({ searchResult }) => {
    const classes = useStyles();
    const classes1 = useStyles1();
-   const dispatch = useDispatch();
+   // const dispatch = useDispatch();
    const [openPopup, setOpenPopup] = useState(false);
    const [editData, setEditData] = useState({});
    const [toggle, setToggle] = useState(false);
@@ -67,7 +64,7 @@ const ProductList = ({ searchResult }) => {
          ...confirmDialog,
          isOpen: false,
       });
-      dispatch(removeProducts(_id));
+      // dispatch(removeProducts(_id));
    };
 
    const handleEdit = (data) => {
@@ -75,78 +72,64 @@ const ProductList = ({ searchResult }) => {
       handleToggle();
    };
 
-   // useEffect(() => {
-   //    dispatch(getProducts());
-   // }, [dispatch]);
-
    return (
       <>
-         {products.length === 0 ? (
-            <h4 className="display-5">No products found...</h4>
-         ) : (
-            <>
-               <TableContainer className={classes.container}>
-                  <Table className={classes1.table}>
-                     <TableHead>
-                        <TableRow>
-                           <TableCell>PRODUCT NAME</TableCell>
-                           <TableCell>PRICE</TableCell>
-                           <TableCell>ACTIONS</TableCell>
-                        </TableRow>
-                     </TableHead>
-                     <TableBody>
-                        {searchResult.map((product) => (
-                           <TableRow key={product._id} hover tabIndex={-1}>
-                              <TableCell
-                                 style={{ textTransform: 'capitalize' }}
-                              >
-                                 {product.name}
-                              </TableCell>
-                              <TableCell>{product.price}</TableCell>
-                              <TableCell style={{ display: 'flex' }}>
-                                 <ActionButton
-                                    aria-label="edit"
-                                    color="primary"
-                                    onClick={() => handleEdit(product)}
-                                 >
-                                    <EditTwoToneIcon />
-                                 </ActionButton>
-                                 <ActionButton
-                                    aria-label="delete"
-                                    color="secondary"
-                                    onClick={() => {
-                                       setConfirmDialog({
-                                          isOpen: true,
-                                          title: 'Are you sure to delete this record?',
-                                          onConfirm: () => {
-                                             handleRemove(product._id);
-                                          },
-                                       });
-                                    }}
-                                 >
-                                    <DeleteIcon />
-                                 </ActionButton>
-                              </TableCell>
-                           </TableRow>
-                        ))}
-                     </TableBody>
-                  </Table>
-               </TableContainer>
-
-               {Object.keys(editData).length > 0 && toggle ? (
-                  <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
-                     <ProductForm
-                        editData={editData}
-                        setOpenPopup={setOpenPopup}
-                     />
-                  </Popup>
-               ) : null}
-               <ConfirmDialog
-                  confirmDialog={confirmDialog}
-                  setConfirmDialog={setConfirmDialog}
-               />
-            </>
-         )}
+         <TableContainer className={classes.container}>
+            <Table className={classes1.table}>
+               <TableHead>
+                  <TableRow>
+                     <TableCell>PRODUCT NAME</TableCell>
+                     <TableCell>PRICE</TableCell>
+                     <TableCell>ACTIONS</TableCell>
+                  </TableRow>
+               </TableHead>
+               <TableBody>
+                  {searchResult.map((product, _id) => (
+                     <TableRow key={_id} hover>
+                        <TableCell style={{ textTransform: 'capitalize' }}>
+                           {product.name}
+                        </TableCell>
+                        <TableCell>{product.price}</TableCell>
+                        <TableCell style={{ display: 'flex' }}>
+                           <ActionButton
+                              aria-label="edit"
+                              color="primary"
+                              onClick={() => handleEdit(product)}
+                           >
+                              <EditTwoToneIcon />
+                           </ActionButton>
+                           <ActionButton
+                              aria-label="delete"
+                              color="secondary"
+                              onClick={() => {
+                                 setConfirmDialog({
+                                    isOpen: true,
+                                    title: 'Are you sure to delete this record?',
+                                    subTitle:
+                                       'This Record is being Used in Bill',
+                                    onConfirm: () => {
+                                       handleRemove(product._id);
+                                    },
+                                 });
+                              }}
+                           >
+                              <DeleteIcon />
+                           </ActionButton>
+                        </TableCell>
+                     </TableRow>
+                  ))}
+               </TableBody>
+            </Table>
+         </TableContainer>
+         {Object.keys(editData).length > 0 && toggle ? (
+            <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
+               <ProductForm editData={editData} setOpenPopup={setOpenPopup} />
+            </Popup>
+         ) : null}
+         <ConfirmDialog
+            confirmDialog={confirmDialog}
+            setConfirmDialog={setConfirmDialog}
+         />
       </>
    );
 };

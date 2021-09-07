@@ -36,7 +36,7 @@ export const removeProducts = (_id) => {
       })
          .then((resp) => {
             const removed = resp.data;
-            dispatch(removeItem(removed._id));
+            dispatch(removeItem(removed));
          })
          .catch((err) => {
             alert(err.message);
@@ -44,10 +44,10 @@ export const removeProducts = (_id) => {
    };
 };
 
-export const removeItem = (_id) => {
+export const removeItem = (removed) => {
    return {
-      type: 'REMOVE_ITEM',
-      payload: _id,
+      type: 'REMOVE_PRODUCT',
+      payload: removed,
    };
 };
 
@@ -70,7 +70,7 @@ export const getProducts = () => {
 
 export const getItem = (allProductData) => {
    return {
-      type: 'GET_ITEM',
+      type: 'GET_PRODUCT',
       payload: allProductData,
    };
 };
@@ -123,7 +123,7 @@ export const editProduct = (result, id) => {
 
 export const editItem = (editedData) => {
    return {
-      type: 'EDIT_ITEM',
+      type: 'EDIT_PRODUCT',
       payload: editedData,
    };
 };

@@ -9,6 +9,7 @@ const Home = () => {
             alt="bill"
             style={{
                display: 'block',
+               marginTop: '9px',
                marginLeft: 'auto',
                marginRight: 'auto',
                width: '70%',

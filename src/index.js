@@ -5,9 +5,11 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import configureStore from './Redux/configureStore';
+import { usersDetails } from './Redux/Actions/usersAction';
 import { login } from './Redux/Actions/usersAction';
 import { getCustomers } from './Redux/Actions/customersAction';
 import { getProducts } from './Redux/Actions/productAction';
+import { getBills } from './Redux/Actions/billAction';
 
 const store = configureStore();
 console.log('state', store.getState());
@@ -17,9 +19,11 @@ store.subscribe(() => {
 });
 
 if (localStorage.getItem('token')) {
-   store.dispatch(login());
+   // store.dispatch(login());
+   store.dispatch(usersDetails());
    store.dispatch(getCustomers());
    store.dispatch(getProducts());
+   store.dispatch(getBills());
 }
 
 ReactDOM.render(

@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import ProductList from './ProductList';
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
-import { Typography } from '@material-ui/core';
-import { InputAdornment, Paper, Toolbar } from '@material-ui/core';
-import Input from '../../controls/Input';
+import { InputAdornment, Toolbar, Typography } from '@material-ui/core';
 import Popup from '../../Popup';
-import { Search } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
-import ProductForm from './ProductForm';
+import Input from '../../controls/Input';
+import Search from '@material-ui/icons/Search';
+import Paper from '@material-ui/core/Paper';
+import BillingForm from './BillingForm';
+import BillList from './BillList';
 
 const useStyles = makeStyles((theme) => ({
    pageContent: {
@@ -27,22 +27,14 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
-export default function ProductContainer() {
+export default function BillContainer() {
    const classes = useStyles();
    const [openPopup, setOpenPopup] = useState(false);
    const [searchInput, setSearchInput] = useState('');
-   const [searchResult, setSearchResult] = useState([]);
-   const products = useSelector((state) => state.products);
-
-   useEffect(() => {
-      const results = products.filter((customer) =>
-         customer.name.toLowerCase().includes(searchInput),
-      );
-      setSearchResult(results);
-   }, [products, searchInput]);
+   const bills = useSelector((state) => state.bills);
 
    return (
-      <div style={{ display: 'flex', width: '60%', margin: 'auto' }}>
+      <div style={{ display: 'flex', width: '70%', margin: 'auto' }}>
          <Paper
             className={classes.pageContent}
             style={{ display: 'flex', flexDirection: 'column' }}
@@ -50,7 +42,7 @@ export default function ProductContainer() {
             <div>
                <Toolbar>
                   <Input
-                     label="Search products"
+                     label="Search bill"
                      className={classes.searchInput}
                      value={searchInput}
                      InputProps={{
@@ -65,8 +57,8 @@ export default function ProductContainer() {
                   <Button
                      variant="contained"
                      color="primary"
-                     className={classes.Button}
                      startIcon={<AddIcon />}
+                     className={classes.Button}
                      style={{
                         float: 'right',
                         marginBottom: '10px',
@@ -80,8 +72,8 @@ export default function ProductContainer() {
                </Toolbar>
             </div>
             <div>
-               {products.length > 0 ? (
-                  <ProductList searchResult={searchResult} />
+               {bills.length > 0 ? (
+                  <BillList />
                ) : (
                   <Typography
                      variant="h5"
@@ -89,17 +81,17 @@ export default function ProductContainer() {
                      gutterBottom
                      style={{ textAlign: 'center', margin: '30px' }}
                   >
-                     Add a Product ...
+                     Add a bill ...
                   </Typography>
                )}
             </div>
          </Paper>
          <Popup
-            title="Product Form"
+            title="Bill Form"
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
          >
-            <ProductForm setOpenPopup={setOpenPopup} />
+            <BillingForm setOpenPopup={setOpenPopup} />
          </Popup>
       </div>
    );

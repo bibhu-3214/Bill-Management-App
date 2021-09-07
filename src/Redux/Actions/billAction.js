@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const addBill = (billData) => {
+export const addBill = (billData, resetForm) => {
    return (dispatch) => {
       axios
          .post('http://dct-billing-app.herokuapp.com/api/bills', billData, {
@@ -10,7 +10,12 @@ export const addBill = (billData) => {
          })
          .then((resp) => {
             const bill = resp.data;
-            dispatch(addItem(bill));
+            if (bill.hasOwnProperty('errors')) {
+               alert(bill.message);
+            } else {
+               resetForm();
+               dispatch(addItem(bill));
+            }
          })
          .catch((err) => {
             alert(err.message);
@@ -36,7 +41,7 @@ export const removeBill = (_id) => {
       })
          .then((resp) => {
             const removed = resp.data;
-            dispatch(removeItem(removed._id));
+            dispatch(removeItem(removed));
          })
          .catch((err) => {
             alert(err.message);
@@ -44,10 +49,10 @@ export const removeBill = (_id) => {
    };
 };
 
-export const removeItem = (_id) => {
+export const removeItem = (removed) => {
    return {
-      type: 'REMOVE_ITEM',
-      payload: _id,
+      type: 'REMOVE_BILL',
+      payload: removed,
    };
 };
 
@@ -70,7 +75,7 @@ export const getBills = () => {
 
 export const getItem = (allBillData) => {
    return {
-      type: 'GET_ITEM',
+      type: 'GET_BILL',
       payload: allBillData,
    };
 };
@@ -79,7 +84,7 @@ export const getBillById = (_id) => {
    return (dispatch) => {
       axios({
          method: 'get',
-         url: `http://dct-billing-app.herokuapp.com/api/customers/${_id}`,
+         url: `http://dct-billing-app.herokuapp.com/api/bills/${_id}`,
          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       })
          .then((resp) => {
