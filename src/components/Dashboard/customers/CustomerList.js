@@ -16,129 +16,120 @@ import ActionButton from '../../controls/ActionButton';
 import CustomerForm from './CustomerForm';
 
 const useStyles1 = makeStyles((theme) => ({
-   table: {
-      marginTop: theme.spacing(3),
-      '& thead th': {
-         fontWeight: '600',
-         color: '#e8eaf6',
-         backgroundColor: theme.palette.primary.light,
-      },
-      '& tbody td': {
-         fontWeight: '300',
-      },
-      '& tbody tr:hover': {
-         backgroundColor: '#fffbf2',
-         cursor: 'pointer',
-      },
-   },
+    table: {
+        marginTop: theme.spacing(3),
+        '& thead th': {
+            fontWeight: '600',
+            color: '#e8eaf6',
+            backgroundColor: theme.palette.primary.light,
+        },
+        '& tbody td': {
+            fontWeight: '300',
+        },
+        '& tbody tr:hover': {
+            backgroundColor: '#fffbf2',
+            cursor: 'pointer',
+        },
+    },
 }));
 
 const useStyles = makeStyles({
-   container: {
-      width: '100%',
-      maxHeight: 440,
-   },
+    container: {
+        width: '100%',
+        maxHeight: 440,
+    },
 });
 
 const CustomerList = ({ searchResult }) => {
-   const classes = useStyles();
-   const classes1 = useStyles1();
-   const [openPopup, setOpenPopup] = useState(false);
-   const [editData, setEditData] = useState({});
-   const [toggle, setToggle] = useState(false);
-   const [confirmDialog, setConfirmDialog] = useState({
-      isOpen: false,
-      title: '',
-      subTitle: '',
-   });
-   const customers = useSelector((state) => state.customers);
-   console.log('customers', customers);
-   // const dispatch = useDispatch();
+    const classes = useStyles();
+    const classes1 = useStyles1();
+    const [openPopup, setOpenPopup] = useState(false);
+    const [editData, setEditData] = useState({});
+    const [toggle, setToggle] = useState(false);
+    const [confirmDialog, setConfirmDialog] = useState({
+        isOpen: false,
+        title: '',
+        subTitle: '',
+    });
 
-   const handleToggle = () => {
-      setToggle(!toggle);
-      setOpenPopup(true);
-   };
+    const handleToggle = () => {
+        setToggle(!toggle);
+        setOpenPopup(true);
+    };
 
-   const handleRemove = (_id) => {
-      setConfirmDialog({
-         ...confirmDialog,
-         isOpen: false,
-      });
-      // dispatch(removeCustomer(_id));
-   };
+    const handleRemove = (_id) => {
+        setConfirmDialog({
+            ...confirmDialog,
+            isOpen: false,
+        });
+        // dispatch(removeCustomer(_id));
+    };
 
-   const handleEdit = (data) => {
-      setEditData(data);
-      handleToggle();
-   };
+    const handleEdit = (data) => {
+        setEditData(data);
+        handleToggle();
+    };
 
-   return (
-      <>
-         <TableContainer className={classes.container}>
-            <Table className={classes1.table}>
-               <TableHead>
-                  <TableRow>
-                     <TableCell>CUSTOMER NAME</TableCell>
-                     <TableCell>EMAIL</TableCell>
-                     <TableCell>CONTACT</TableCell>
-                     <TableCell>ACTIONS</TableCell>
-                  </TableRow>
-               </TableHead>
-               <TableBody>
-                  {searchResult.map((customer, _id) => (
-                     <TableRow key={_id} hover>
-                        <TableCell style={{ textTransform: 'capitalize' }}>
-                           {customer.name}
-                        </TableCell>
-                        <TableCell>{customer.email}</TableCell>
-                        <TableCell>{customer.mobile}</TableCell>
-                        <TableCell style={{ display: 'flex' }}>
-                           <ActionButton
-                              aria-label="edit"
-                              color="primary"
-                              onClick={() => handleEdit(customer)}
-                           >
-                              <EditTwoToneIcon />
-                           </ActionButton>
-                           <ActionButton
-                              aria-label="delete"
-                              color="secondary"
-                              onClick={() => {
-                                 setConfirmDialog({
-                                    isOpen: true,
-                                    title: 'Are you sure to delete this record?',
-                                    subTitle:
-                                       'This Record is being Used in Bill',
-                                    onConfirm: () => {
-                                       handleRemove(customer._id);
-                                    },
-                                 });
-                              }}
-                           >
-                              <DeleteIcon />
-                           </ActionButton>
-                        </TableCell>
-                     </TableRow>
-                  ))}
-               </TableBody>
-            </Table>
-         </TableContainer>
-         {Object.keys(editData).length > 0 && toggle ? (
-            <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
-               <CustomerForm
-                  editData={editData}
-                  handleToggle={handleToggle}
-                  setOpenPopup={setOpenPopup}
-               />
-            </Popup>
-         ) : null}
-         <ConfirmDialog
-            confirmDialog={confirmDialog}
-            setConfirmDialog={setConfirmDialog}
-         />
-      </>
-   );
+    return (
+        <>
+            <TableContainer className={classes.container}>
+                <Table className={classes1.table}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>CUSTOMER NAME</TableCell>
+                            <TableCell>EMAIL</TableCell>
+                            <TableCell>CONTACT</TableCell>
+                            <TableCell>ACTIONS</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {searchResult.map((customer, _id) => (
+                            <TableRow key={_id} hover>
+                                <TableCell style={{ textTransform: 'capitalize' }}>{customer.name}</TableCell>
+                                <TableCell>{customer.email}</TableCell>
+                                <TableCell>{customer.mobile}</TableCell>
+                                <TableCell style={{ display: 'flex' }}>
+                                    <ActionButton
+                                        aria-label="edit"
+                                        color="primary"
+                                        onClick={() => handleEdit(customer)}
+                                    >
+                                        <EditTwoToneIcon />
+                                    </ActionButton>
+                                    <ActionButton
+                                        aria-label="delete"
+                                        color="secondary"
+                                        onClick={() => {
+                                            setConfirmDialog({
+                                                isOpen: true,
+                                                title: 'Are you sure to delete this record?',
+                                                subTitle: 'This Record is being Used in Bill',
+                                                onConfirm: () => {
+                                                    handleRemove(customer._id);
+                                                },
+                                            });
+                                        }}
+                                    >
+                                        <DeleteIcon />
+                                    </ActionButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            {Object.keys(editData).length > 0 && toggle ? (
+                <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
+                    <CustomerForm
+                        editData={editData}
+                        handleToggle={handleToggle}
+                        setOpenPopup={setOpenPopup}
+                    />
+                </Popup>
+            ) : null}
+            <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
+        </>
+    );
 };
 
 export default CustomerList;

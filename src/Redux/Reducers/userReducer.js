@@ -1,16 +1,17 @@
-const userInitialState = { isLoggedIn: false, user: {} };
+const userInitialState = { isLoggedIn: localStorage.getItem('token') ? true : false, userDetails: {} };
 
 const userReducer = (state = userInitialState, action) => {
-   switch (action.payload) {
-      case 'LOGIN': {
-         return { ...state, isLoggedIn: true };
-      }
-      case 'USER_INFORMATION': {
-         return { ...state, user: action.payload };
-      }
-      default:
-         return { ...state };
-   }
+    switch (action.type) {
+        case 'LOGIN': {
+            return { ...state, isLoggedIn: true };
+        }
+        case 'USER_INFORMATION': {
+            return { ...state, userDetails: action.payload };
+        }
+        default: {
+            return { ...state };
+        }
+    }
 };
 
 export default userReducer;
