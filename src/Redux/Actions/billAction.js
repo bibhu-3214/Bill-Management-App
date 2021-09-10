@@ -80,7 +80,6 @@ export const getBillById = (_id) => {
         })
             .then((resp) => {
                 const singleBill = resp.data;
-                console.log('🚀 ~ file: billAction.js ~ line 84 ~ .then ~ singleBill', singleBill);
                 dispatch(getById(singleBill));
             })
             .catch((err) => Swal.fire('something went wrong', err.message, 'error'));

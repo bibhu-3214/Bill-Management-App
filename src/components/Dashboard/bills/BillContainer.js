@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
@@ -31,7 +31,21 @@ export default function BillContainer() {
     const classes = useStyles();
     const [openPopup, setOpenPopup] = useState(false);
     const [searchInput, setSearchInput] = useState('');
+    const [searchResult, setSearchResult] = useState([]);
     const { bills } = useSelector((state) => state.bills);
+    const customers = useSelector((state) => state.customers);
+
+    useEffect(() => {
+        let searchData = [];
+        const customerName = customers.filter((customer) =>
+            customer.name.toLowerCase().includes(searchInput.toLowerCase()),
+        );
+        customerName.forEach((name) => {
+            const result = bills.filter((bill) => bill.customer === name._id);
+            searchData = searchData.concat(result);
+        });
+        setSearchResult(searchData);
+    }, [bills, customers, searchInput]);
 
     return (
         <div style={{ display: 'flex', width: '60%', margin: 'auto' }}>
@@ -53,7 +67,7 @@ export default function BillContainer() {
                             onChange={(e) => setSearchInput(e.target.value)}
                         />
                         <Button
-                            variant="contained"
+                            variant="outlined"
                             size="large"
                             color="primary"
                             startIcon={<AddIcon />}
@@ -69,7 +83,7 @@ export default function BillContainer() {
                 </div>
                 <div>
                     {bills.length > 0 ? (
-                        <BillList />
+                        <BillList searchResult={searchResult} />
                     ) : (
                         <Typography
                             variant="h5"

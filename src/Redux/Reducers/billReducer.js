@@ -3,8 +3,8 @@ const billsInitialState = { data: { bills: [], billDetails: {} } };
 const billReducer = (state = billsInitialState.data, action) => {
     switch (action.type) {
         case 'ADD_BILL': {
-            const newBills = [action.payload, ...state.bills];
-            return { ...state, bills: newBills };
+            const billData = [action.payload, ...state.bills];
+            return { ...state, bills: billData };
         }
         case 'GET_BILL': {
             return { ...state, bills: action.payload };

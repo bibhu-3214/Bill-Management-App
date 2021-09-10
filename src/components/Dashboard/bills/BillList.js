@@ -14,7 +14,7 @@ import { getBillById, removeBill } from '../../../Redux/Actions/billAction';
 import { IconButton } from '@material-ui/core';
 import VisibilityTwoToneIcon from '@material-ui/icons/VisibilityTwoTone';
 import Popup from '../../Popup';
-import BillDetails from './BillDetails';
+import ShowBills from './ShowBills';
 
 const useStyles1 = makeStyles((theme) => ({
     table: {
@@ -26,7 +26,7 @@ const useStyles1 = makeStyles((theme) => ({
             backgroundColor: theme.palette.primary.light,
         },
         '& tbody td': {
-            fontWeight: '300',
+            fontWeight: '500',
         },
         '& tbody tr:hover': {
             backgroundColor: '#fffbf2',
@@ -42,10 +42,11 @@ const useStyles = makeStyles({
     },
 });
 
-const BillList = () => {
+const BillList = ({ searchResult }) => {
     const classes = useStyles();
     const classes1 = useStyles1();
     const dispatch = useDispatch();
+    const { billDetails } = useSelector((state) => state.bills);
     const [openPopup, setOpenPopup] = useState(false);
     const [confirmDialog, setConfirmDialog] = useState({
         isOpen: false,
@@ -53,12 +54,9 @@ const BillList = () => {
         subTitle: '',
     });
     const customers = useSelector((state) => state.customers);
-    const { bills } = useSelector((state) => {
-        return state.bills;
-    });
 
     const CustomerNames = (id) => {
-        const result = customers.find((cust) => cust._id === id);
+        const result = customers.find((customer) => customer._id === id);
         return result ? result.name : '';
     };
 
@@ -85,12 +83,12 @@ const BillList = () => {
                             <TableCell>CUSTOMER NAME</TableCell>
                             <TableCell>TOTAL AMOUNT</TableCell>
                             <TableCell>DETAILS</TableCell>
-                            <TableCell>DELETE</TableCell>
+                            <TableCell>ACTION</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {customers.length > 0 &&
-                            bills.map((bill) => (
+                            searchResult.map((bill) => (
                                 <TableRow key={bill._id} hover>
                                     <TableCell>{CustomerNames(bill.customer)}</TableCell>
                                     <TableCell>{bill.total}</TableCell>
@@ -107,9 +105,7 @@ const BillList = () => {
                                                 setConfirmDialog({
                                                     isOpen: true,
                                                     title: 'Are you sure to delete this record?',
-                                                    onConfirm: () => {
-                                                        handleRemove(bill._id);
-                                                    },
+                                                    onConfirm: () => handleRemove(bill._id),
                                                 });
                                             }}
                                         >
@@ -121,10 +117,8 @@ const BillList = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Popup title="Bill Details" openPopup={openPopup} setOpenPopup={setOpenPopup}>
-                {bills.map((bill, _id) => (
-                    <BillDetails key={_id} CustomerNames={CustomerNames(bill.customer)} />
-                ))}
+            <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
+                <ShowBills CustomerNames={CustomerNames(billDetails.customer)} billDetails={billDetails} />
             </Popup>
             <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
         </>
