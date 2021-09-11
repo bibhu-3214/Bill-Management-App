@@ -11,7 +11,6 @@ export const addBill = (formData) => {
             })
             .then((resp) => {
                 const bill = resp.data;
-                console.log('🚀 ~ file: billAction.js ~ line 13 ~ .then ~ bill', bill);
                 dispatch(addItem(bill));
             })
             .catch((err) => Swal.fire('something went wrong', err.message, 'error'));

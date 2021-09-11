@@ -51,7 +51,7 @@ const ShowBills = ({ CustomerNames, billDetails }) => {
 
     const findProduct = (id) => {
         const productNames = products.find((product) => product._id === id);
-        return productNames ? productNames.name : '';
+        return productNames ? productNames.name : null;
     };
 
     return (
@@ -70,23 +70,24 @@ const ShowBills = ({ CustomerNames, billDetails }) => {
                         <Table className={classes.table}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Names</TableCell>
                                     <TableCell>Price</TableCell>
+                                    <TableCell>Names</TableCell>
                                     <TableCell>Quantity</TableCell>
                                     <TableCell>SubTotal</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {billDetails.lineItems.map((item) => {
-                                    return (
-                                        <TableRow key={item._id} hover>
-                                            <TableCell>{findProduct(item.product)}</TableCell>
-                                            <TableCell>{item.price}</TableCell>
-                                            <TableCell>{item.quantity}</TableCell>
-                                            <TableCell>{item.subTotal}</TableCell>
-                                        </TableRow>
-                                    );
-                                })}
+                                {Object.keys(billDetails).length !== 0 &&
+                                    billDetails.lineItems.map((item) => {
+                                        return (
+                                            <TableRow key={item._id} hover>
+                                                <TableCell>{item.price}</TableCell>
+                                                <TableCell>{findProduct(item.product)}</TableCell>
+                                                <TableCell>{item.quantity}</TableCell>
+                                                <TableCell>{item.subTotal}</TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
                             </TableBody>
                         </Table>
                     </TableContainer>

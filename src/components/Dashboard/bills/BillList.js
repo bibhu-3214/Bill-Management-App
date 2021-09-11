@@ -47,13 +47,13 @@ const BillList = ({ searchResult }) => {
     const classes1 = useStyles1();
     const dispatch = useDispatch();
     const { billDetails } = useSelector((state) => state.bills);
+    const customers = useSelector((state) => state.customers);
     const [openPopup, setOpenPopup] = useState(false);
     const [confirmDialog, setConfirmDialog] = useState({
         isOpen: false,
         title: '',
         subTitle: '',
     });
-    const customers = useSelector((state) => state.customers);
 
     const CustomerNames = (id) => {
         const result = customers.find((customer) => customer._id === id);
@@ -67,11 +67,10 @@ const BillList = ({ searchResult }) => {
         });
         dispatch(removeBill(_id));
     };
-    const popUpShow = () => setOpenPopup(true);
 
     const showBillDetails = (_id) => {
         dispatch(getBillById(_id));
-        popUpShow();
+        setOpenPopup(true);
     };
 
     return (

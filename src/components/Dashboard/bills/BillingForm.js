@@ -49,6 +49,7 @@ const BillingForm = ({ setOpenPopup }) => {
     const dispatch = useDispatch();
     const customers = useSelector((state) => state.customers);
     const products = useSelector((state) => state.products);
+    // const { bills, billDetails } = useSelector((state) => state.bills);
     const [date, setDate] = useState(new Date().toISOString().substr(0, 10));
     const [customer, setCustomer] = useState('');
     const [product, setProduct] = useState('');
@@ -56,10 +57,11 @@ const BillingForm = ({ setOpenPopup }) => {
     const [quantity] = useState(1);
 
     const customerOptions = customers.map((customer) => {
-        return { value: customer._id, label: customer.name };
+        return { value: customer._id, named: customer.name };
     });
+
     const productOptions = products.map((product) => {
-        return { value: product._id, label: product.name };
+        return { value: product._id, named: product.name };
     });
 
     const handleDateChange = (date) => {
@@ -76,10 +78,12 @@ const BillingForm = ({ setOpenPopup }) => {
         e.preventDefault();
         const cartData = {
             id: product.value,
-            name: product.label,
+            name: product.named,
             quantity: quantity,
         };
-        setCartItems([cartData, ...cartItems]);
+        if (!cartItems.includes(product.named)) {
+            setCartItems([cartData, ...cartItems]);
+        }
         setProduct('');
     };
 
@@ -136,12 +140,12 @@ const BillingForm = ({ setOpenPopup }) => {
                                         format="MM/dd/yyyy"
                                         margin="normal"
                                         id="date-picker-inline"
-                                        label="Add Date"
+                                        named="Add Date"
                                         value={date}
                                         onChange={handleDateChange}
                                         style={{ width: '100%' }}
                                         KeyboardButtonProps={{
-                                            'aria-label': 'change date',
+                                            'aria-named': 'change date',
                                         }}
                                     />
                                 </MuiPickersUtilsProvider>
