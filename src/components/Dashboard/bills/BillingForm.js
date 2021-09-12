@@ -1,27 +1,16 @@
 import 'date-fns';
-import {
-    Button,
-    makeStyles,
-    Typography,
-    IconButton,
-    Table,
-    TableBody,
-    TableHead,
-    TableRow,
-    TableCell,
-} from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { Button, makeStyles, Typography } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 import { addBill } from '../../../Redux/Actions/billAction';
-import RemoveCircleRoundedIcon from '@material-ui/icons/RemoveCircleRounded';
-import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import CartDetails from './CartDetails';
+import { getBillById } from '../../../Redux/Actions/billAction';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,16 +21,6 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(3),
         color: theme.palette.text.secondary,
     },
-    table: {
-        display: 'flex',
-        width: '80%',
-        '& thead th': {
-            fontWeight: '600',
-        },
-        '& tbody td': {
-            fontWeight: '400',
-        },
-    },
 }));
 
 const BillingForm = ({ setOpenPopup }) => {
@@ -49,19 +28,18 @@ const BillingForm = ({ setOpenPopup }) => {
     const dispatch = useDispatch();
     const customers = useSelector((state) => state.customers);
     const products = useSelector((state) => state.products);
-    // const { bills, billDetails } = useSelector((state) => state.bills);
     const [date, setDate] = useState(new Date().toISOString().substr(0, 10));
     const [customer, setCustomer] = useState('');
     const [product, setProduct] = useState('');
     const [cartItems, setCartItems] = useState([]);
     const [quantity] = useState(1);
 
-    const customerOptions = customers.map((customer) => {
-        return { value: customer._id, named: customer.name };
+    const customerLabels = customers.map((customer) => {
+        return { value: customer._id, label: customer.name };
     });
 
-    const productOptions = products.map((product) => {
-        return { value: product._id, named: product.name };
+    const productLabels = products.map((product) => {
+        return { value: product._id, label: product.name };
     });
 
     const handleDateChange = (date) => {
@@ -74,15 +52,31 @@ const BillingForm = ({ setOpenPopup }) => {
         setProduct(product);
     };
 
+    const productAmount = (id) => {
+        const productAmountDetails = products.find((product) => product._id === id);
+        return productAmountDetails.price;
+    };
+
     const handleCart = (e) => {
         e.preventDefault();
-        const cartData = {
-            id: product.value,
-            name: product.named,
-            quantity: quantity,
-        };
-        if (!cartItems.includes(product.named)) {
-            setCartItems([cartData, ...cartItems]);
+        const findExistProduct = cartItems.find((item) => item.id === product.value);
+        if (findExistProduct) {
+            const setModifiedData = cartItems.map((item) => {
+                return {
+                    ...item,
+                    quantity: item.quantity + 1,
+                    subtotal: productAmount(product.value) + item.subtotal,
+                };
+            });
+            setCartItems(setModifiedData);
+        } else {
+            const setDefaultData = {
+                id: product.value,
+                name: product.label,
+                quantity: quantity,
+                subtotal: productAmount(product.value) * quantity,
+            };
+            setCartItems([setDefaultData, ...cartItems]);
         }
         setProduct('');
     };
@@ -135,18 +129,14 @@ const BillingForm = ({ setOpenPopup }) => {
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <KeyboardDatePicker
                                         required
-                                        disableToolbar
                                         variant="inline"
                                         format="MM/dd/yyyy"
                                         margin="normal"
                                         id="date-picker-inline"
-                                        named="Add Date"
+                                        name="Add Date"
                                         value={date}
                                         onChange={handleDateChange}
                                         style={{ width: '100%' }}
-                                        KeyboardButtonProps={{
-                                            'aria-named': 'change date',
-                                        }}
                                     />
                                 </MuiPickersUtilsProvider>
                             </div>
@@ -156,7 +146,7 @@ const BillingForm = ({ setOpenPopup }) => {
                                     value={customer}
                                     isDisabled={cartItems.length > 0}
                                     onChange={handleCustomerChange}
-                                    options={customerOptions}
+                                    options={customerLabels}
                                 />
                             </div>
                             <div style={{ marginBottom: '10px', width: '100%' }}>
@@ -164,7 +154,7 @@ const BillingForm = ({ setOpenPopup }) => {
                                     name="product"
                                     value={product}
                                     onChange={handleProductChange}
-                                    options={productOptions}
+                                    options={productLabels}
                                 />
                             </div>
                             <div
@@ -177,6 +167,7 @@ const BillingForm = ({ setOpenPopup }) => {
                                     variant="outlined"
                                     color="primary"
                                     onClick={handleCart}
+                                    disabled={!product}
                                     style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }}
                                 >
                                     Add Products
@@ -196,59 +187,11 @@ const BillingForm = ({ setOpenPopup }) => {
                     </Paper>
                 </Grid>
                 <Grid item xs={6}>
-                    <Paper style={{ flexDirection: 'column' }} className={classes.paper}>
-                        <Typography variant="h5" color="primary" style={{ textAlign: 'center' }} gutterBottom>
-                            Product Details
-                        </Typography>
-                        {cartItems.length > 0 && (
-                            <Table style={{ flexDirection: 'column' }} className={classes.table}>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Product</TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell>Quantity</TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell>Remove</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {cartItems.map((item) => {
-                                        return (
-                                            <TableRow key={item.id}>
-                                                <TableCell>{item.name}</TableCell>
-                                                <TableCell style={{ display: 'flex', flexDirection: 'row' }}>
-                                                    <IconButton
-                                                        color="primary"
-                                                        onClick={() => handleQuantity(item.id, -1)}
-                                                        disabled={item.quantity === 1}
-                                                    >
-                                                        <RemoveCircleRoundedIcon />
-                                                    </IconButton>
-                                                    <IconButton style={{ marginTop: '1px' }}>
-                                                        {item.quantity}
-                                                    </IconButton>
-                                                    <IconButton
-                                                        color="primary"
-                                                        onClick={() => handleQuantity(item.id, 1)}
-                                                    >
-                                                        <AddCircleRoundedIcon />
-                                                    </IconButton>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <IconButton
-                                                        color="secondary"
-                                                        onClick={() => removeCartItem(item.id)}
-                                                    >
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                                </TableBody>
-                            </Table>
-                        )}
-                    </Paper>
+                    <CartDetails
+                        cartItems={cartItems}
+                        handleQuantity={handleQuantity}
+                        removeCartItem={removeCartItem}
+                    />
                 </Grid>
             </Grid>
         </div>

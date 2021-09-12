@@ -13,6 +13,7 @@ import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import { PDFExport } from '@progress/kendo-react-pdf';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -37,10 +38,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ShowBills = ({ CustomerNames, billDetails }) => {
+const ShowBills = () => {
     const classes = useStyles();
     const products = useSelector((state) => state.products);
-
+    const customers = useSelector((state) => state.customers);
+    const { billDetails } = useSelector((state) => state.bills);
     const pdfExportComponent = React.useRef(null);
 
     const exportPDFWithComponent = () => {
@@ -48,66 +50,73 @@ const ShowBills = ({ CustomerNames, billDetails }) => {
             pdfExportComponent.current.save();
         }
     };
-
+    const findCustomer = (id) => {
+        return customers.find((customer) => customer._id === id);
+    };
     const findProduct = (id) => {
-        const productNames = products.find((product) => product._id === id);
-        return productNames ? productNames.name : null;
+        return products.find((product) => product._id === id);
     };
 
     return (
-        <>
-            <div>
-                <PDFExport ref={pdfExportComponent} paperSize="A4" margin="2cm">
-                    <Typography
-                        variant="h5"
-                        color="primary"
-                        gutterBottom
-                        style={{ textTransform: 'capitalize', textAlign: 'center' }}
-                    >
-                        Product Details of - {CustomerNames}
-                    </Typography>
-                    <TableContainer className={classes.container}>
-                        <Table className={classes.table}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Price</TableCell>
-                                    <TableCell>Names</TableCell>
-                                    <TableCell>Quantity</TableCell>
-                                    <TableCell>SubTotal</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {Object.keys(billDetails).length !== 0 &&
-                                    billDetails.lineItems.map((item) => {
-                                        return (
-                                            <TableRow key={item._id} hover>
-                                                <TableCell>{item.price}</TableCell>
-                                                <TableCell>{findProduct(item.product)}</TableCell>
-                                                <TableCell>{item.quantity}</TableCell>
-                                                <TableCell>{item.subTotal}</TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <Typography style={{ float: 'right', margin: '20px' }}>
-                        Total - {billDetails.total}
-                    </Typography>
-                </PDFExport>
-            </div>
-            <div>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<GetAppRoundedIcon />}
-                    onClick={exportPDFWithComponent}
-                    style={{ width: '100%', marginTop: '20px' }}
-                >
-                    Download
-                </Button>
-            </div>
-        </>
+        <React.Fragment>
+            {Object.keys(billDetails).length > 0 && (
+                <React.Fragment>
+                    <div>
+                        <PDFExport ref={pdfExportComponent} paperSize="A4" margin="2cm">
+                            <div style={{ textTransform: 'capitalize' }}>
+                                <Typography variant="h5" color="primary" gutterBottom>
+                                    Customer Name - {findCustomer(billDetails.customer).name}
+                                </Typography>
+                                <Typography variant="h6" color="primary" gutterBottom>
+                                    Date: {moment(billDetails.date).format('ll')}
+                                </Typography>
+                                <Typography variant="h6" color="primary" gutterBottom>
+                                    Contact Details: {findCustomer(billDetails.customer).mobile}
+                                </Typography>
+                            </div>
+                            <TableContainer className={classes.container}>
+                                <Table className={classes.table}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Products</TableCell>
+                                            <TableCell>Quantity</TableCell>
+                                            <TableCell>Price</TableCell>
+                                            <TableCell>SubTotal</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {billDetails.lineItems.map((item) => {
+                                            return (
+                                                <TableRow key={item._id} hover>
+                                                    <TableCell>{findProduct(item.product).name}</TableCell>
+                                                    <TableCell>{item.quantity}</TableCell>
+                                                    <TableCell>{item.price}</TableCell>
+                                                    <TableCell>{item.subTotal}</TableCell>
+                                                </TableRow>
+                                            );
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <Typography style={{ float: 'right', margin: '20px' }}>
+                                Total - {billDetails.total}
+                            </Typography>
+                        </PDFExport>
+                    </div>
+                    <div>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<GetAppRoundedIcon />}
+                            onClick={exportPDFWithComponent}
+                            style={{ width: '100%', marginTop: '20px' }}
+                        >
+                            Download
+                        </Button>
+                    </div>
+                </React.Fragment>
+            )}
+        </React.Fragment>
     );
 };
 

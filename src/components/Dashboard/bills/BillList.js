@@ -46,7 +46,6 @@ const BillList = ({ searchResult }) => {
     const classes = useStyles();
     const classes1 = useStyles1();
     const dispatch = useDispatch();
-    const { billDetails } = useSelector((state) => state.bills);
     const customers = useSelector((state) => state.customers);
     const [openPopup, setOpenPopup] = useState(false);
     const [confirmDialog, setConfirmDialog] = useState({
@@ -117,7 +116,7 @@ const BillList = ({ searchResult }) => {
                 </Table>
             </TableContainer>
             <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
-                <ShowBills CustomerNames={CustomerNames(billDetails.customer)} billDetails={billDetails} />
+                <ShowBills />
             </Popup>
             <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
         </>
