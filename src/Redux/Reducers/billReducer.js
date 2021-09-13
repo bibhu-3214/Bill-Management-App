@@ -7,7 +7,7 @@ const billReducer = (state = billsInitialState.data, action) => {
             return { ...state, bills: billData };
         }
         case 'GET_BILL': {
-            return { bills: action.payload, ...state };
+            return { ...state, bills: action.payload };
         }
         case 'REMOVE_BILL': {
             const result = state.bills.filter((bill) => bill._id !== action.payload);

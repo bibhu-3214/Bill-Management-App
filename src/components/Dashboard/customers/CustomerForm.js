@@ -60,7 +60,7 @@ const CustomerForm = (props) => {
             <form className={classes.root} onSubmit={formik.handleSubmit}>
                 <div>
                     <TextField
-                        required
+                        // required
                         id="name"
                         label="Name"
                         type="text"
@@ -77,7 +77,7 @@ const CustomerForm = (props) => {
                 </div>
                 <div>
                     <TextField
-                        required
+                        // required
                         label="Email"
                         type="email"
                         name="email"
@@ -93,7 +93,7 @@ const CustomerForm = (props) => {
                 </div>
                 <div>
                     <TextField
-                        required
+                        // required
                         id="mobile"
                         label="mobile"
                         type="text"

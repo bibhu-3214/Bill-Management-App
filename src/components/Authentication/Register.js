@@ -86,7 +86,6 @@ export default function Registration(props) {
                     <Typography variant="h4" color="primary" gutterBottom style={{ marginBottom: '20px' }}>
                         Register Here
                     </Typography>
-
                     <form className={classes.root} onSubmit={formik.handleSubmit}>
                         <div>
                             <TextField
