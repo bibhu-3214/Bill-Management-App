@@ -38,10 +38,10 @@ const CartDetails = (props) => {
     return (
         <div>
             <Paper style={{ flexDirection: 'column' }} className={classes.paper}>
-                <Typography variant="h5" color="primary" style={{ textAlign: 'center' }} gutterBottom>
+                <Typography variant="h4" color="primary" style={{ textAlign: 'center' }} gutterBottom>
                     Product Details
                 </Typography>
-                {cartItems.length > 0 && (
+                {cartItems.length > 0 ? (
                     <Table style={{ flexDirection: 'column' }} className={classes.table}>
                         <TableHead>
                             <TableRow>
@@ -88,6 +88,10 @@ const CartDetails = (props) => {
                             })}
                         </TableBody>
                     </Table>
+                ) : (
+                    <Typography variant="h6" color="textSecondary" gutterBottom align="center">
+                        Cart is empty <br /> Add Products to Cart
+                    </Typography>
                 )}
             </Paper>
         </div>

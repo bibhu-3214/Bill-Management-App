@@ -10,9 +10,6 @@ import Grid from '@material-ui/core/Grid';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import CartDetails from './CartDetails';
-import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
-import * as yup from 'yup';
-import { getBillById } from '../../../Redux/Actions/billAction';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,19 +32,6 @@ const BillingForm = ({ setOpenPopup }) => {
     const [product, setProduct] = useState('');
     const [cartItems, setCartItems] = useState([]);
     const [quantity] = useState(1);
-
-    const initialValues = {
-        date: new Date().toISOString().substr(0, 10),
-        customer: '',
-        product: '',
-    };
-    const validationSchema = yup.object({
-        date: yup.date().default(function () {
-            return new Date();
-        }),
-        customer: yup.string().required('Required'),
-        product: yup.string().required('Required'),
-    });
 
     const customerLabels = customers.map((customer) => {
         return { value: customer._id, label: customer.name };
@@ -77,11 +61,15 @@ const BillingForm = ({ setOpenPopup }) => {
         const findExistProduct = cartItems.find((item) => item.id === product.value);
         if (findExistProduct) {
             const setModifiedData = cartItems.map((item) => {
-                return {
-                    ...item,
-                    quantity: item.quantity + 1,
-                    subtotal: productAmount(product.value) + item.subtotal,
-                };
+                if (item.id === product.value) {
+                    return {
+                        ...item,
+                        quantity: item.quantity + 1,
+                        subtotal: productAmount(product.value) + item.subtotal,
+                    };
+                } else {
+                    return { ...item };
+                }
             });
             setCartItems(setModifiedData);
         } else {
@@ -197,6 +185,7 @@ const BillingForm = ({ setOpenPopup }) => {
                                     variant="contained"
                                     color="primary"
                                     type="submit"
+                                    disabled={cartItems.length === 0}
                                     style={{ width: '100%' }}
                                 >
                                     GENERATE
