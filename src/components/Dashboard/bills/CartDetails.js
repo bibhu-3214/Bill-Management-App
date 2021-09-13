@@ -16,13 +16,12 @@ import Paper from '@material-ui/core/Paper';
 const useStyles = makeStyles((theme) => ({
     paper: {
         display: 'flex',
-        width: '100%',
-        padding: theme.spacing(3),
+        padding: theme.spacing(2),
         color: theme.palette.text.secondary,
     },
     table: {
         display: 'flex',
-        width: '100%',
+        minWidth: 450,
         '& thead th': {
             fontWeight: '600',
         },

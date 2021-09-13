@@ -10,11 +10,13 @@ import Grid from '@material-ui/core/Grid';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import CartDetails from './CartDetails';
+import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
+import * as yup from 'yup';
 import { getBillById } from '../../../Redux/Actions/billAction';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: '100%',
+        minWidth: 620,
     },
     paper: {
         display: 'flex',
@@ -33,6 +35,19 @@ const BillingForm = ({ setOpenPopup }) => {
     const [product, setProduct] = useState('');
     const [cartItems, setCartItems] = useState([]);
     const [quantity] = useState(1);
+
+    const initialValues = {
+        date: new Date().toISOString().substr(0, 10),
+        customer: '',
+        product: '',
+    };
+    const validationSchema = yup.object({
+        date: yup.date().default(function () {
+            return new Date();
+        }),
+        customer: yup.string().required('Required'),
+        product: yup.string().required('Required'),
+    });
 
     const customerLabels = customers.map((customer) => {
         return { value: customer._id, label: customer.name };
@@ -84,7 +99,11 @@ const BillingForm = ({ setOpenPopup }) => {
     const handleQuantity = (id, count) => {
         const cartValues = cartItems.map((item) => {
             if (item.id === id) {
-                return { ...item, quantity: item.quantity + count };
+                return {
+                    ...item,
+                    quantity: item.quantity + count,
+                    subTotal: (item.quantity + count) * productAmount(id),
+                };
             } else {
                 return { ...item };
             }

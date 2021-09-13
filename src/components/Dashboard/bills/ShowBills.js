@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: 440,
     },
     table: {
-        width: '100%',
+        minWidth: 450,
         marginTop: theme.spacing(3),
         '& thead th': {
             fontWeight: '600',
