@@ -1,11 +1,14 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { getCustomers } from './customersAction';
+import { getProducts } from './productAction';
+import { getBills } from './billAction';
 
 export const register = (values, redirectToLogin) => {
     return () => {
         axios
             .post('http://dct-billing-app.herokuapp.com/api/users/register', values)
-            .then((resp) => {
+            .then(resp => {
                 const result = resp.data;
                 if (result.hasOwnProperty('errors')) {
                     alert(result.message);
@@ -14,15 +17,15 @@ export const register = (values, redirectToLogin) => {
                     redirectToLogin();
                 }
             })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
+            .catch(err => Swal.fire('something went wrong', err.message, 'error'));
     };
 };
 
 export const login = (values, redirectToAdmin) => {
-    return (dispatch) => {
+    return dispatch => {
         axios
             .post('http://dct-billing-app.herokuapp.com/api/users/login', values)
-            .then((resp) => {
+            .then(resp => {
                 const res = resp.data;
                 if (res.hasOwnProperty('errors')) {
                     alert(res.errors);
@@ -30,12 +33,14 @@ export const login = (values, redirectToAdmin) => {
                     localStorage.setItem('token', res.token);
                     dispatch(isLogin());
                     Swal.fire('Logged In Successful', 'welcome to Dashboard', 'success');
-                    // make aip calls to get all the necessary data for 
-                    // after dispatch redirect the user 
+                    dispatch(usersDetails());
+                    dispatch(getCustomers());
+                    dispatch(getProducts());
+                    dispatch(getBills());
                     redirectToAdmin();
                 }
             })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
+            .catch(err => Swal.fire('something went wrong', err.message, 'error'));
     };
 };
 
@@ -46,22 +51,22 @@ const isLogin = () => {
 };
 
 export const usersDetails = () => {
-    return (dispatch) => {
+    return dispatch => {
         axios
             .get('http://dct-billing-app.herokuapp.com/api/users/account', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
             })
-            .then((response) => {
+            .then(response => {
                 const data = response.data;
                 dispatch(userInformation(data));
             })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
+            .catch(err => Swal.fire('something went wrong', err.message, 'error'));
     };
 };
 
-export const userInformation = (userdata) => {
+export const userInformation = userdata => {
     return {
         type: 'USER_INFORMATION',
         payload: userdata,
