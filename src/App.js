@@ -1,5 +1,6 @@
 import { Switch, Route } from 'react-router-dom';
 import PrivateRoute from './helper/PrivateRoute';
+import ProtectedRoute from './helper/ProtectedRoute';
 import Navigation from './components/Navigation';
 import Home from './components/Authentication/Home';
 import Register from './components/Authentication/Register';
@@ -18,9 +19,9 @@ const App = () => {
                 <PrivateRoute path='/product' component={ProductContainer} exact />
                 <PrivateRoute path='/customer' component={CustomerContainer} exact />
                 <PrivateRoute path='/admin' component={Admin} exact />
-                <Route path='/login' component={Login} exact />
-                <Route path='/register' component={Register} exact />
-                <Route path='/' component={Home} exact />
+                <ProtectedRoute path='/login' component={Login} exact />
+                <ProtectedRoute path='/register' component={Register} exact />
+                <ProtectedRoute path='/' component={Home} exact />
             </Switch>
         </>
     );

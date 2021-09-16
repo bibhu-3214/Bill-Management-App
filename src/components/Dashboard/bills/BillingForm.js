@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import CartDetails from './CartDetails';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
     root: {
         minWidth: 620,
     },
@@ -25,42 +25,42 @@ const useStyles = makeStyles((theme) => ({
 const BillingForm = ({ setOpenPopup }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const customers = useSelector((state) => state.customers);
-    const products = useSelector((state) => state.products);
+    const customers = useSelector(state => state.customers);
+    const products = useSelector(state => state.products);
     const [date, setDate] = useState(new Date().toISOString().substr(0, 10));
     const [customer, setCustomer] = useState('');
     const [product, setProduct] = useState('');
     const [cartItems, setCartItems] = useState([]);
     const [quantity] = useState(1);
 
-    const customerLabels = customers.map((customer) => {
+    const customerLabels = customers.map(customer => {
         return { value: customer._id, label: customer.name };
     });
 
-    const productLabels = products.map((product) => {
+    const productLabels = products.map(product => {
         return { value: product._id, label: product.name };
     });
 
-    const handleDateChange = (date) => {
+    const handleDateChange = date => {
         setDate(date);
     };
-    const handleCustomerChange = (data) => {
+    const handleCustomerChange = data => {
         setCustomer(data);
     };
-    const handleProductChange = (product) => {
+    const handleProductChange = product => {
         setProduct(product);
     };
 
-    const productAmount = (id) => {
-        const productAmountDetails = products.find((product) => product._id === id);
+    const productAmount = id => {
+        const productAmountDetails = products.find(product => product._id === id);
         return productAmountDetails.price;
     };
 
-    const handleCart = (e) => {
+    const handleCart = e => {
         e.preventDefault();
-        const findExistProduct = cartItems.find((item) => item.id === product.value);
+        const findExistProduct = cartItems.find(item => item.id === product.value);
         if (findExistProduct) {
-            const setModifiedData = cartItems.map((item) => {
+            const setModifiedData = cartItems.map(item => {
                 if (item.id === product.value) {
                     return {
                         ...item,
@@ -85,7 +85,7 @@ const BillingForm = ({ setOpenPopup }) => {
     };
 
     const handleQuantity = (id, count) => {
-        const cartValues = cartItems.map((item) => {
+        const cartValues = cartItems.map(item => {
             if (item.id === id) {
                 return {
                     ...item,
@@ -99,14 +99,14 @@ const BillingForm = ({ setOpenPopup }) => {
         setCartItems(cartValues);
     };
 
-    const removeCartItem = (id) => {
-        const removedItems = cartItems.filter((item) => item.id !== id);
+    const removeCartItem = id => {
+        const removedItems = cartItems.filter(item => item.id !== id);
         setCartItems(removedItems);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = e => {
         e.preventDefault();
-        const lineItems = cartItems.map((cartItem) => {
+        const lineItems = cartItems.map(cartItem => {
             return { product: cartItem.id, quantity: cartItem.quantity };
         });
         const formData = {
@@ -125,22 +125,24 @@ const BillingForm = ({ setOpenPopup }) => {
                     <Paper style={{ flexDirection: 'column' }} className={classes.paper}>
                         <form onSubmit={handleSubmit}>
                             <Typography
-                                variant="h4"
-                                color="primary"
+                                variant='h4'
+                                color='primary'
                                 gutterBottom
-                                style={{ textAlign: 'center', marginBottom: '10px' }}
-                            >
+                                style={{ textAlign: 'center', marginBottom: '10px' }}>
                                 Add to Cart
                             </Typography>
                             <div style={{ marginBottom: '10px' }}>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <KeyboardDatePicker
-                                        required
-                                        variant="inline"
-                                        format="MM/dd/yyyy"
-                                        margin="normal"
-                                        id="date-picker-inline"
-                                        name="Add Date"
+                                        clearable
+                                        autoOk
+                                        disabled={cartItems.length > 0}
+                                        inputVariant='outlined'
+                                        size='small'
+                                        minDate={new Date()}
+                                        format='MM/dd/yyyy'
+                                        margin='normal'
+                                        name='Add Date'
                                         value={date}
                                         onChange={handleDateChange}
                                         style={{ width: '100%' }}
@@ -149,7 +151,7 @@ const BillingForm = ({ setOpenPopup }) => {
                             </div>
                             <div style={{ marginBottom: '10px', width: '100%' }}>
                                 <Select
-                                    name="customer"
+                                    name='customer'
                                     value={customer}
                                     isDisabled={cartItems.length > 0}
                                     onChange={handleCustomerChange}
@@ -158,7 +160,7 @@ const BillingForm = ({ setOpenPopup }) => {
                             </div>
                             <div style={{ marginBottom: '10px', width: '100%' }}>
                                 <Select
-                                    name="product"
+                                    name='product'
                                     value={product}
                                     onChange={handleProductChange}
                                     options={productLabels}
@@ -168,26 +170,23 @@ const BillingForm = ({ setOpenPopup }) => {
                                 style={{
                                     display: 'flex',
                                     flexDirection: 'row',
-                                }}
-                            >
+                                }}>
                                 <Button
-                                    variant="outlined"
-                                    color="primary"
+                                    variant='outlined'
+                                    color='primary'
                                     onClick={handleCart}
                                     disabled={!product}
-                                    style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }}
-                                >
+                                    style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }}>
                                     Add Products
                                 </Button>
                             </div>
                             <div>
                                 <Button
-                                    variant="contained"
-                                    color="primary"
-                                    type="submit"
+                                    variant='contained'
+                                    color='primary'
+                                    type='submit'
                                     disabled={cartItems.length === 0}
-                                    style={{ width: '100%' }}
-                                >
+                                    style={{ width: '100%' }}>
                                     GENERATE
                                 </Button>
                             </div>
