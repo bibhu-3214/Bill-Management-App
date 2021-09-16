@@ -30,6 +30,8 @@ export const login = (values, redirectToAdmin) => {
                     localStorage.setItem('token', res.token);
                     dispatch(isLogin());
                     Swal.fire('Logged In Successful', 'welcome to Dashboard', 'success');
+                    // make aip calls to get all the necessary data for 
+                    // after dispatch redirect the user 
                     redirectToAdmin();
                 }
             })

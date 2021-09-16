@@ -1,4 +1,5 @@
 import { Switch, Route } from 'react-router-dom';
+import PrivateRoute from './helper/PrivateRoute';
 import Navigation from './components/Navigation';
 import Home from './components/Authentication/Home';
 import Register from './components/Authentication/Register';
@@ -9,20 +10,20 @@ import ProductContainer from './components/Dashboard/products/ProductContainer';
 import BillContainer from './components/Dashboard/bills/BillContainer';
 
 const App = () => {
-   return (
-      <>
-         <Navigation />
-         <Switch>
-            <Route path="/billing" component={BillContainer} exact />
-            <Route path="/product" component={ProductContainer} exact />
-            <Route path="/customer" component={CustomerContainer} exact />
-            <Route path="/admin" component={Admin} exact />
-            <Route path="/login" component={Login} exact />
-            <Route path="/register" component={Register} exact />
-            <Route path="/" component={Home} exact />
-         </Switch>
-      </>
-   );
+    return (
+        <>
+            <Navigation />
+            <Switch>
+                <PrivateRoute path='/billing' component={BillContainer} exact />
+                <PrivateRoute path='/product' component={ProductContainer} exact />
+                <PrivateRoute path='/customer' component={CustomerContainer} exact />
+                <PrivateRoute path='/admin' component={Admin} exact />
+                <Route path='/login' component={Login} exact />
+                <Route path='/register' component={Register} exact />
+                <Route path='/' component={Home} exact />
+            </Switch>
+        </>
+    );
 };
 
 export default App;
