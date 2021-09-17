@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 // import { removeCustomer } from '../../../Redux/Actions/customersAction';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -15,7 +14,7 @@ import Popup from '../../Popup';
 import ActionButton from '../../controls/ActionButton';
 import CustomerForm from './CustomerForm';
 
-const useStyles1 = makeStyles((theme) => ({
+const useStyles1 = makeStyles(theme => ({
     table: {
         marginTop: theme.spacing(3),
         '& thead th': {
@@ -57,7 +56,7 @@ const CustomerList = ({ searchResult }) => {
         setOpenPopup(true);
     };
 
-    const handleRemove = (_id) => {
+    const handleRemove = _id => {
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false,
@@ -65,7 +64,7 @@ const CustomerList = ({ searchResult }) => {
         // dispatch(removeCustomer(_id));
     };
 
-    const handleEdit = (data) => {
+    const handleEdit = data => {
         setEditData(data);
         handleToggle();
     };
@@ -90,15 +89,14 @@ const CustomerList = ({ searchResult }) => {
                                 <TableCell>{customer.mobile}</TableCell>
                                 <TableCell style={{ display: 'flex' }}>
                                     <ActionButton
-                                        aria-label="edit"
-                                        color="primary"
-                                        onClick={() => handleEdit(customer)}
-                                    >
+                                        aria-label='edit'
+                                        color='primary'
+                                        onClick={() => handleEdit(customer)}>
                                         <EditTwoToneIcon />
                                     </ActionButton>
                                     <ActionButton
-                                        aria-label="delete"
-                                        color="secondary"
+                                        aria-label='delete'
+                                        color='secondary'
                                         onClick={() => {
                                             setConfirmDialog({
                                                 isOpen: true,
@@ -108,8 +106,7 @@ const CustomerList = ({ searchResult }) => {
                                                     handleRemove(customer._id);
                                                 },
                                             });
-                                        }}
-                                    >
+                                        }}>
                                         <DeleteIcon />
                                     </ActionButton>
                                 </TableCell>
@@ -120,11 +117,7 @@ const CustomerList = ({ searchResult }) => {
             </TableContainer>
             {Object.keys(editData).length > 0 && toggle ? (
                 <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
-                    <CustomerForm
-                        editData={editData}
-                        handleToggle={handleToggle}
-                        setOpenPopup={setOpenPopup}
-                    />
+                    <CustomerForm editData={editData} handleToggle={handleToggle} setOpenPopup={setOpenPopup} />
                 </Popup>
             ) : null}
             <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
