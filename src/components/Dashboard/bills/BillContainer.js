@@ -11,7 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import BillingForm from './BillingForm';
 import BillList from './BillList';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
     pageContent: {
         width: '100%',
         margin: theme.spacing(5),
@@ -32,16 +32,16 @@ export default function BillContainer() {
     const [openPopup, setOpenPopup] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [searchResult, setSearchResult] = useState([]);
-    const { bills } = useSelector((state) => state.bills);
-    const customers = useSelector((state) => state.customers);
+    const { bills } = useSelector(state => state.bills);
+    const customers = useSelector(state => state.customers);
 
     useEffect(() => {
         let searchData = [];
-        const customerName = customers.filter((customer) =>
+        const customerName = customers.filter(customer =>
             customer.name.toLowerCase().includes(searchInput.toLowerCase()),
         );
-        customerName.forEach((name) => {
-            const result = bills.filter((bill) => bill.customer === name._id);
+        customerName.forEach(name => {
+            const result = bills.filter(bill => bill.customer === name._id);
             searchData = searchData.concat(result);
         });
         setSearchResult(searchData);
@@ -53,30 +53,29 @@ export default function BillContainer() {
                 <div>
                     <Toolbar>
                         <Input
-                            label="Search bill"
-                            size="small"
+                            label='Search bill'
+                            size='small'
                             className={classes.searchInput}
                             value={searchInput}
                             InputProps={{
                                 startAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment position='start'>
                                         <Search />
                                     </InputAdornment>
                                 ),
                             }}
-                            onChange={(e) => setSearchInput(e.target.value)}
+                            onChange={e => setSearchInput(e.target.value)}
                         />
                         <Button
-                            variant="outlined"
-                            size="large"
-                            color="primary"
+                            variant='outlined'
+                            size='large'
+                            color='primary'
                             startIcon={<AddIcon />}
                             className={classes.Button}
                             style={{ float: 'right' }}
                             onClick={() => {
                                 setOpenPopup(true);
-                            }}
-                        >
+                            }}>
                             Add
                         </Button>
                     </Toolbar>
@@ -86,17 +85,16 @@ export default function BillContainer() {
                         <BillList searchResult={searchResult} />
                     ) : (
                         <Typography
-                            variant="h5"
-                            color="textSecondary"
+                            variant='h5'
+                            color='textSecondary'
                             gutterBottom
-                            style={{ textAlign: 'center', margin: '30px' }}
-                        >
+                            style={{ textAlign: 'center', margin: '30px' }}>
                             Add a bill ...
                         </Typography>
                     )}
                 </div>
             </Paper>
-            <Popup title="Bill Form" openPopup={openPopup} setOpenPopup={setOpenPopup}>
+            <Popup title='Bill Form' openPopup={openPopup} setOpenPopup={setOpenPopup}>
                 <BillingForm setOpenPopup={setOpenPopup} />
             </Popup>
         </div>

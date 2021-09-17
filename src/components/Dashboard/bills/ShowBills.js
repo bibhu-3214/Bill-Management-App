@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import { PDFExport } from '@progress/kendo-react-pdf';
 import moment from 'moment';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
     container: {
         width: '100%',
         maxHeight: 440,
@@ -40,9 +40,9 @@ const useStyles = makeStyles((theme) => ({
 
 const ShowBills = () => {
     const classes = useStyles();
-    const products = useSelector((state) => state.products);
-    const customers = useSelector((state) => state.customers);
-    const { billDetails } = useSelector((state) => state.bills);
+    const products = useSelector(state => state.products);
+    const customers = useSelector(state => state.customers);
+    const { billDetails } = useSelector(state => state.bills);
     const pdfExportComponent = React.useRef(null);
 
     const exportPDFWithComponent = () => {
@@ -50,11 +50,11 @@ const ShowBills = () => {
             pdfExportComponent.current.save();
         }
     };
-    const findCustomer = (id) => {
-        return customers.find((customer) => customer._id === id);
+    const findCustomer = id => {
+        return customers.find(customer => customer._id === id);
     };
-    const findProduct = (id) => {
-        return products.find((product) => product._id === id);
+    const findProduct = id => {
+        return products.find(product => product._id === id);
     };
 
     return (
@@ -62,15 +62,15 @@ const ShowBills = () => {
             {Object.keys(billDetails).length > 0 && (
                 <React.Fragment>
                     <div>
-                        <PDFExport ref={pdfExportComponent} paperSize="A4" margin="2cm">
+                        <PDFExport ref={pdfExportComponent} paperSize='A4' margin='2cm'>
                             <div style={{ textTransform: 'capitalize' }}>
-                                <Typography variant="h5" color="primary" gutterBottom>
+                                <Typography variant='h5' color='primary' gutterBottom>
                                     Customer Name - {findCustomer(billDetails.customer).name}
                                 </Typography>
-                                <Typography variant="h6" color="primary" gutterBottom>
+                                <Typography variant='h6' color='primary' gutterBottom>
                                     Date: {moment(billDetails.date).format('ll')}
                                 </Typography>
-                                <Typography variant="h6" color="primary" gutterBottom>
+                                <Typography variant='h6' color='primary' gutterBottom>
                                     Contact Details: {findCustomer(billDetails.customer).mobile}
                                 </Typography>
                             </div>
@@ -85,7 +85,7 @@ const ShowBills = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {billDetails.lineItems.map((item) => {
+                                        {billDetails.lineItems.map(item => {
                                             return (
                                                 <TableRow key={item._id} hover>
                                                     <TableCell>{findProduct(item.product).name}</TableCell>
@@ -105,12 +105,11 @@ const ShowBills = () => {
                     </div>
                     <div>
                         <Button
-                            variant="contained"
-                            color="secondary"
+                            variant='contained'
+                            color='secondary'
                             startIcon={<GetAppRoundedIcon />}
                             onClick={exportPDFWithComponent}
-                            style={{ width: '100%', marginTop: '20px' }}
-                        >
+                            style={{ width: '100%', marginTop: '20px' }}>
                             Download
                         </Button>
                     </div>

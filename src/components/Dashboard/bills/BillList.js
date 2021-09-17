@@ -16,7 +16,7 @@ import VisibilityTwoToneIcon from '@material-ui/icons/VisibilityTwoTone';
 import Popup from '../../Popup';
 import ShowBills from './ShowBills';
 
-const useStyles1 = makeStyles((theme) => ({
+const useStyles1 = makeStyles(theme => ({
     table: {
         width: '100%',
         marginTop: theme.spacing(3),
@@ -46,7 +46,7 @@ const BillList = ({ searchResult }) => {
     const classes = useStyles();
     const classes1 = useStyles1();
     const dispatch = useDispatch();
-    const customers = useSelector((state) => state.customers);
+    const customers = useSelector(state => state.customers);
     const [openPopup, setOpenPopup] = useState(false);
     const [confirmDialog, setConfirmDialog] = useState({
         isOpen: false,
@@ -54,12 +54,12 @@ const BillList = ({ searchResult }) => {
         subTitle: '',
     });
 
-    const CustomerNames = (id) => {
-        const result = customers.find((customer) => customer._id === id);
+    const CustomerNames = id => {
+        const result = customers.find(customer => customer._id === id);
         return result ? result.name : '';
     };
 
-    const handleRemove = (_id) => {
+    const handleRemove = _id => {
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false,
@@ -67,7 +67,7 @@ const BillList = ({ searchResult }) => {
         dispatch(removeBill(_id));
     };
 
-    const showBillDetails = (_id) => {
+    const showBillDetails = _id => {
         dispatch(getBillById(_id));
         setOpenPopup(true);
     };
@@ -86,27 +86,26 @@ const BillList = ({ searchResult }) => {
                     </TableHead>
                     <TableBody>
                         {customers.length > 0 &&
-                            searchResult.map((bill) => (
+                            searchResult.map(bill => (
                                 <TableRow key={bill._id} hover>
                                     <TableCell>{CustomerNames(bill.customer)}</TableCell>
                                     <TableCell>{bill.total}</TableCell>
                                     <TableCell>
-                                        <IconButton color="primary" onClick={() => showBillDetails(bill._id)}>
+                                        <IconButton color='primary' onClick={() => showBillDetails(bill._id)}>
                                             <VisibilityTwoToneIcon />
                                         </IconButton>
                                     </TableCell>
                                     <TableCell style={{ display: 'flex' }}>
                                         <ActionButton
-                                            aria-label="delete"
-                                            color="secondary"
+                                            aria-label='delete'
+                                            color='secondary'
                                             onClick={() => {
                                                 setConfirmDialog({
                                                     isOpen: true,
                                                     title: 'Are you sure to delete this record?',
                                                     onConfirm: () => handleRemove(bill._id),
                                                 });
-                                            }}
-                                        >
+                                            }}>
                                             <DeleteIcon />
                                         </ActionButton>
                                     </TableCell>

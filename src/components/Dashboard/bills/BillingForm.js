@@ -10,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import CartDetails from './CartDetails';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -32,6 +33,8 @@ const BillingForm = ({ setOpenPopup }) => {
     const [product, setProduct] = useState('');
     const [cartItems, setCartItems] = useState([]);
     const [quantity] = useState(1);
+
+    let history = useHistory();
 
     const customerLabels = customers.map(customer => {
         return { value: customer._id, label: customer.name };
@@ -103,7 +106,7 @@ const BillingForm = ({ setOpenPopup }) => {
         const removedItems = cartItems.filter(item => item.id !== id);
         setCartItems(removedItems);
     };
-
+    const redirectToShowBills = id => history.push(`/billdetails/${id}`);
     const handleSubmit = e => {
         e.preventDefault();
         const lineItems = cartItems.map(cartItem => {
@@ -114,7 +117,7 @@ const BillingForm = ({ setOpenPopup }) => {
             customer: customer.value,
             lineItems: lineItems,
         };
-        dispatch(addBill(formData));
+        dispatch(addBill(formData, redirectToShowBills));
         setOpenPopup(false);
     };
 
@@ -134,12 +137,10 @@ const BillingForm = ({ setOpenPopup }) => {
                             <div style={{ marginBottom: '10px' }}>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <KeyboardDatePicker
-                                        clearable
                                         autoOk
                                         disabled={cartItems.length > 0}
                                         inputVariant='outlined'
                                         size='small'
-                                        minDate={new Date()}
                                         format='MM/dd/yyyy'
                                         margin='normal'
                                         name='Add Date'
