@@ -7,7 +7,7 @@ import { getBills } from './billAction';
 export const register = (values, redirectToLogin) => {
     return () => {
         axios
-            .post('http://dct-billing-app.herokuapp.com/api/users/register', values)
+            .post('https://dct-billing-app.herokuapp.com/api/users/register', values)
             .then(resp => {
                 const result = resp.data;
                 if (result.hasOwnProperty('errors')) {
@@ -24,7 +24,7 @@ export const register = (values, redirectToLogin) => {
 export const login = (values, redirectToAdmin) => {
     return dispatch => {
         axios
-            .post('http://dct-billing-app.herokuapp.com/api/users/login', values)
+            .post('https://dct-billing-app.herokuapp.com/api/users/login', values)
             .then(resp => {
                 const res = resp.data;
                 if (res.hasOwnProperty('errors')) {
@@ -53,7 +53,7 @@ const isLogin = () => {
 export const usersDetails = () => {
     return dispatch => {
         axios
-            .get('http://dct-billing-app.herokuapp.com/api/users/account', {
+            .get('https://dct-billing-app.herokuapp.com/api/users/account', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },

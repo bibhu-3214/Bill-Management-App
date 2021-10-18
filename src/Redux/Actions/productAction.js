@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 export const addProduct = (formData) => {
     return (dispatch) => {
         axios
-            .post('http://dct-billing-app.herokuapp.com/api/products', formData, {
+            .post('https://dct-billing-app.herokuapp.com/api/products', formData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -28,7 +28,7 @@ export const removeProducts = (_id) => {
     return (dispatch) => {
         axios({
             method: 'delete',
-            url: `http://dct-billing-app.herokuapp.com/api/products/${_id}`,
+            url: `https://dct-billing-app.herokuapp.com/api/products/${_id}`,
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -52,7 +52,7 @@ export const getProducts = () => {
     return (dispatch) => {
         axios({
             method: 'get',
-            url: 'http://dct-billing-app.herokuapp.com/api/products',
+            url: 'https://dct-billing-app.herokuapp.com/api/products',
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
             .then((resp) => {
@@ -74,7 +74,7 @@ export const getProductById = (_id) => {
     return (dispatch) => {
         axios({
             method: 'get',
-            url: `http://dct-billing-app.herokuapp.com/api/products/${_id}`,
+            url: `https://dct-billing-app.herokuapp.com/api/products/${_id}`,
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
             .then((resp) => {
@@ -95,7 +95,7 @@ export const getById = (singleProduct) => {
 export const editProduct = (result, id) => {
     return (dispatch) => {
         axios
-            .put(`http://dct-billing-app.herokuapp.com/api/products/${id}`, result, {
+            .put(`https://dct-billing-app.herokuapp.com/api/products/${id}`, result, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },

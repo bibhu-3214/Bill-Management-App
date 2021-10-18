@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 export const addCustomer = (formData) => {
     return (dispatch) => {
         axios
-            .post('http://dct-billing-app.herokuapp.com/api/customers', formData, {
+            .post('https://dct-billing-app.herokuapp.com/api/customers', formData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -28,7 +28,7 @@ export const removeCustomer = (_id) => {
     return (dispatch) => {
         axios({
             method: 'delete',
-            url: `http://dct-billing-app.herokuapp.com/api/customers/${_id}`,
+            url: `https://dct-billing-app.herokuapp.com/api/customers/${_id}`,
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -51,7 +51,7 @@ export const removeItem = (removed) => {
 export const getCustomers = () => {
     return (dispatch) => {
         axios
-            .get('http://dct-billing-app.herokuapp.com/api/customers', {
+            .get('https://dct-billing-app.herokuapp.com/api/customers', {
                 headers: {
                     Authorization: 'Bearer ' + localStorage.getItem('token'),
                 },
@@ -74,7 +74,7 @@ export const getItem = (allCustomerData) => {
 export const editCustomer = (values, _id) => {
     return (dispatch) => {
         axios
-            .put(`http://dct-billing-app.herokuapp.com/api/customers/${_id}`, values, {
+            .put(`https://dct-billing-app.herokuapp.com/api/customers/${_id}`, values, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },

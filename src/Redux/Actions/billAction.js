@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 export const addBill = (formData, redirectToShowBills) => {
     return dispatch => {
         axios
-            .post('http://dct-billing-app.herokuapp.com/api/bills', formData, {
+            .post('https://dct-billing-app.herokuapp.com/api/bills', formData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -29,7 +29,7 @@ export const removeBill = _id => {
     return dispatch => {
         axios({
             method: 'delete',
-            url: `http://dct-billing-app.herokuapp.com/api/bills/${_id}`,
+            url: `https://dct-billing-app.herokuapp.com/api/bills/${_id}`,
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -53,7 +53,7 @@ export const getBills = () => {
     return dispatch => {
         axios({
             method: 'get',
-            url: 'http://dct-billing-app.herokuapp.com/api/bills',
+            url: 'https://dct-billing-app.herokuapp.com/api/bills',
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
             .then(resp => {
@@ -75,7 +75,7 @@ export const getBillById = _id => {
     return dispatch => {
         axios({
             method: 'get',
-            url: `http://dct-billing-app.herokuapp.com/api/bills/${_id}`,
+            url: `https://dct-billing-app.herokuapp.com/api/bills/${_id}`,
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
             .then(resp => {
