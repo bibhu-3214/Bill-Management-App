@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import CustomerList from './CustomerList';
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
@@ -9,44 +8,42 @@ import { useSelector } from 'react-redux';
 import Input from '../../controls/Input';
 import Search from '@material-ui/icons/Search';
 import CustomerForm from './CustomerForm';
-
-const useStyles = makeStyles((theme) => ({
-    pageContent: {
-        width: '100%',
-        margin: theme.spacing(5),
-        padding: theme.spacing(3),
-        boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
-    },
-    searchInput: {
-        width: '80%',
-    },
-    Button: {
-        position: 'absolute',
-        right: '10px',
-    },
-}));
+import PeopleAltRoundedIcon from '@material-ui/icons/PeopleAltRounded';
 
 export default function CustomerContainer() {
-    const classes = useStyles();
     const [openPopup, setOpenPopup] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const customers = useSelector((state) => state.customers);
+    const { bills } = useSelector(state => state.bills);
+    const billedCustomers = new Set(bills.map(bill => bill.customer)).size;
 
     useEffect(() => {
-        const results = customers.filter((customer) => customer.name.toLowerCase().includes(searchInput));
+        const query = searchInput.trim().toLowerCase();
+        const results = customers.filter(customer => customer.name.toLowerCase().includes(query));
         setSearchResult(results);
     }, [customers, searchInput]);
 
     return (
-        <div style={{ display: 'flex', width: '60%', margin: 'auto' }}>
-            <Paper className={classes.pageContent} style={{ display: 'flex', flexDirection: 'column' }}>
+        <section className='workspace-page page-enter'>
+            <header className='workspace-hero customer-workspace-hero'>
+                <div className='workspace-hero-copy'>
+                    <span className='workspace-kicker'><PeopleAltRoundedIcon /> Relationships</span>
+                    <h1>Customers</h1>
+                    <p>Every relationship, contact, and billing profile in one place.</p>
+                </div>
+                <div className='workspace-hero-stats'>
+                    <div><span>Total customers</span><strong>{customers.length}</strong></div>
+                    <div><span>With invoices</span><strong>{billedCustomers}</strong></div>
+                    <div><span>New opportunity</span><strong>{Math.max(customers.length - billedCustomers, 0)}</strong></div>
+                </div>
+            </header>
+            <Paper className='data-panel surface-card' elevation={0}>
                 <div>
-                    <Toolbar>
+                    <Toolbar className='data-toolbar'>
                         <Input
                             label="Search customers"
                             size="small"
-                            className={classes.searchInput}
                             value={searchInput}
                             InputProps={{
                                 startAdornment: (
@@ -62,13 +59,11 @@ export default function CustomerContainer() {
                             size="large"
                             color="primary"
                             startIcon={<AddIcon />}
-                            className={classes.Button}
-                            style={{ float: 'right' }}
                             onClick={() => {
                                 setOpenPopup(true);
                             }}
                         >
-                            Add
+                            Add customer
                         </Button>
                     </Toolbar>
                 </div>
@@ -80,9 +75,9 @@ export default function CustomerContainer() {
                             variant="h5"
                             color="textSecondary"
                             gutterBottom
-                            style={{ textAlign: 'center', margin: '30px' }}
+                            className='empty-state'
                         >
-                            Add a customer ...
+                            No customers yet. Add your first customer to get started.
                         </Typography>
                     )}
                 </div>
@@ -90,6 +85,6 @@ export default function CustomerContainer() {
             <Popup title="Customer Form" openPopup={openPopup} setOpenPopup={setOpenPopup}>
                 <CustomerForm setOpenPopup={setOpenPopup} />
             </Popup>
-        </div>
+        </section>
     );
 }

@@ -9,26 +9,27 @@ import { usersDetails } from './Redux/Actions/usersAction';
 import { getCustomers } from './Redux/Actions/customersAction';
 import { getProducts } from './Redux/Actions/productAction';
 import { getBills } from './Redux/Actions/billAction';
+import { CssBaseline, ThemeProvider } from '@material-ui/core';
+import theme from './theme';
+import localData from './data/localData';
 
 const store = configureStore();
-console.log('state', store.getState());
 
-store.subscribe(() => {
-    console.log('state update', store.getState());
-});
-
-if (localStorage.getItem('token')) {
-    store.dispatch(usersDetails());
-    store.dispatch(getCustomers());
-    store.dispatch(getProducts());
-    store.dispatch(getBills());
+if (localData.hasActiveSession()) {
+    const hasValidSession = store.dispatch(usersDetails());
+    if (hasValidSession) {
+        Promise.all([store.dispatch(getCustomers()), store.dispatch(getProducts()), store.dispatch(getBills())]);
+    }
 }
 
 ReactDOM.render(
     <Provider store={store}>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </ThemeProvider>
     </Provider>,
     document.getElementById('root'),
 );

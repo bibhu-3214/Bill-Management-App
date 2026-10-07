@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import { InputAdornment, Toolbar, Typography } from '@material-ui/core';
@@ -11,24 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import BillingForm from './BillingForm';
 import BillList from './BillList';
 
-const useStyles = makeStyles(theme => ({
-    pageContent: {
-        width: '100%',
-        margin: theme.spacing(5),
-        padding: theme.spacing(3),
-        boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
-    },
-    searchInput: {
-        width: '80%',
-    },
-    Button: {
-        position: 'absolute',
-        right: '10px',
-    },
-}));
-
 export default function BillContainer() {
-    const classes = useStyles();
     const [openPopup, setOpenPopup] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [searchResult, setSearchResult] = useState([]);
@@ -48,14 +30,16 @@ export default function BillContainer() {
     }, [bills, customers, searchInput]);
 
     return (
-        <div style={{ display: 'flex', width: '60%', margin: 'auto' }}>
-            <Paper className={classes.pageContent} style={{ display: 'flex', flexDirection: 'column' }}>
+        <section className='workspace-page page-enter'>
+            <div className='workspace-heading'>
+                <div><h1>Invoices</h1><p>Create, find, and download customer invoices.</p></div>
+            </div>
+            <Paper className='data-panel surface-card' elevation={0}>
                 <div>
-                    <Toolbar>
+                    <Toolbar className='data-toolbar'>
                         <Input
                             label='Search bill'
                             size='small'
-                            className={classes.searchInput}
                             value={searchInput}
                             InputProps={{
                                 startAdornment: (
@@ -71,8 +55,6 @@ export default function BillContainer() {
                             size='large'
                             color='primary'
                             startIcon={<AddIcon />}
-                            className={classes.Button}
-                            style={{ float: 'right' }}
                             onClick={() => {
                                 setOpenPopup(true);
                             }}>
@@ -88,8 +70,8 @@ export default function BillContainer() {
                             variant='h5'
                             color='textSecondary'
                             gutterBottom
-                            style={{ textAlign: 'center', margin: '30px' }}>
-                            Add a bill ...
+                            className='empty-state'>
+                            No invoices yet. Generate your first invoice to get started.
                         </Typography>
                     )}
                 </div>
@@ -97,6 +79,6 @@ export default function BillContainer() {
             <Popup title='Bill Form' openPopup={openPopup} setOpenPopup={setOpenPopup}>
                 <BillingForm setOpenPopup={setOpenPopup} />
             </Popup>
-        </div>
+        </section>
     );
 }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import ProductList from './ProductList';
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
@@ -10,44 +9,42 @@ import Popup from '../../Popup';
 import { Search } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
 import ProductForm from './ProductForm';
-
-const useStyles = makeStyles((theme) => ({
-    pageContent: {
-        width: '100%',
-        margin: theme.spacing(5),
-        padding: theme.spacing(3),
-        boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
-    },
-    searchInput: {
-        width: '80%',
-    },
-    Button: {
-        position: 'absolute',
-        right: '10px',
-    },
-}));
+import LocalMallRoundedIcon from '@material-ui/icons/LocalMallRounded';
 
 export default function ProductContainer() {
-    const classes = useStyles();
     const [openPopup, setOpenPopup] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const products = useSelector((state) => state.products);
+    const catalogValue = products.reduce((sum, product) => sum + Number(product.price || 0), 0);
+    const averagePrice = products.length ? Math.round(catalogValue / products.length) : 0;
 
     useEffect(() => {
-        const results = products.filter((customer) => customer.name.toLowerCase().includes(searchInput));
+        const query = searchInput.trim().toLowerCase();
+        const results = products.filter(product => product.name.toLowerCase().includes(query));
         setSearchResult(results);
     }, [products, searchInput]);
 
     return (
-        <div style={{ display: 'flex', width: '60%', margin: 'auto' }}>
-            <Paper className={classes.pageContent} style={{ display: 'flex', flexDirection: 'column' }}>
+        <section className='workspace-page page-enter'>
+            <header className='workspace-hero catalog-workspace-hero'>
+                <div className='workspace-hero-copy'>
+                    <span className='workspace-kicker'><LocalMallRoundedIcon /> Inventory</span>
+                    <h1>Product catalog</h1>
+                    <p>A polished, searchable home for everything you sell.</p>
+                </div>
+                <div className='workspace-hero-stats'>
+                    <div><span>Total products</span><strong>{products.length}</strong></div>
+                    <div><span>Average price</span><strong>₹{averagePrice.toLocaleString('en-IN')}</strong></div>
+                    <div><span>Catalog value</span><strong>₹{catalogValue.toLocaleString('en-IN')}</strong></div>
+                </div>
+            </header>
+            <Paper className='data-panel surface-card' elevation={0}>
                 <div>
-                    <Toolbar>
+                    <Toolbar className='data-toolbar'>
                         <Input
                             label="Search products"
                             size="small"
-                            className={classes.searchInput}
                             value={searchInput}
                             InputProps={{
                                 startAdornment: (
@@ -62,16 +59,12 @@ export default function ProductContainer() {
                             variant="outlined"
                             size="large"
                             color="primary"
-                            className={classes.Button}
                             startIcon={<AddIcon />}
-                            style={{
-                                float: 'right',
-                            }}
                             onClick={() => {
                                 setOpenPopup(true);
                             }}
                         >
-                            Add
+                            Add product
                         </Button>
                     </Toolbar>
                 </div>
@@ -83,9 +76,9 @@ export default function ProductContainer() {
                             variant="h5"
                             color="textSecondary"
                             gutterBottom
-                            style={{ textAlign: 'center', margin: '30px' }}
+                            className='empty-state'
                         >
-                            Add a Product ...
+                            No products yet. Add your first product to get started.
                         </Typography>
                     )}
                 </div>
@@ -93,6 +86,6 @@ export default function ProductContainer() {
             <Popup title="Product Form" openPopup={openPopup} setOpenPopup={setOpenPopup}>
                 <ProductForm setOpenPopup={setOpenPopup} />
             </Popup>
-        </div>
+        </section>
     );
 }

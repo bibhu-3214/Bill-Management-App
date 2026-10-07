@@ -22,14 +22,14 @@ const useStyles1 = makeStyles(theme => ({
         marginTop: theme.spacing(3),
         '& thead th': {
             fontWeight: '600',
-            color: '#e8eaf6',
-            backgroundColor: theme.palette.primary.light,
+            color: '#65708a',
+            backgroundColor: '#f7f8fc',
         },
         '& tbody td': {
             fontWeight: '500',
         },
         '& tbody tr:hover': {
-            backgroundColor: '#fffbf2',
+            backgroundColor: '#f8f9ff',
             cursor: 'pointer',
         },
     },

@@ -13,19 +13,21 @@ import ShowBillsById from './components/Dashboard/bills/ShowBillsById';
 
 const App = () => {
     return (
-        <>
+        <div className="app-shell">
             <Navigation />
-            <Switch>
-                <PrivateRoute path='/billdetails/:id' component={ShowBillsById} exact />
-                <PrivateRoute path='/billing' component={BillContainer} exact />
-                <PrivateRoute path='/product' component={ProductContainer} exact />
-                <PrivateRoute path='/customer' component={CustomerContainer} exact />
-                <PrivateRoute path='/admin' component={Admin} exact />
-                <ProtectedRoute path='/login' component={Login} exact />
-                <ProtectedRoute path='/register' component={Register} exact />
-                <ProtectedRoute path='/' component={Home} exact />
-            </Switch>
-        </>
+            <main className="app-content">
+                <Switch>
+                    <PrivateRoute path='/billdetails/:id' component={ShowBillsById} exact />
+                    <PrivateRoute path='/billing' component={BillContainer} exact />
+                    <PrivateRoute path='/product' component={ProductContainer} exact />
+                    <PrivateRoute path='/customer' component={CustomerContainer} exact />
+                    <PrivateRoute path='/admin' component={Admin} exact />
+                    <ProtectedRoute path='/login' component={Login} exact />
+                    <ProtectedRoute path='/register' component={Register} exact />
+                    <ProtectedRoute path='/' component={Home} exact />
+                </Switch>
+            </main>
+        </div>
     );
 };
 

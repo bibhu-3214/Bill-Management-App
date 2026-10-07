@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-// import { useSelector, useDispatch } from 'react-redux';
-// import { removeProducts } from '../../../Redux/Actions/productAction';
+import { useDispatch } from 'react-redux';
+import { removeProducts } from '../../../Redux/Actions/productAction';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,20 +14,21 @@ import ConfirmDialog from './ConfirmDialog';
 import Popup from '../../Popup';
 import ActionButton from '../../controls/ActionButton';
 import ProductForm from './ProductForm';
+import LocalMallRoundedIcon from '@material-ui/icons/LocalMallRounded';
 
 const useStyles1 = makeStyles((theme) => ({
     table: {
         marginTop: theme.spacing(3),
         '& thead th': {
             fontWeight: '600',
-            color: '#e8eaf6',
-            backgroundColor: theme.palette.primary.light,
+            color: '#65708a',
+            backgroundColor: '#f7f8fc',
         },
         '& tbody td': {
-            fontWeight: '300',
+            fontWeight: '500',
         },
         '& tbody tr:hover': {
-            backgroundColor: '#fffbf2',
+            backgroundColor: '#f8f9ff',
             cursor: 'pointer',
         },
     },
@@ -43,7 +44,7 @@ const useStyles = makeStyles({
 const ProductList = ({ searchResult }) => {
     const classes = useStyles();
     const classes1 = useStyles1();
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const [openPopup, setOpenPopup] = useState(false);
     const [editData, setEditData] = useState({});
     const [toggle, setToggle] = useState(false);
@@ -63,7 +64,7 @@ const ProductList = ({ searchResult }) => {
             ...confirmDialog,
             isOpen: false,
         });
-        // dispatch(removeProducts(_id));
+        dispatch(removeProducts(_id));
     };
 
     const handleEdit = (data) => {
@@ -79,24 +80,32 @@ const ProductList = ({ searchResult }) => {
                         <TableRow>
                             <TableCell>PRODUCT NAME</TableCell>
                             <TableCell>PRICE</TableCell>
-                            <TableCell>ACTIONS</TableCell>
+                            <TableCell>STATUS</TableCell>
+                            <TableCell align='right'>ACTIONS</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {searchResult.map((product, _id) => (
-                            <TableRow key={_id} hover>
-                                <TableCell style={{ textTransform: 'capitalize' }}>{product.name}</TableCell>
-                                <TableCell>{product.price}</TableCell>
-                                <TableCell style={{ display: 'flex' }}>
+                        {searchResult.map(product => (
+                            <TableRow key={product._id} hover>
+                                <TableCell>
+                                    <div className='entity-cell'>
+                                        <span className='entity-avatar product-avatar'><LocalMallRoundedIcon /></span>
+                                        <div><strong>{product.name}</strong><span>Catalog item</span></div>
+                                    </div>
+                                </TableCell>
+                                <TableCell><span className='price-value'>₹{Number(product.price).toLocaleString('en-IN')}</span></TableCell>
+                                <TableCell><span className='status-pill'><i /> Active</span></TableCell>
+                                <TableCell align='right'>
+                                    <div className='table-actions'>
                                     <ActionButton
-                                        aria-label="edit"
+                                        aria-label={`Edit ${product.name}`}
                                         color="primary"
                                         onClick={() => handleEdit(product)}
                                     >
                                         <EditTwoToneIcon />
                                     </ActionButton>
                                     <ActionButton
-                                        aria-label="delete"
+                                        aria-label={`Delete ${product.name}`}
                                         color="secondary"
                                         onClick={() => {
                                             setConfirmDialog({
@@ -111,6 +120,7 @@ const ProductList = ({ searchResult }) => {
                                     >
                                         <DeleteIcon />
                                     </ActionButton>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}

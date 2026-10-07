@@ -15,7 +15,8 @@ const useStyles = makeStyles((theme) => ({
    dialog: {
       padding: theme.spacing(2),
       position: 'absolute',
-      top: theme.spacing(5),
+      top: theme.spacing(8),
+      borderRadius: 18,
    },
    dialogTitle: {
       textAlign: 'center',
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
          cursor: 'default',
       },
       '& .MuiSvgIcon-root': {
-         fontSize: '8rem',
+         fontSize: '4.5rem',
       },
    },
 }));

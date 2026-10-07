@@ -1,95 +1,37 @@
-import axios from 'axios';
 import Swal from 'sweetalert2';
+import localData from '../../data/localData';
+import { ADD_CUSTOMER, EDIT_CUSTOMER, GET_CUSTOMERS, REMOVE_CUSTOMER } from '../actionTypes';
 
-export const addCustomer = (formData) => {
-    return (dispatch) => {
-        axios
-            .post('https://dct-billing-app.herokuapp.com/api/customers', formData, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            })
-            .then((resp) => {
-                const customer = resp.data;
-                dispatch(addItem(customer));
-            })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
-    };
+const showError = error => Swal.fire('Unable to update customers', error.message, 'error');
+
+export const addCustomer = formData => async dispatch => {
+    try {
+        dispatch({ type: ADD_CUSTOMER, payload: await localData.addCustomer(formData) });
+    } catch (error) {
+        showError(error);
+    }
 };
 
-export const addItem = (customer) => {
-    return {
-        type: 'ADD_CUSTOMER',
-        payload: customer,
-    };
+export const removeCustomer = id => async dispatch => {
+    try {
+        dispatch({ type: REMOVE_CUSTOMER, payload: await localData.removeCustomer(id) });
+    } catch (error) {
+        showError(error);
+    }
 };
 
-export const removeCustomer = (_id) => {
-    return (dispatch) => {
-        axios({
-            method: 'delete',
-            url: `https://dct-billing-app.herokuapp.com/api/customers/${_id}`,
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-        })
-            .then((resp) => {
-                const removed = resp.data;
-                dispatch(removeItem(removed));
-            })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
-    };
+export const getCustomers = () => async dispatch => {
+    try {
+        dispatch({ type: GET_CUSTOMERS, payload: await localData.getCustomers() });
+    } catch (error) {
+        showError(error);
+    }
 };
 
-export const removeItem = (removed) => {
-    return {
-        type: 'REMOVE_CUSTOMER',
-        payload: removed,
-    };
-};
-
-export const getCustomers = () => {
-    return (dispatch) => {
-        axios
-            .get('https://dct-billing-app.herokuapp.com/api/customers', {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('token'),
-                },
-            })
-            .then((resp) => {
-                const allCustomerData = resp.data;
-                dispatch(getItem(allCustomerData));
-            })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
-    };
-};
-
-export const getItem = (allCustomerData) => {
-    return {
-        type: 'GET_CUSTOMER',
-        payload: allCustomerData,
-    };
-};
-
-export const editCustomer = (values, _id) => {
-    return (dispatch) => {
-        axios
-            .put(`https://dct-billing-app.herokuapp.com/api/customers/${_id}`, values, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            })
-            .then((response) => {
-                const editedData = response.data;
-                dispatch(editItem(editedData));
-            })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
-    };
-};
-
-export const editItem = (editedData) => {
-    return {
-        type: 'EDIT_CUSTOMER',
-        payload: editedData,
-    };
+export const editCustomer = (values, id) => async dispatch => {
+    try {
+        dispatch({ type: EDIT_CUSTOMER, payload: await localData.editCustomer(id, values) });
+    } catch (error) {
+        showError(error);
+    }
 };

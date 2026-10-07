@@ -18,10 +18,11 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         padding: theme.spacing(2),
         color: theme.palette.text.secondary,
+        border: '1px solid #edf0f6',
+        boxShadow: 'none',
     },
     table: {
-        display: 'flex',
-        minWidth: 450,
+        width: '100%',
         '& thead th': {
             fontWeight: '600',
         },
@@ -39,16 +40,14 @@ const CartDetails = (props) => {
         <div>
             <Paper style={{ flexDirection: 'column' }} className={classes.paper}>
                 <Typography variant="h4" color="primary" style={{ textAlign: 'center' }} gutterBottom>
-                    Product Details
+                    Invoice items
                 </Typography>
                 {cartItems.length > 0 ? (
                     <Table style={{ flexDirection: 'column' }} className={classes.table}>
                         <TableHead>
                             <TableRow>
                                 <TableCell>Product</TableCell>
-                                <TableCell></TableCell>
                                 <TableCell>Quantity</TableCell>
-                                <TableCell></TableCell>
                                 <TableCell>Remove</TableCell>
                             </TableRow>
                         </TableHead>

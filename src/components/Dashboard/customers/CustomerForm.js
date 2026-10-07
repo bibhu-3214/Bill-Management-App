@@ -9,7 +9,8 @@ import { addCustomer, editCustomer } from '../../../Redux/Actions/customersActio
 
 const useStyles = makeStyles(() => ({
     root: {
-        width: '100%',
+        width: 'min(460px, 100%)',
+        margin: '0 auto',
         '& > * + *': {
             marginTop: '20px',
         },
@@ -38,12 +39,12 @@ const CustomerForm = (props) => {
     };
 
     const validationSchema = yup.object({
-        name: yup.string().min(5, 'name should be of minimum 6 characters length').required('Required'),
-        email: yup.string().email('Invalid Format').required('Required'),
+        name: yup.string().min(3, 'Use at least 3 characters').required('Name is required'),
+        email: yup.string().email('Enter a valid email').required('Email is required'),
         mobile: yup
             .string()
-            .min(10, 'Password should be of minimum 8 characters length')
-            .required('Required'),
+            .matches(/^[0-9]{10,15}$/, 'Enter a valid phone number')
+            .required('Phone number is required'),
     });
 
     const formik = useFormik({
@@ -53,14 +54,13 @@ const CustomerForm = (props) => {
     });
 
     return (
-        <div style={{ textAlign: 'center' }}>
+        <div className='modal-form'>
             <Typography variant="h4" color="primary" gutterBottom style={{ marginBottom: '30px' }}>
-                {_id ? 'Edit Customer' : 'Add Customers'}
+                {_id ? 'Edit customer' : 'Add customer'}
             </Typography>
             <form className={classes.root} onSubmit={formik.handleSubmit}>
                 <div>
                     <TextField
-                        // required
                         id="name"
                         label="Name"
                         type="text"
@@ -68,46 +68,44 @@ const CustomerForm = (props) => {
                         placeholder="Enter Customer Name"
                         size="small"
                         variant="outlined"
-                        style={{ width: '80%' }}
+                        fullWidth
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.name}
                     />
-                    {formik.touched.name && formik.errors.name ? <div> {formik.errors.name} </div> : null}
+                    {formik.touched.name && formik.errors.name ? <div className='field-error'>{formik.errors.name}</div> : null}
                 </div>
                 <div>
                     <TextField
-                        // required
                         label="Email"
                         type="email"
                         name="email"
                         placeholder="enter your email"
                         size="small"
                         variant="outlined"
-                        style={{ width: '80%' }}
+                        fullWidth
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.email}
                     />
-                    {formik.touched.email && formik.errors.email ? <div> {formik.errors.email} </div> : null}
+                    {formik.touched.email && formik.errors.email ? <div className='field-error'>{formik.errors.email}</div> : null}
                 </div>
                 <div>
                     <TextField
-                        // required
                         id="mobile"
-                        label="mobile"
-                        type="text"
+                        label="Phone number"
+                        type="tel"
                         name="mobile"
                         placeholder="enter mobile Number"
                         size="small"
                         variant="outlined"
-                        style={{ width: '80%' }}
+                        fullWidth
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.mobile}
                     />
                     {formik.touched.mobile && formik.errors.mobile ? (
-                        <div> {formik.errors.mobile} </div>
+                        <div className='field-error'>{formik.errors.mobile}</div>
                     ) : null}
                 </div>
                 <div>
@@ -116,12 +114,12 @@ const CustomerForm = (props) => {
                         color="primary"
                         type="submit"
                         style={{
-                            width: '80%',
+                            width: '100%',
                             marginTop: '10px',
                             marginBottom: '30px',
                         }}
                     >
-                        ADD
+                        {_id ? 'Save changes' : 'Add customer'}
                     </Button>
                 </div>
             </form>

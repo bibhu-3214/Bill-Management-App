@@ -1,23 +1,25 @@
+import { ADD_BILL, GET_BILLS, GET_BILL_BY_ID, REMOVE_BILL } from '../actionTypes';
+
 const billsInitialState = { data: { bills: [], billDetails: {} } };
 
 const billReducer = (state = billsInitialState.data, action) => {
     switch (action.type) {
-        case 'ADD_BILL': {
+        case ADD_BILL: {
             const billData = [action.payload, ...state.bills];
             return { ...state, bills: billData };
         }
-        case 'GET_BILL': {
+        case GET_BILLS: {
             return { ...state, bills: action.payload };
         }
-        case 'REMOVE_BILL': {
+        case REMOVE_BILL: {
             const result = state.bills.filter((bill) => bill._id !== action.payload);
             return { ...state, bills: result };
         }
-        case 'GETBY_ID': {
+        case GET_BILL_BY_ID: {
             return { ...state, billDetails: action.payload };
         }
         default: {
-            return { ...state };
+            return state;
         }
     }
 };

@@ -1,116 +1,37 @@
-import axios from 'axios';
 import Swal from 'sweetalert2';
+import localData from '../../data/localData';
+import { ADD_PRODUCT, EDIT_PRODUCT, GET_PRODUCTS, REMOVE_PRODUCT } from '../actionTypes';
 
-export const addProduct = (formData) => {
-    return (dispatch) => {
-        axios
-            .post('https://dct-billing-app.herokuapp.com/api/products', formData, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            })
-            .then((resp) => {
-                const Product = resp.data;
-                dispatch(addItem(Product));
-            })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
-    };
+const showError = error => Swal.fire('Unable to update products', error.message, 'error');
+
+export const addProduct = formData => async dispatch => {
+    try {
+        dispatch({ type: ADD_PRODUCT, payload: await localData.addProduct(formData) });
+    } catch (error) {
+        showError(error);
+    }
 };
 
-export const addItem = (Product) => {
-    return {
-        type: 'ADD_PRODUCT',
-        payload: Product,
-    };
+export const removeProducts = id => async dispatch => {
+    try {
+        dispatch({ type: REMOVE_PRODUCT, payload: await localData.removeProduct(id) });
+    } catch (error) {
+        showError(error);
+    }
 };
 
-export const removeProducts = (_id) => {
-    return (dispatch) => {
-        axios({
-            method: 'delete',
-            url: `https://dct-billing-app.herokuapp.com/api/products/${_id}`,
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-        })
-            .then((resp) => {
-                const removed = resp.data;
-                dispatch(removeItem(removed));
-            })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
-    };
+export const getProducts = () => async dispatch => {
+    try {
+        dispatch({ type: GET_PRODUCTS, payload: await localData.getProducts() });
+    } catch (error) {
+        showError(error);
+    }
 };
 
-export const removeItem = (removed) => {
-    return {
-        type: 'REMOVE_PRODUCT',
-        payload: removed,
-    };
-};
-
-export const getProducts = () => {
-    return (dispatch) => {
-        axios({
-            method: 'get',
-            url: 'https://dct-billing-app.herokuapp.com/api/products',
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        })
-            .then((resp) => {
-                const allProductData = resp.data;
-                dispatch(getItem(allProductData));
-            })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
-    };
-};
-
-export const getItem = (allProductData) => {
-    return {
-        type: 'GET_PRODUCT',
-        payload: allProductData,
-    };
-};
-
-export const getProductById = (_id) => {
-    return (dispatch) => {
-        axios({
-            method: 'get',
-            url: `https://dct-billing-app.herokuapp.com/api/products/${_id}`,
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        })
-            .then((resp) => {
-                const singleProduct = resp.data;
-                dispatch(getById(singleProduct));
-            })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
-    };
-};
-
-export const getById = (singleProduct) => {
-    return {
-        type: 'GETBY_ID',
-        payload: singleProduct,
-    };
-};
-
-export const editProduct = (result, id) => {
-    return (dispatch) => {
-        axios
-            .put(`https://dct-billing-app.herokuapp.com/api/products/${id}`, result, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            })
-            .then((response) => {
-                const editedData = response.data;
-                dispatch(editItem(editedData));
-            })
-            .catch((err) => Swal.fire('something went wrong', err.message, 'error'));
-    };
-};
-
-export const editItem = (editedData) => {
-    return {
-        type: 'EDIT_PRODUCT',
-        payload: editedData,
-    };
+export const editProduct = (values, id) => async dispatch => {
+    try {
+        dispatch({ type: EDIT_PRODUCT, payload: await localData.editProduct(id, values) });
+    } catch (error) {
+        showError(error);
+    }
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-// import { removeCustomer } from '../../../Redux/Actions/customersAction';
+import { useDispatch } from 'react-redux';
+import { removeCustomer } from '../../../Redux/Actions/customersAction';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -19,14 +20,14 @@ const useStyles1 = makeStyles(theme => ({
         marginTop: theme.spacing(3),
         '& thead th': {
             fontWeight: '600',
-            color: '#e8eaf6',
-            backgroundColor: theme.palette.primary.light,
+            color: '#65708a',
+            backgroundColor: '#f7f8fc',
         },
         '& tbody td': {
-            fontWeight: '300',
+            fontWeight: '500',
         },
         '& tbody tr:hover': {
-            backgroundColor: '#fffbf2',
+            backgroundColor: '#f8f9ff',
             cursor: 'pointer',
         },
     },
@@ -42,6 +43,7 @@ const useStyles = makeStyles({
 const CustomerList = ({ searchResult }) => {
     const classes = useStyles();
     const classes1 = useStyles1();
+    const dispatch = useDispatch();
     const [openPopup, setOpenPopup] = useState(false);
     const [editData, setEditData] = useState({});
     const [toggle, setToggle] = useState(false);
@@ -61,7 +63,7 @@ const CustomerList = ({ searchResult }) => {
             ...confirmDialog,
             isOpen: false,
         });
-        // dispatch(removeCustomer(_id));
+        dispatch(removeCustomer(_id));
     };
 
     const handleEdit = data => {
@@ -78,24 +80,32 @@ const CustomerList = ({ searchResult }) => {
                             <TableCell>CUSTOMER NAME</TableCell>
                             <TableCell>EMAIL</TableCell>
                             <TableCell>CONTACT</TableCell>
-                            <TableCell>ACTIONS</TableCell>
+                            <TableCell>STATUS</TableCell>
+                            <TableCell align='right'>ACTIONS</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {searchResult.map((customer, _id) => (
-                            <TableRow key={_id} hover>
-                                <TableCell style={{ textTransform: 'capitalize' }}>{customer.name}</TableCell>
-                                <TableCell>{customer.email}</TableCell>
-                                <TableCell>{customer.mobile}</TableCell>
-                                <TableCell style={{ display: 'flex' }}>
+                        {searchResult.map(customer => (
+                            <TableRow key={customer._id} hover>
+                                <TableCell>
+                                    <div className='entity-cell'>
+                                        <span className='entity-avatar'>{customer.name.charAt(0).toUpperCase()}</span>
+                                        <div><strong>{customer.name}</strong><span>Customer profile</span></div>
+                                    </div>
+                                </TableCell>
+                                <TableCell><span className='contact-value'>{customer.email}</span></TableCell>
+                                <TableCell><span className='contact-value'>{customer.mobile}</span></TableCell>
+                                <TableCell><span className='status-pill'><i /> Active</span></TableCell>
+                                <TableCell align='right'>
+                                    <div className='table-actions'>
                                     <ActionButton
-                                        aria-label='edit'
+                                        aria-label={`Edit ${customer.name}`}
                                         color='primary'
                                         onClick={() => handleEdit(customer)}>
                                         <EditTwoToneIcon />
                                     </ActionButton>
                                     <ActionButton
-                                        aria-label='delete'
+                                        aria-label={`Delete ${customer.name}`}
                                         color='secondary'
                                         onClick={() => {
                                             setConfirmDialog({
@@ -109,6 +119,7 @@ const CustomerList = ({ searchResult }) => {
                                         }}>
                                         <DeleteIcon />
                                     </ActionButton>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}

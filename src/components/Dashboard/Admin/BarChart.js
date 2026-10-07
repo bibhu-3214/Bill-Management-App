@@ -1,39 +1,25 @@
 import { useSelector } from 'react-redux';
-import Chart from 'react-google-charts';
-import moment from 'moment';
+import { getMonthlySales } from '../../../utils/billing';
 
 const BarChart = () => {
     const { bills } = useSelector(state => state.bills);
-    const recentMonth = moment().month() + 1;
-    const salesPerMonth = {};
-    for (let i = recentMonth; i > recentMonth - 6; i--) {
-        let recentSales = 0;
-        bills.forEach(bill => {
-            if (moment(bill.date).month() + 1 === i) {
-                recentSales += bill.total;
-            }
-        });
-        salesPerMonth[moment(i, 'M').format('MMMM')] = recentSales;
-    }
-    const chartData = Object.entries(salesPerMonth);
-    chartData.unshift(['Month', 'Sales']);
+    const chartData = getMonthlySales(bills);
+    const maximum = Math.max(...chartData.map(([, value]) => value), 1);
 
     return (
-        <div>
-            <Chart
-                width={'500px'}
-                height={'300px'}
-                chartType='Bar'
-                loader={<div>Loading Chart</div>}
-                data={chartData}
-                options={{
-                    chart: {
-                        title: 'Business Performance',
-                        subtitle: 'Sales per Month',
-                    },
-                }}
-                rootProps={{ 'data-testid': '2' }}
-            />
+        <div className='secure-chart' role='img' aria-label='Revenue totals for the last six months'>
+            <div className='secure-chart-grid' aria-hidden='true'><span /><span /><span /><span /></div>
+            <div className='secure-chart-bars'>
+                {chartData.map(([month, value], index) => (
+                    <div className='secure-chart-column' style={{ animationDelay: `${index * 70}ms` }} key={month}>
+                        <div className='secure-chart-value'>₹{Number(value).toLocaleString('en-IN')}</div>
+                        <div className='secure-chart-track'>
+                            <span style={{ height: `${Math.max((value / maximum) * 100, value ? 8 : 2)}%` }} />
+                        </div>
+                        <div className='secure-chart-label'>{month}</div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

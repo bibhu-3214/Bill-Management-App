@@ -9,7 +9,8 @@ import { addProduct, editProduct } from '../../../Redux/Actions/productAction';
 
 const useStyles = makeStyles(() => ({
    root: {
-      width: '100%',
+      width: 'min(460px, 100%)',
+      margin: '0 auto',
       '& > * + *': {
          marginTop: '20px',
       },
@@ -37,11 +38,8 @@ const ProductForm = (props) => {
    };
 
    const validationSchema = yup.object({
-      name: yup
-         .string()
-         .min(3, 'name should be of minimum 3 characters length')
-         .required('Required'),
-      price: yup.number().required().positive().integer(),
+      name: yup.string().min(3, 'Use at least 3 characters').required('Name is required'),
+      price: yup.number().typeError('Enter a valid price').required('Price is required').positive('Price must be positive'),
    });
 
    const formik = useFormik({
@@ -51,7 +49,7 @@ const ProductForm = (props) => {
    });
 
    return (
-      <div style={{ textAlign: 'center' }}>
+      <div className='modal-form'>
          <Typography
             variant="h4"
             color="primary"
@@ -75,31 +73,31 @@ const ProductForm = (props) => {
                   placeholder="Enter Product Name"
                   size="small"
                   variant="outlined"
-                  style={{ width: '80%' }}
+                  fullWidth
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.name}
                />
                {formik.touched.name && formik.errors.name ? (
-                  <div> {formik.errors.name} </div>
+                  <div className='field-error'>{formik.errors.name}</div>
                ) : null}
             </div>
             <div>
                <TextField
                   required
-                  label="price"
+                  label="Price"
                   type="number"
                   name="price"
                   placeholder="enter your price"
                   size="small"
                   variant="outlined"
-                  style={{ width: '80%' }}
+                  fullWidth
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.price}
                />
                {formik.touched.price && formik.errors.price ? (
-                  <div> {formik.errors.price} </div>
+                  <div className='field-error'>{formik.errors.price}</div>
                ) : null}
             </div>
             <div>
@@ -108,12 +106,12 @@ const ProductForm = (props) => {
                   color="primary"
                   type="submit"
                   style={{
-                     width: '80%',
+                     width: '100%',
                      marginTop: '10px',
                      marginBottom: '30px',
                   }}
                >
-                  ADD
+                  {_id ? 'Save changes' : 'Add product'}
                </Button>
             </div>
          </form>

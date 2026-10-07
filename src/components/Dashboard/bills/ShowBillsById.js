@@ -24,23 +24,25 @@ const useStyles = makeStyles(theme => ({
         maxHeight: 440,
     },
     paper: {
-        padding: theme.spacing(3),
+        padding: theme.spacing(4),
         color: theme.palette.text.secondary,
-        backgroundColor: '#fafafa',
+        backgroundColor: '#fff',
+        border: '1px solid #e7eaf1',
+        boxShadow: '0 22px 60px rgba(31, 41, 68, 0.09)',
     },
     table: {
         minWidth: 450,
         marginTop: theme.spacing(3),
         '& thead th': {
             fontWeight: '600',
-            color: '#e8eaf6',
-            backgroundColor: theme.palette.primary.light,
+            color: '#65708a',
+            backgroundColor: '#f7f8fc',
         },
         '& tbody td': {
             fontWeight: '400',
         },
         '& tbody tr:hover': {
-            backgroundColor: '#fffbf2',
+            backgroundColor: '#f8f9ff',
             cursor: 'pointer',
         },
     },
@@ -58,7 +60,7 @@ const ShowBillsById = props => {
 
     useEffect(() => {
         dispatch(getBillById(billId));
-    }, [billId]);
+    }, [billId, dispatch]);
 
     const exportPDFWithComponent = () => {
         if (pdfExportComponent.current) {
@@ -71,31 +73,28 @@ const ShowBillsById = props => {
     const findProduct = id => {
         return products.find(product => product._id === id);
     };
+    const customer = findCustomer(billDetails.customer);
 
     return (
-        <div
-            style={{
-                width: '40%',
-                height: '50%',
-                margin: 'auto',
-                padding: '20px',
-                marginTop: '20px',
-                textAlign: 'center',
-            }}>
+        <section className='invoice-page page-enter'>
+            <div className='workspace-heading'>
+                <div><h1>Invoice details</h1><p>Review and export this customer invoice.</p></div>
+            </div>
             <Paper className={classes.paper}>
                 {Object.keys(billDetails).length > 0 && (
                     <React.Fragment>
                         <div>
                             <PDFExport ref={pdfExportComponent} paperSize='A4' margin='2cm'>
-                                <div style={{ textTransform: 'capitalize' }}>
-                                    <Typography variant='h5' color='primary' gutterBottom>
-                                        Customer Name - {findCustomer(billDetails.customer).name}
+                                <div className='invoice-header'>
+                                    <div className='invoice-brand'>Bill<span>Flow</span></div>
+                                    <Typography variant='h5' gutterBottom>
+                                        {customer ? customer.name : 'Customer unavailable'}
                                     </Typography>
-                                    <Typography variant='h6' color='primary' gutterBottom>
-                                        Date: {moment(billDetails.date).format('ll')}
+                                    <Typography variant='body1' gutterBottom>
+                                        Issued {moment(billDetails.date).format('ll')}
                                     </Typography>
-                                    <Typography variant='h6' color='primary' gutterBottom>
-                                        Contact Details: {findCustomer(billDetails.customer).mobile}
+                                    <Typography variant='body1' gutterBottom>
+                                        {customer ? customer.mobile : 'Contact unavailable'}
                                     </Typography>
                                 </div>
                                 <TableContainer className={classes.container}>
@@ -112,7 +111,9 @@ const ShowBillsById = props => {
                                             {billDetails.lineItems.map(item => {
                                                 return (
                                                     <TableRow key={item._id} hover>
-                                                        <TableCell>{findProduct(item.product).name}</TableCell>
+                                                        <TableCell>
+                                                            {findProduct(item.product)?.name || 'Unavailable'}
+                                                        </TableCell>
                                                         <TableCell>{item.quantity}</TableCell>
                                                         <TableCell>{item.price}</TableCell>
                                                         <TableCell>{item.subTotal}</TableCell>
@@ -122,25 +123,23 @@ const ShowBillsById = props => {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
-                                <Typography style={{ float: 'right', margin: '20px' }}>
-                                    Total - {billDetails.total}
-                                </Typography>
+                                <div className='invoice-total'><span>Total due</span><strong>₹{billDetails.total}</strong></div>
                             </PDFExport>
                         </div>
                         <div>
                             <Button
                                 variant='contained'
-                                color='secondary'
+                                color='primary'
                                 startIcon={<GetAppRoundedIcon />}
                                 onClick={exportPDFWithComponent}
                                 style={{ width: '100%', marginTop: '20px' }}>
-                                Download
+                                Download PDF
                             </Button>
                         </div>
                     </React.Fragment>
                 )}
             </Paper>
-        </div>
+        </section>
     );
 };
 

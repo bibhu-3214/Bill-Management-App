@@ -14,12 +14,14 @@ import { useHistory } from 'react-router';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        minWidth: 620,
+        width: 'min(820px, 82vw)',
     },
     paper: {
         display: 'flex',
-        padding: theme.spacing(3),
+        padding: theme.spacing(2.5),
         color: theme.palette.text.secondary,
+        border: '1px solid #edf0f6',
+        boxShadow: 'none',
     },
 }));
 
@@ -32,7 +34,6 @@ const BillingForm = ({ setOpenPopup }) => {
     const [customer, setCustomer] = useState('');
     const [product, setProduct] = useState('');
     const [cartItems, setCartItems] = useState([]);
-    const [quantity] = useState(1);
 
     let history = useHistory();
 
@@ -56,7 +57,7 @@ const BillingForm = ({ setOpenPopup }) => {
 
     const productAmount = id => {
         const productAmountDetails = products.find(product => product._id === id);
-        return productAmountDetails.price;
+        return productAmountDetails ? Number(productAmountDetails.price) : 0;
     };
 
     const handleCart = e => {
@@ -79,8 +80,8 @@ const BillingForm = ({ setOpenPopup }) => {
             const setDefaultData = {
                 id: product.value,
                 name: product.label,
-                quantity: quantity,
-                subtotal: productAmount(product.value) * quantity,
+                quantity: 1,
+                subtotal: productAmount(product.value),
             };
             setCartItems([setDefaultData, ...cartItems]);
         }
@@ -93,7 +94,7 @@ const BillingForm = ({ setOpenPopup }) => {
                 return {
                     ...item,
                     quantity: item.quantity + count,
-                    subTotal: (item.quantity + count) * productAmount(id),
+                    subtotal: (item.quantity + count) * productAmount(id),
                 };
             } else {
                 return { ...item };
@@ -112,10 +113,12 @@ const BillingForm = ({ setOpenPopup }) => {
         const lineItems = cartItems.map(cartItem => {
             return { product: cartItem.id, quantity: cartItem.quantity };
         });
+        if (!customer || cartItems.length === 0) return;
+
         const formData = {
-            date: date,
+            date,
             customer: customer.value,
-            lineItems: lineItems,
+            lineItems,
         };
         dispatch(addBill(formData, redirectToShowBills));
         setOpenPopup(false);
@@ -124,7 +127,7 @@ const BillingForm = ({ setOpenPopup }) => {
     return (
         <div className={classes.root}>
             <Grid container spacing={3}>
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6}>
                     <Paper style={{ flexDirection: 'column' }} className={classes.paper}>
                         <form onSubmit={handleSubmit}>
                             <Typography
@@ -132,7 +135,7 @@ const BillingForm = ({ setOpenPopup }) => {
                                 color='primary'
                                 gutterBottom
                                 style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                Add to Cart
+                                Build invoice
                             </Typography>
                             <div style={{ marginBottom: '10px' }}>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -157,6 +160,7 @@ const BillingForm = ({ setOpenPopup }) => {
                                     isDisabled={cartItems.length > 0}
                                     onChange={handleCustomerChange}
                                     options={customerLabels}
+                                    placeholder='Select customer'
                                 />
                             </div>
                             <div style={{ marginBottom: '10px', width: '100%' }}>
@@ -165,6 +169,7 @@ const BillingForm = ({ setOpenPopup }) => {
                                     value={product}
                                     onChange={handleProductChange}
                                     options={productLabels}
+                                    placeholder='Select product'
                                 />
                             </div>
                             <div
@@ -178,7 +183,7 @@ const BillingForm = ({ setOpenPopup }) => {
                                     onClick={handleCart}
                                     disabled={!product}
                                     style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }}>
-                                    Add Products
+                                    Add product
                                 </Button>
                             </div>
                             <div>
@@ -186,15 +191,15 @@ const BillingForm = ({ setOpenPopup }) => {
                                     variant='contained'
                                     color='primary'
                                     type='submit'
-                                    disabled={cartItems.length === 0}
+                                    disabled={!customer || cartItems.length === 0}
                                     style={{ width: '100%' }}>
-                                    GENERATE
+                                    Generate invoice
                                 </Button>
                             </div>
                         </form>
                     </Paper>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6}>
                     <CartDetails
                         cartItems={cartItems}
                         handleQuantity={handleQuantity}
