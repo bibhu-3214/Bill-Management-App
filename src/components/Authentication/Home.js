@@ -1,9 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded';
 import PlayCircleOutlineRoundedIcon from '@material-ui/icons/PlayCircleOutlineRounded';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import localData from '../../data/localData';
 
-const Home = () => (
+const Home = () => {
+    const [busy, setBusy] = useState(false);
+    const [error, setError] = useState('');
+    const history = useHistory();
+    const openDemo = async () => {
+        setBusy(true);
+        setError('');
+        try {
+            await localData.openDemo();
+            // Reuse the existing session and Redux bootstrap on reload.
+            window.location.assign(history.createHref({ pathname: '/admin' }));
+        } catch (failure) {
+            setError(failure.message);
+            setBusy(false);
+        }
+    };
+    return (
     <section className='hero page-enter'>
         <div className='hero-grid'>
             <div>
@@ -11,15 +28,20 @@ const Home = () => (
                 <h1>Run your billing with <span>clarity.</span></h1>
                 <p className='hero-copy'>
                     Customers, products, invoices, and business performance in one focused workspace.
-                    Built for teams that value speed, control, and a clean close every month.
+                    Explore a personal frontend project with a sample workspace, or create your own local account.
                 </p>
                 <div className='hero-actions'>
-                    <Link to='/register' className='hero-link primary'>Start for free <ArrowForwardRoundedIcon /></Link>
-                    <Link to='/login' className='hero-link secondary'><PlayCircleOutlineRoundedIcon /> Open workspace</Link>
+                    <button type='button' className='hero-link primary' onClick={openDemo} disabled={busy}>
+                        <PlayCircleOutlineRoundedIcon /> {busy ? 'Preparing sample…' : 'Explore live demo'}
+                    </button>
+                    <Link to='/register' className='hero-link secondary'>Create local account <ArrowForwardRoundedIcon /></Link>
                 </div>
+                <p className='demo-caption'>No signup for the demo. Fictional data. Changes last for this tab’s session.</p>
+                {error && <p role='alert'>{error}</p>}
             </div>
-            <div className='hero-visual' aria-label='Revenue dashboard preview'>
+            <div className='hero-visual' aria-label='Illustrative dashboard preview with sample figures'>
                 <div className='hero-panel surface-card'>
+                    <p className='demo-caption'>Illustrative preview · sample figures</p>
                     <div className='mock-top'>
                         <div><div className='mock-label'>Revenue overview</div><div className='mock-value'>₹84,240</div></div>
                         <span className='trend'>↗ 12.8%</span>
@@ -36,6 +58,7 @@ const Home = () => (
             </div>
         </div>
     </section>
-);
+    );
+};
 
 export default Home;

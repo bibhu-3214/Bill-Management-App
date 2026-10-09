@@ -1,54 +1,71 @@
-# BILL MANAGEMENT APP
+# BillFlow
 
-A web application where users can Register and
-Login, After Login Authenticated users will be able to Add, Update or Delete the details of
-customers, products and bill.
+**A frontend billing workspace built with React and Redux.**
 
-## Local development
+Manage customers, maintain a product catalog, create invoices and inspect a six-month revenue view. A one-click sample workspace makes the project easy to explore without registration or an API server.
+
+[Architecture & trade-offs](docs/ARCHITECTURE.md) · [Validation results](docs/VALIDATION.md) · [Quality workflow](.github/workflows/quality.yml) · [Deployment guide](docs/DEPLOYMENT.md)
+
+## Interface preview
+
+Actual screenshots from the local production build using fictional demo data.
+
+![BillFlow sample dashboard](docs/screenshots/dashboard.jpg)
+
+<details>
+<summary>Invoice workspace and mobile layout</summary>
+
+![Invoice workspace](docs/screenshots/invoices.jpg)
+<img src="docs/screenshots/mobile.jpg" alt="BillFlow mobile dashboard" width="320" />
+
+</details>
+
+## Explore in two minutes
+
+1. Run the app locally using the commands below.
+2. Choose **Explore live demo**. The app opens a fictional workspace with three customers, four products and six invoices.
+3. Open **Customers**, **Products** and **Invoices**. Create an invoice and inspect its details.
+4. Sign out and reopen the demo to reset the sample data.
+
+Demo changes are isolated to the current browser tab's session. Existing local accounts remain separate. To explore persistence, create a local account instead.
+
+## What this project demonstrates
+
+| Area | Implementation |
+| --- | --- |
+| Application state | Redux reducers and async thunks across customer, product and invoice workflows |
+| Forms | Formik/Yup validation and Material UI controls |
+| Billing rules | Price snapshots, valid quantities and protection against deleting referenced records |
+| Dashboard | Workspace totals and month-based revenue aggregation |
+| Demo experience | Signup-free fictional workspace isolated from persistent account data |
+| Local persistence | Encrypted workspace payloads with browser-local accounts |
+
+## Run locally
+
+Use **Node 22** and **Yarn 1.22.22**.
 
 ```bash
-yarn install
-yarn start
+npm install --global yarn@1.22.22
+yarn install --frozen-lockfile
+# macOS / Linux: required by the existing Webpack 4 toolchain
+NODE_OPTIONS=--openssl-legacy-provider yarn start
 ```
 
-This is a frontend-only application. Accounts and workspace records are stored
-locally in the current browser, so no API server or environment configuration is
-required. Workspaces are encrypted with AES-GCM using a key derived from the
-account password with PBKDF2. Sessions expire after eight hours and are cleared
-when the browser tab session ends. Clearing browser storage removes the locally
-saved data.
+Open `http://localhost:3000`. On PowerShell, set `$env:NODE_OPTIONS="--openssl-legacy-provider"` before `yarn start`.
 
-Because there is no trusted server, this local security model cannot protect data
-from someone who controls the browser profile or from malicious code executing in
-the page. Use a server-backed identity and database before handling real financial
-or customer data in production.
+## Quality checks
 
-Run the automated checks with `yarn test --watchAll=false` and create a production
-bundle with `yarn build`.
+```bash
+yarn test --watchAll=false --runInBand
+NODE_OPTIONS=--openssl-legacy-provider yarn build
+```
 
+The GitHub Actions workflow runs tests and a production build on pull requests and pushes to `master`. Tests cover reducers, monthly aggregation, encrypted storage, demo isolation/reset, invoice price snapshots, deletion constraints, invalid quantities and expired sessions.
 
-### 🛠 Tech Stack
+## Scope and limitations
 
-- 💻 JavaScript | ES6
-- 🌐 ReactJS | Redux | Redux-thunk | React Router | Local browser storage
-- 🔧 Git | Markdown
-- 📦 [Material-UI](https://github.com/mui-org/material-ui), [redux](https://github.com/reduxjs/redux), [react-router-dom](https://www.npmjs.com/package/react-router-dom), [sweetalert](https://sweetalert.js.org/), [formik](https://formik.org/), [redux-thunk](https://github.com/reduxjs/redux-thunk), [yup](https://github.com/jquense/yup)
+This is a **personal frontend portfolio project**, not a production accounting product. It has no server-side identity, collaboration, payments or multi-device sync. Account profile metadata is stored locally in plaintext; workspace records are encrypted. Clearing browser data removes local accounts. Never use real financial or customer data in the demo.
 
+The project retains React 17, Material UI 4 and React Scripts 4. Modernization, transactional writes, integer minor-unit currency calculations and broader browser/accessibility testing remain future work. PDF export depends on Kendo React PDF and its licensing requirements.
 
-### Features
-
-- Authentication.
-  - User must signup and signin to verify their identity to use the application.
-  - JWT used for authentication.
-- Admin Tab 
-  - Authenticated users can see the their details like name, email, businessName and address.
-  - They can also see the total customers, total products and total bills length 
-- Customers Tab
-  - Authenticated users can perform CRUD operations on customers.
-  - Search functionality is used to search customers by their names.
-- Products Tab
-  - Authenticated users can perform CRUD operations on Products.
-  - Search functionality is used to search customers by their names.
-- Bill Tab
-  - Authenticated users can add customers, products, products quantity and can delete the data before generating the bill.
-  - After bill generation user will be able to see the details of the bills like customer name, total products, quantity of the products, purchased date and total amount. 
+See [architecture](docs/ARCHITECTURE.md) for the data flow, implementation decisions and production boundaries. No performance score or production-readiness claim is implied.

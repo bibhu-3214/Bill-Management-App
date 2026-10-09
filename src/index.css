@@ -158,3 +158,23 @@ button, a, input { -webkit-tap-highlight-color: transparent; }
     .overview-hero { min-height:auto;padding:32px 24px;border-radius:24px; }.overview-copy h1 { font-size:2.45rem; }.section-heading { align-items:flex-start;flex-direction:column; }.dashboard-welcome { align-items:flex-start;flex-direction:column; }.metric-grid { grid-template-columns:1fr; }.chart-card,.profile-card { padding:19px; }
 }
 @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important; } }
+
+/* Portfolio demo entry and accessible status. */
+button.hero-link { border: 0; font: inherit; font-weight: 750; cursor: pointer; }
+button.hero-link:disabled { opacity: .7; cursor: wait; }
+.hero-link:focus-visible { outline: 3px solid #3032a4; outline-offset: 4px; }
+.demo-caption { color: #536178; font-size: .875rem; line-height: 1.7; }
+.demo-notice { padding: 14px 20px; margin: 0 0 24px; border: 1px solid #bdc9ee; border-radius: 12px; background: #eef2ff; color: #303f65; font-size: .875rem; line-height: 1.6; }
+
+.skip-link { position: fixed; top: -80px; left: 16px; padding: 12px 18px; z-index: 10000; color: white; background: #3032a4; border-radius: 8px; }
+.skip-link:focus { top: 12px; }
+/* Keep intrinsic chart labels from widening the mobile grid. */
+.dashboard-grid > * { min-width: 0; }
+@media (max-width: 900px) {
+    .dashboard-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+    .card-heading { flex-wrap: wrap; gap: 12px; }
+    .secure-chart-bars { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+    .secure-chart-label { white-space: normal; font-size: .6rem; }
+}

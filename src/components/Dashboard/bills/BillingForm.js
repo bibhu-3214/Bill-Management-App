@@ -147,6 +147,7 @@ const BillingForm = ({ setOpenPopup }) => {
                                         format='MM/dd/yyyy'
                                         margin='normal'
                                         name='Add Date'
+                                        label='Invoice date'
                                         value={date}
                                         onChange={handleDateChange}
                                         style={{ width: '100%' }}
@@ -156,6 +157,7 @@ const BillingForm = ({ setOpenPopup }) => {
                             <div style={{ marginBottom: '10px', width: '100%' }}>
                                 <Select
                                     name='customer'
+                                    aria-label='Select customer'
                                     value={customer}
                                     isDisabled={cartItems.length > 0}
                                     onChange={handleCustomerChange}
@@ -166,6 +168,7 @@ const BillingForm = ({ setOpenPopup }) => {
                             <div style={{ marginBottom: '10px', width: '100%' }}>
                                 <Select
                                     name='product'
+                                    aria-label='Select product'
                                     value={product}
                                     onChange={handleProductChange}
                                     options={productLabels}

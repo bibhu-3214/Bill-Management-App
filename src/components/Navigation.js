@@ -25,7 +25,7 @@ function Navigation({ history }) {
 
     const navItem = (to, label, icon, exact = false) => (
         <li>
-            <NavLink className='nav-link' activeClassName='active' exact={exact} to={to}>
+            <NavLink aria-label={label} className='nav-link' activeClassName='active' exact={exact} to={to}>
                 {icon}<span>{label}</span>
             </NavLink>
         </li>

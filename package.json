@@ -55,5 +55,11 @@
          "last 1 firefox version",
          "last 1 safari version"
       ]
+   },
+   "resolutions": {
+      "**/postcss-safe-parser/postcss": "8.4.49"
+   },
+   "engines": {
+      "node": ">=22 <25"
    }
 }

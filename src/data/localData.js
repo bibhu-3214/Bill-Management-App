@@ -1,3 +1,6 @@
+import { createDemoWorkspace } from './demoWorkspace';
+
+const DEMO_DATABASE_KEY = 'billflow:demo:v1';
 const DATABASE_KEY = 'billflow:database:v1';
 const SESSION_KEY = 'billflow:session:v2';
 const AUTH_VERSION = 2;
@@ -27,7 +30,7 @@ const emptyDatabase = () => ({ users: [], workspaces: {} });
 
 const readDatabase = () => {
     try {
-        const stored = localStorage.getItem(DATABASE_KEY);
+        const stored = sessionStorage.getItem(DEMO_DATABASE_KEY) || localStorage.getItem(DATABASE_KEY);
         if (!stored) return emptyDatabase();
 
         const database = JSON.parse(stored);
@@ -40,7 +43,13 @@ const readDatabase = () => {
     }
 };
 
-const writeDatabase = database => localStorage.setItem(DATABASE_KEY, JSON.stringify(database));
+const writeDatabase = database => {
+    if (sessionStorage.getItem(DEMO_DATABASE_KEY)) {
+        sessionStorage.setItem(DEMO_DATABASE_KEY, JSON.stringify(database));
+    } else {
+        localStorage.setItem(DATABASE_KEY, JSON.stringify(database));
+    }
+};
 
 const deriveCredentials = async (password, salt) => {
     requireWebCrypto();
@@ -110,6 +119,7 @@ const decryptWorkspace = async (encryptedWorkspace, keyBytes) => {
 
 const clearSession = () => {
     sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(DEMO_DATABASE_KEY);
     localStorage.removeItem('token');
 };
 
@@ -185,6 +195,24 @@ const localData = {
     },
 
     clearSession,
+
+    async openDemo() {
+        if (readSession()) throw new Error('Sign out before opening the sample workspace.');
+        const key = randomBytes(32);
+        const user = {
+            _id: 'demo_user', username: 'Alex', email: 'alex@example.com',
+            businessName: 'Studio North — Sample', address: 'Fictional workspace · India', isDemo: true,
+        };
+        const workspace = await encryptWorkspace(createDemoWorkspace(), key);
+        try {
+            sessionStorage.setItem(DEMO_DATABASE_KEY, JSON.stringify({ users: [user], workspaces: { [user._id]: workspace } }));
+            createSession(user._id, key);
+        } catch (error) {
+            clearSession();
+            throw error;
+        }
+        return { user };
+    },
 
     async register(values) {
         const database = readDatabase();
