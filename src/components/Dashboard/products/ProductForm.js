@@ -1,122 +1,31 @@
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/styles';
-import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { addProduct, editProduct } from '../../../Redux/Actions/productAction';
+import EntityEditor from '../../EntityEditor';
 
-const useStyles = makeStyles(() => ({
-   root: {
-      width: 'min(460px, 100%)',
-      margin: '0 auto',
-      '& > * + *': {
-         marginTop: '20px',
-      },
-   },
-}));
-
-const ProductForm = (props) => {
-   const classes = useStyles();
-   const { editData, setOpenPopup } = props;
-   const { _id, name, price } = editData ? editData : {};
-   const dispatch = useDispatch();
-
-   const initialValues = {
-      name: name ? name : '',
-      price: price ? price : '',
-   };
-
-   const onSubmit = (values) => {
-      if (_id) {
-         dispatch(editProduct(values, _id));
-      } else {
-         dispatch(addProduct(values));
-      }
-      setOpenPopup(false);
-   };
-
-   const validationSchema = yup.object({
-      name: yup.string().min(3, 'Use at least 3 characters').required('Name is required'),
-      price: yup.number().typeError('Enter a valid price').required('Price is required').positive('Price must be positive'),
-   });
-
-   const formik = useFormik({
-      initialValues,
-      onSubmit,
-      validationSchema,
-   });
-
-   return (
-      <div className='modal-form'>
-         <Typography
-            variant="h4"
-            color="primary"
-            gutterBottom
-            style={{ marginBottom: '30px' }}
-         >
-            {_id ? 'Edit Product' : 'Add Product'}
-         </Typography>
-         <form
-            className={classes.root}
-            noValidate
-            autoComplete="off"
-            onSubmit={formik.handleSubmit}
-         >
-            <div>
-               <TextField
-                  required
-                  label="Name"
-                  type="text"
-                  name="name"
-                  placeholder="Enter Product Name"
-                  size="small"
-                  variant="outlined"
-                  fullWidth
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.name}
-               />
-               {formik.touched.name && formik.errors.name ? (
-                  <div className='field-error'>{formik.errors.name}</div>
-               ) : null}
-            </div>
-            <div>
-               <TextField
-                  required
-                  label="Price"
-                  type="number"
-                  name="price"
-                  placeholder="enter your price"
-                  size="small"
-                  variant="outlined"
-                  fullWidth
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.price}
-               />
-               {formik.touched.price && formik.errors.price ? (
-                  <div className='field-error'>{formik.errors.price}</div>
-               ) : null}
-            </div>
-            <div>
-               <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  style={{
-                     width: '100%',
-                     marginTop: '10px',
-                     marginBottom: '30px',
-                  }}
-               >
-                  {_id ? 'Save changes' : 'Add product'}
-               </Button>
-            </div>
-         </form>
-      </div>
-   );
-};
-
-export default ProductForm;
+const schema = yup.object({
+    name: yup.string().trim().min(2, 'Use at least 2 characters').max(120).required('Item name is required'),
+    price: yup.number().typeError('Enter a valid price').required('Price is required').positive('Price must be positive'),
+    hsn: yup.string().matches(/^\d{4,8}$/, { message: 'Use 4–8 digits', excludeEmptyString: true }),
+    gstRate: yup.number().transform((value, original) => original === '' ? undefined : value).typeError('Enter a number').min(0).max(40),
+    unit: yup.string().trim().required('Unit is required').max(12), description: yup.string().max(1000),
+});
+const sections = [
+    { title: 'Catalog identity', description: 'Make the right item easy to find.', fields: [
+        { key: 'name', label: 'Product / service name', required: true, wide: true },
+        { key: 'sku', label: 'SKU / item code', maxLength: 60, hint: 'Optional internal reference' },
+        { key: 'category', label: 'Category', maxLength: 80, hint: 'For example, services or supplies' },
+        { key: 'description', label: 'Internal description', multiline: true, wide: true, maxLength: 1000, hint: 'Catalog reference only; not printed on invoices' },
+    ] },
+    { title: 'Pricing & tax defaults', description: 'Tax-exclusive pricing, ready for your next invoice.', fields: [
+        { key: 'price', label: 'Base price (INR)', type: 'number', required: true, inputProps: { min: 0.01, step: 0.01 } },
+        { key: 'unit', label: 'Unit', required: true, maxLength: 12, hint: 'NOS, HRS, KG or your preferred unit' },
+        { key: 'hsn', label: 'HSN / SAC', maxLength: 8, hint: 'Optional; use 4–8 digits' },
+        { key: 'gstRate', label: 'Default GST (%)', type: 'number', inputProps: { min: 0, max: 40, step: 0.01 }, hint: 'Confirm the applicable classification and rate' },
+    ] },
+];
+export default function ProductForm({ editData, setOpenPopup }) {
+    const dispatch = useDispatch();
+    const initialValues = { name: editData?.name || '', price: editData?.price ?? '', sku: editData?.sku || '', category: editData?.category || '', description: editData?.description || '', hsn: editData?.hsn || '', gstRate: editData?.gstRate ?? '', unit: editData?.unit || 'NOS' };
+    return <EntityEditor kind='item' editing={Boolean(editData?._id)} initialValues={initialValues} validationSchema={schema} sections={sections} subtitle='Build a reusable catalog with clear pricing and dependable invoice defaults.' onClose={setOpenPopup} onSave={values => dispatch(editData?._id ? editProduct(values, editData._id) : addProduct(values))} />;
+}

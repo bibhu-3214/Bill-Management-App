@@ -7,8 +7,9 @@ const showError = error => Swal.fire('Unable to update products', error.message,
 export const addProduct = formData => async dispatch => {
     try {
         dispatch({ type: ADD_PRODUCT, payload: await localData.addProduct(formData) });
+        return { ok: true };
     } catch (error) {
-        showError(error);
+        return { ok: false, error: error.message };
     }
 };
 
@@ -31,7 +32,8 @@ export const getProducts = () => async dispatch => {
 export const editProduct = (values, id) => async dispatch => {
     try {
         dispatch({ type: EDIT_PRODUCT, payload: await localData.editProduct(id, values) });
+        return { ok: true };
     } catch (error) {
-        showError(error);
+        return { ok: false, error: error.message };
     }
 };

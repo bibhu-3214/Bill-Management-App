@@ -21,7 +21,7 @@ export default function ProductContainer() {
 
     useEffect(() => {
         const query = searchInput.trim().toLowerCase();
-        const results = products.filter(product => product.name.toLowerCase().includes(query));
+        const results = products.filter(product => `${product.name} ${product.sku || ''} ${product.category || ''}`.toLowerCase().includes(query));
         setSearchResult(results);
     }, [products, searchInput]);
 
@@ -83,7 +83,7 @@ export default function ProductContainer() {
                     )}
                 </div>
             </Paper>
-            <Popup title="Product Form" openPopup={openPopup} setOpenPopup={setOpenPopup}>
+            <Popup title="Catalog studio" openPopup={openPopup} setOpenPopup={setOpenPopup}>
                 <ProductForm setOpenPopup={setOpenPopup} />
             </Popup>
         </section>

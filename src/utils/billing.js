@@ -8,7 +8,7 @@ export const getMonthlySales = (bills, monthCount = 6, now = moment()) => {
     return months.map(month => {
         const total = bills.reduce((sum, bill) => {
             const billDate = moment(bill.date);
-            return billDate.isSame(month, 'month') ? sum + Number(bill.total || 0) : sum;
+            return !bill.cancellation && !bill.creditNote && billDate.isSame(month, 'month') ? sum + Number(bill.total || 0) : sum;
         }, 0);
 
         return [month.format('MMM YYYY'), total];

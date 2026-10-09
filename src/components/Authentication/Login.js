@@ -6,6 +6,7 @@ import { login } from '../../Redux/Actions/usersAction';
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import RestoreBackup from './RestoreBackup';
 
 export default function Login({ history }) {
     const dispatch = useDispatch();
@@ -49,6 +50,7 @@ export default function Login({ history }) {
                         <Button color='primary' variant='contained' type='submit'>Open workspace</Button>
                     </form>
                     <div className='auth-foot'>New to BillFlow? <Link to='/register'>Create an account</Link></div>
+                    <RestoreBackup />
                 </div>
             </section>
         </div>

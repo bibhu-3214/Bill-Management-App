@@ -7,7 +7,7 @@ const BarChart = () => {
     const maximum = Math.max(...chartData.map(([, value]) => value), 1);
 
     return (
-        <div className='secure-chart' role='img' aria-label='Revenue totals for the last six months'>
+        <div className='secure-chart' role='img' aria-label='Invoice totals including tax for the last six months'>
             <div className='secure-chart-grid' aria-hidden='true'><span /><span /><span /><span /></div>
             <div className='secure-chart-bars'>
                 {chartData.map(([month, value], index) => (

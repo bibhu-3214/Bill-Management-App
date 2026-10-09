@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -11,10 +11,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import ConfirmDialog from './ConfirmDialog';
 import ActionButton from '../../controls/ActionButton';
 import { getBillById, removeBill } from '../../../Redux/Actions/billAction';
-import { IconButton } from '@material-ui/core';
+import { IconButton, TablePagination } from '@material-ui/core';
 import VisibilityTwoToneIcon from '@material-ui/icons/VisibilityTwoTone';
 import Popup from '../../Popup';
 import ShowBills from './ShowBills';
+import { money, paymentSummary } from '../../../utils/indiaBilling';
 
 const useStyles1 = makeStyles(theme => ({
     table: {
@@ -46,6 +47,9 @@ const BillList = ({ searchResult }) => {
     const classes = useStyles();
     const classes1 = useStyles1();
     const dispatch = useDispatch();
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
+    useEffect(() => setPage(0), [searchResult]);
     const customers = useSelector(state => state.customers);
     const [openPopup, setOpenPopup] = useState(false);
     const [confirmDialog, setConfirmDialog] = useState({
@@ -79,24 +83,27 @@ const BillList = ({ searchResult }) => {
                     <TableHead>
                         <TableRow>
                             <TableCell>CUSTOMER NAME</TableCell>
+                            <TableCell>INVOICE / DUE</TableCell>
                             <TableCell>TOTAL AMOUNT</TableCell>
+                            <TableCell>STATUS / BALANCE</TableCell>
                             <TableCell>DETAILS</TableCell>
                             <TableCell>ACTION</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {customers.length > 0 &&
-                            searchResult.map(bill => (
+                        {searchResult.slice(page * pageSize, (page + 1) * pageSize).map(bill => (
                                 <TableRow key={bill._id} hover>
-                                    <TableCell>{CustomerNames(bill.customer)}</TableCell>
-                                    <TableCell>{bill.total}</TableCell>
+                                    <TableCell>{bill.customerSnapshot?.name || CustomerNames(bill.customer)}</TableCell>
+                                    <TableCell>{bill.invoiceNumber || 'Legacy'}<br />{bill.dueDate || 'No due date'}</TableCell>
+                                    <TableCell>{money(bill.total)}</TableCell>
+                                    <TableCell><span className={'payment-badge status-' + paymentSummary(bill).status.toLowerCase().replace(' ', '-')}>{paymentSummary(bill).status}</span><br />{money(paymentSummary(bill).balance)}</TableCell>
                                     <TableCell>
-                                        <IconButton color='primary' onClick={() => showBillDetails(bill._id)}>
+                                        <IconButton aria-label={'View invoice ' + (bill.invoiceNumber || bill._id)} color='primary' onClick={() => showBillDetails(bill._id)}>
                                             <VisibilityTwoToneIcon />
                                         </IconButton>
                                     </TableCell>
                                     <TableCell style={{ display: 'flex' }}>
-                                        <ActionButton
+                                        {!bill.invoiceNumber && !bill.payments?.length && !bill.cancellation && !bill.creditNote && <ActionButton
                                             aria-label='delete'
                                             color='secondary'
                                             onClick={() => {
@@ -107,13 +114,14 @@ const BillList = ({ searchResult }) => {
                                                 });
                                             }}>
                                             <DeleteIcon />
-                                        </ActionButton>
+                                        </ActionButton>}
                                     </TableCell>
                                 </TableRow>
                             ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination component='div' count={searchResult.length} page={Math.min(page, Math.max(0, Math.ceil(searchResult.length / pageSize) - 1))} rowsPerPage={pageSize} rowsPerPageOptions={[10, 25, 50]} onPageChange={(event, next) => setPage(next)} onRowsPerPageChange={event => { setPageSize(Number(event.target.value)); setPage(0); }} />
             <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
                 <ShowBills />
             </Popup>

@@ -14,6 +14,8 @@ import ConfirmDialog from './ConfirmDialog';
 import Popup from '../../Popup';
 import ActionButton from '../../controls/ActionButton';
 import CustomerForm from './CustomerForm';
+import CustomerAccount from './CustomerAccount';
+import { money } from '../../../utils/indiaBilling';
 
 const useStyles1 = makeStyles(theme => ({
     table: {
@@ -44,6 +46,7 @@ const CustomerList = ({ searchResult }) => {
     const classes = useStyles();
     const classes1 = useStyles1();
     const dispatch = useDispatch();
+    const [account, setAccount] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
     const [editData, setEditData] = useState({});
     const [toggle, setToggle] = useState(false);
@@ -80,7 +83,7 @@ const CustomerList = ({ searchResult }) => {
                             <TableCell>CUSTOMER NAME</TableCell>
                             <TableCell>EMAIL</TableCell>
                             <TableCell>CONTACT</TableCell>
-                            <TableCell>STATUS</TableCell>
+                            <TableCell>ACCOUNT BALANCE</TableCell>
                             <TableCell align='right'>ACTIONS</TableCell>
                         </TableRow>
                     </TableHead>
@@ -90,12 +93,12 @@ const CustomerList = ({ searchResult }) => {
                                 <TableCell>
                                     <div className='entity-cell'>
                                         <span className='entity-avatar'>{customer.name.charAt(0).toUpperCase()}</span>
-                                        <div><strong>{customer.name}</strong><span>Customer profile</span></div>
+                                        <div><button className='text-action' onClick={() => setAccount(customer)}>{customer.name}</button><span>{customer.invoiceCount || 0} invoices · {customer.lastInvoice || 'No billing history'}</span></div>
                                     </div>
                                 </TableCell>
                                 <TableCell><span className='contact-value'>{customer.email}</span></TableCell>
                                 <TableCell><span className='contact-value'>{customer.mobile}</span></TableCell>
-                                <TableCell><span className='status-pill'><i /> Active</span></TableCell>
+                                <TableCell><strong>{money(customer.outstanding || 0)}</strong><br /><span className={customer.overdue > 0 ? 'queue-age danger' : 'queue-age'}>{customer.overdue > 0 ? money(customer.overdue) + ' overdue' : 'No overdue balance'}</span></TableCell>
                                 <TableCell align='right'>
                                     <div className='table-actions'>
                                     <ActionButton
@@ -111,7 +114,7 @@ const CustomerList = ({ searchResult }) => {
                                             setConfirmDialog({
                                                 isOpen: true,
                                                 title: 'Are you sure to delete this record?',
-                                                subTitle: 'This Record is being Used in Bill',
+                                                subTitle: 'Customers linked to invoices are protected from deletion. Otherwise, this permanently removes the profile.',
                                                 onConfirm: () => {
                                                     handleRemove(customer._id);
                                                 },
@@ -126,8 +129,9 @@ const CustomerList = ({ searchResult }) => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Popup title='Customer account' openPopup={Boolean(account)} setOpenPopup={() => setAccount(null)}>{account && <CustomerAccount customer={account} />}</Popup>
             {Object.keys(editData).length > 0 && toggle ? (
-                <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
+                <Popup title='Customer studio' openPopup={openPopup} setOpenPopup={setOpenPopup}>
                     <CustomerForm editData={editData} handleToggle={handleToggle} setOpenPopup={setOpenPopup} />
                 </Popup>
             ) : null}

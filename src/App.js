@@ -11,6 +11,9 @@ import CustomerContainer from './components/Dashboard/customers/CustomerContaine
 import ProductContainer from './components/Dashboard/products/ProductContainer';
 import BillContainer from './components/Dashboard/bills/BillContainer';
 import ShowBillsById from './components/Dashboard/bills/ShowBillsById';
+import BusinessSettings from './components/Dashboard/BusinessSettings';
+import CustomerStatement from './components/Dashboard/customers/CustomerStatement';
+import Receivables from './components/Dashboard/Receivables';
 
 const App = () => {
     const isDemo = useSelector(state => state.users.userDetails.isDemo);
@@ -23,6 +26,9 @@ const App = () => {
                     <strong>Sample workspace</strong> · Fictional data. Changes stay in this tab. Sign out and reopen the demo to reset.
                 </aside>}
                 <Switch>
+                    <PrivateRoute path='/receivables' component={Receivables} exact />
+                    <PrivateRoute path='/statements' component={CustomerStatement} exact />
+                    <PrivateRoute path='/settings' component={BusinessSettings} exact />
                     <PrivateRoute path='/billdetails/:id' component={ShowBillsById} exact />
                     <PrivateRoute path='/billing' component={BillContainer} exact />
                     <PrivateRoute path='/product' component={ProductContainer} exact />

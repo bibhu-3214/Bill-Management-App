@@ -9,14 +9,21 @@ import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import { useSelector } from 'react-redux';
 import BarChart from './BarChart';
+import { Button } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { receivableRows } from '../../../utils/receivables';
+import { money } from '../../../utils/indiaBilling';
 
 export default function Admin() {
     const customers = useSelector(state => state.customers);
     const products = useSelector(state => state.products);
     const { bills } = useSelector(state => state.bills);
     const { userDetails } = useSelector(state => state.users);
-    const revenue = bills.reduce((sum, bill) => sum + Number(bill.total || 0), 0);
-    const averageInvoice = bills.length ? Math.round(revenue / bills.length) : 0;
+    const revenue = bills.filter(bill => !bill.cancellation && !bill.creditNote).reduce((sum, bill) => sum + Number(bill.total || 0), 0);
+    const activeCount = bills.filter(bill => !bill.cancellation && !bill.creditNote).length;
+    const averageInvoice = activeCount ? Math.round(revenue / activeCount) : 0;
+    const openInvoices = receivableRows(bills, customers).filter(row => row.balance > 0);
+    const overdueInvoices = openInvoices.filter(row => row.overdueDays > 0);
     const today = new Intl.DateTimeFormat('en-IN', {
         weekday: 'long',
         day: 'numeric',
@@ -46,9 +53,9 @@ export default function Admin() {
             tone: 'amber',
         },
         {
-            label: 'Total revenue',
+            label: 'Total invoiced',
             value: `₹${revenue.toLocaleString('en-IN')}`,
-            detail: 'All-time recorded revenue',
+            detail: 'Invoice value including tax',
             icon: <TrendingUpRoundedIcon />,
             tone: 'blue',
         },
@@ -62,24 +69,23 @@ export default function Admin() {
                 <div className='overview-copy'>
                     <span className='overview-date'>{today}</span>
                     <h1>Good to see you, {userDetails.username || 'there'}.</h1>
-                    <p>Your business is organized and ready for what’s next.</p>
+                    <p>{overdueInvoices.length ? `${overdueInvoices.length} overdue invoices need your attention.` : 'A clear view of your billing, balances and next steps.'}</p>
                 </div>
                 <div className='overview-revenue'>
-                    <span>Revenue recorded</span>
+                    <span>Total invoiced · including tax</span>
                     <strong>₹{revenue.toLocaleString('en-IN')}</strong>
                     <div><ArrowUpwardRoundedIcon /> Across {bills.length} invoice{bills.length === 1 ? '' : 's'}</div>
                 </div>
             </header>
             <div className='section-heading'>
                 <div><span>At a glance</span><h2>Workspace performance</h2></div>
-                <div className='live-chip'><span /> Synced locally</div>
+                <div className='live-chip'><span /> Stored on this browser</div>
             </div>
             <div className='metric-grid'>
                 {metrics.map((metric, index) => (
                     <article className='metric-card surface-card' style={{ animationDelay: `${index * 70}ms` }} key={metric.label}>
                         <div className='metric-card-top'>
                             <div className={`metric-icon ${metric.tone}`}>{metric.icon}</div>
-                            <span className='metric-menu'>•••</span>
                         </div>
                         <span>{metric.label}</span>
                         <strong>{metric.value}</strong>
@@ -87,10 +93,11 @@ export default function Admin() {
                     </article>
                 ))}
             </div>
+            <div className='collection-callout'><div><span className='workspace-kicker'>YOUR NEXT ACTION</span><h2>{money(overdueInvoices.reduce((sum, row) => sum + row.balance, 0))} awaiting follow-up</h2><p>{overdueInvoices.length} overdue invoices · {openInvoices.length} open invoices overall</p></div><Button component={Link} to='/receivables' variant='contained' color='primary'>Review collections</Button></div>
             <div className='dashboard-grid'>
                 <article className='chart-card surface-card'>
                     <div className='card-heading'>
-                        <div><span>Performance</span><h2>Revenue trend</h2></div>
+                        <div><span>Performance</span><h2>Invoice value trend</h2></div>
                         <span className='period-chip'>Last 6 months</span>
                     </div>
                     <BarChart />

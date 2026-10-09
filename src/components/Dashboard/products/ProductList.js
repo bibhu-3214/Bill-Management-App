@@ -80,7 +80,7 @@ const ProductList = ({ searchResult }) => {
                         <TableRow>
                             <TableCell>PRODUCT NAME</TableCell>
                             <TableCell>PRICE</TableCell>
-                            <TableCell>STATUS</TableCell>
+                            <TableCell>TAX DEFAULTS</TableCell>
                             <TableCell align='right'>ACTIONS</TableCell>
                         </TableRow>
                     </TableHead>
@@ -90,11 +90,11 @@ const ProductList = ({ searchResult }) => {
                                 <TableCell>
                                     <div className='entity-cell'>
                                         <span className='entity-avatar product-avatar'><LocalMallRoundedIcon /></span>
-                                        <div><strong>{product.name}</strong><span>Catalog item</span></div>
+                                        <div><strong>{product.name}</strong><span>{product.sku || 'No SKU'} · {product.category || 'Uncategorised'}</span></div>
                                     </div>
                                 </TableCell>
-                                <TableCell><span className='price-value'>₹{Number(product.price).toLocaleString('en-IN')}</span></TableCell>
-                                <TableCell><span className='status-pill'><i /> Active</span></TableCell>
+                                <TableCell><span className='price-value'>₹{Number(product.price).toLocaleString('en-IN')}</span><br /><small>per {product.unit || 'NOS'}</small></TableCell>
+                                <TableCell><span>{product.gstRate === '' || product.gstRate == null ? 'GST not set' : product.gstRate + '% GST'}</span><br /><small>{product.hsn ? 'HSN/SAC ' + product.hsn : 'No HSN/SAC'}</small></TableCell>
                                 <TableCell align='right'>
                                     <div className='table-actions'>
                                     <ActionButton
@@ -111,7 +111,7 @@ const ProductList = ({ searchResult }) => {
                                             setConfirmDialog({
                                                 isOpen: true,
                                                 title: 'Are you sure to delete this record?',
-                                                subTitle: 'This Record is being Used in Bill',
+                                                subTitle: 'Items linked to invoices cannot be deleted. Otherwise, this permanently removes the catalog record.',
                                                 onConfirm: () => {
                                                     handleRemove(product._id);
                                                 },
@@ -128,7 +128,7 @@ const ProductList = ({ searchResult }) => {
                 </Table>
             </TableContainer>
             {Object.keys(editData).length > 0 && toggle ? (
-                <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
+                <Popup title='Catalog studio' openPopup={openPopup} setOpenPopup={setOpenPopup}>
                     <ProductForm editData={editData} setOpenPopup={setOpenPopup} />
                 </Popup>
             ) : null}

@@ -7,8 +7,9 @@ const showError = error => Swal.fire('Unable to update customers', error.message
 export const addCustomer = formData => async dispatch => {
     try {
         dispatch({ type: ADD_CUSTOMER, payload: await localData.addCustomer(formData) });
+        return { ok: true };
     } catch (error) {
-        showError(error);
+        return { ok: false, error: error.message };
     }
 };
 
@@ -31,7 +32,8 @@ export const getCustomers = () => async dispatch => {
 export const editCustomer = (values, id) => async dispatch => {
     try {
         dispatch({ type: EDIT_CUSTOMER, payload: await localData.editCustomer(id, values) });
+        return { ok: true };
     } catch (error) {
-        showError(error);
+        return { ok: false, error: error.message };
     }
 };

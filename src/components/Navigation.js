@@ -8,10 +8,12 @@ import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
 import AssessmentRoundedIcon from '@material-ui/icons/AssessmentRounded';
 import Tooltip from '@material-ui/core/Tooltip';
+import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../Redux/Actions/usersAction';
+import WorkspaceSearch from './WorkspaceSearch';
 
 function Navigation({ history }) {
     const dispatch = useDispatch();
@@ -25,7 +27,7 @@ function Navigation({ history }) {
 
     const navItem = (to, label, icon, exact = false) => (
         <li>
-            <NavLink aria-label={label} className='nav-link' activeClassName='active' exact={exact} to={to}>
+            <NavLink className='nav-link' aria-label={label} activeClassName='active' exact={exact} to={to}>
                 {icon}<span>{label}</span>
             </NavLink>
         </li>
@@ -41,10 +43,13 @@ function Navigation({ history }) {
                 <ul className='nav-links'>
                     {isLoggedIn ? (
                         <>
+                            <li><WorkspaceSearch /></li>
                             {navItem('/admin', 'Overview', <DashboardRoundedIcon />, true)}
                             {navItem('/customer', 'Customers', <PeopleAltRoundedIcon />)}
                             {navItem('/product', 'Products', <InventoryRoundedIcon />)}
                             {navItem('/billing', 'Invoices', <ReceiptRoundedIcon />)}
+                            {navItem('/receivables', 'Collections', <AssessmentRoundedIcon />)}
+                            {navItem('/settings', 'Settings', <SettingsRoundedIcon />)}
                             <li className='nav-signout'>
                                 <Tooltip title='Sign out' arrow>
                                     <button className='signout-button' aria-label='Sign out' onClick={handleLogout} type='button'>

@@ -9,6 +9,8 @@ import Input from '../../controls/Input';
 import Search from '@material-ui/icons/Search';
 import CustomerForm from './CustomerForm';
 import PeopleAltRoundedIcon from '@material-ui/icons/PeopleAltRounded';
+import { Link } from 'react-router-dom';
+import { customerAccounts } from '../../../utils/receivables';
 
 export default function CustomerContainer() {
     const [openPopup, setOpenPopup] = useState(false);
@@ -20,9 +22,9 @@ export default function CustomerContainer() {
 
     useEffect(() => {
         const query = searchInput.trim().toLowerCase();
-        const results = customers.filter(customer => customer.name.toLowerCase().includes(query));
+        const results = customerAccounts(customers, bills).filter(customer => `${customer.name} ${customer.company || ''} ${customer.contactPerson || ''} ${customer.email} ${customer.mobile}`.toLowerCase().includes(query));
         setSearchResult(results);
-    }, [customers, searchInput]);
+    }, [customers, bills, searchInput]);
 
     return (
         <section className='workspace-page page-enter'>
@@ -41,6 +43,7 @@ export default function CustomerContainer() {
             <Paper className='data-panel surface-card' elevation={0}>
                 <div>
                     <Toolbar className='data-toolbar'>
+                        <Button component={Link} to='/statements' color='primary'>Customer statements</Button>
                         <Input
                             label="Search customers"
                             size="small"
@@ -69,7 +72,7 @@ export default function CustomerContainer() {
                 </div>
                 <div>
                     {customers.length > 0 ? (
-                        <CustomerList searchResult={searchResult} />
+                        searchResult.length ? <CustomerList searchResult={searchResult} /> : <p className='finance-empty'>No customers match your search.</p>
                     ) : (
                         <Typography
                             variant="h5"
@@ -82,7 +85,7 @@ export default function CustomerContainer() {
                     )}
                 </div>
             </Paper>
-            <Popup title="Customer Form" openPopup={openPopup} setOpenPopup={setOpenPopup}>
+            <Popup title="Customer studio" openPopup={openPopup} setOpenPopup={setOpenPopup}>
                 <CustomerForm setOpenPopup={setOpenPopup} />
             </Popup>
         </section>
