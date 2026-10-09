@@ -11,6 +11,7 @@ import CustomerForm from './CustomerForm';
 import PeopleAltRoundedIcon from '@material-ui/icons/PeopleAltRounded';
 import { Link } from 'react-router-dom';
 import { customerAccounts } from '../../../utils/receivables';
+import FollowUpDesk from '../FollowUpDesk';
 
 export default function CustomerContainer() {
     const [openPopup, setOpenPopup] = useState(false);
@@ -40,6 +41,7 @@ export default function CustomerContainer() {
                     <div><span>New opportunity</span><strong>{Math.max(customers.length - billedCustomers, 0)}</strong></div>
                 </div>
             </header>
+            <FollowUpDesk />
             <Paper className='data-panel surface-card' elevation={0}>
                 <div>
                     <Toolbar className='data-toolbar'>
@@ -85,7 +87,7 @@ export default function CustomerContainer() {
                     )}
                 </div>
             </Paper>
-            <Popup title="Customer studio" openPopup={openPopup} setOpenPopup={setOpenPopup}>
+            <Popup title="Customer studio" size='editor' openPopup={openPopup} setOpenPopup={setOpenPopup}>
                 <CustomerForm setOpenPopup={setOpenPopup} />
             </Popup>
         </section>

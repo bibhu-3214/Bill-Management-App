@@ -29,9 +29,11 @@ test('unsaved edits require confirmation when closing the studio', async () => {
     useDispatch.mockReturnValue(jest.fn());
     function Harness() { const [open, setOpen] = useState(true); return <Popup title='Customer studio' openPopup={open} setOpenPopup={setOpen}><CustomerForm setOpenPopup={setOpen} /></Popup>; }
     render(<Harness />);
+    expect(screen.getByRole('dialog', { name: 'Customer studio' })).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText(/Customer \/ display name/), { target: { value: 'Keep this' } });
     fireEvent.click(screen.getByRole('button', { name: 'Close dialog' }));
     expect(await screen.findByText('Discard unsaved changes?')).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Discard unsaved changes?' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Keep editing' }));
     expect(screen.getByLabelText(/Customer \/ display name/)).toHaveValue('Keep this');
 });

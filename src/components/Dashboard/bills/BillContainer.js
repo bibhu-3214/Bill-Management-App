@@ -7,11 +7,21 @@ import { useSelector } from 'react-redux';
 import Popup from '../../Popup';
 import BillingForm from './BillingForm';
 import BillList from './BillList';
+import InvoiceDrafts from './InvoiceDrafts';
+import SalesPreparation from './SalesPreparation';
 import { receivableRows } from '../../../utils/receivables';
 import { money } from '../../../utils/indiaBilling';
 
 export default function BillContainer() {
     const [openPopup, setOpenPopup] = useState(false);
+    const [editingDraft, setEditingDraft] = useState(null);
+    const [quotationMode, setQuotationMode] = useState(false);
+    const [draftRefresh, setDraftRefresh] = useState(0);
+    const [draftNotice, setDraftNotice] = useState('');
+    const toggleEditor = open => {
+        setOpenPopup(open);
+        if (!open) setDraftRefresh(value => value + 1);
+    };
     const [query, setQuery] = useState('');
     const [status, setStatus] = useState('All');
     const [from, setFrom] = useState('');
@@ -29,9 +39,12 @@ export default function BillContainer() {
     const total = key => rows.reduce((sum, row) => sum + row[key], 0);
     return <section className='workspace-page page-enter finance-workspace'>
         <header className='finance-heading'><div><span className='workspace-kicker'>REVENUE OPERATIONS / INVOICES</span><h1>Every invoice. In focus.</h1><p>Issue with confidence. Track balances. Keep the full history.</p></div>
-            <Button variant='contained' color='primary' startIcon={<AddIcon />} onClick={() => setOpenPopup(true)}>Create invoice</Button></header>
+            <Button variant='contained' color='primary' startIcon={<AddIcon />} onClick={() => { setQuotationMode(false); setEditingDraft(null); setOpenPopup(true); }}>Create invoice</Button></header>
         <div className='finance-metrics'>{[['Outstanding balance', total('balance'), 'Across all open invoices'], ['Recorded payments', total('paid'), 'Manual receipts, net of reversals'], ['Overdue balance', rows.filter(r => r.overdueDays > 0).reduce((sum, r) => sum + r.balance, 0), 'Ready for follow-up']].map(([label, value, detail]) => <article key={label}><span>{label}</span><strong>{money(value)}</strong><small>{detail}</small></article>)}</div>
         <div className='collection-callout'><div><strong>A clearer path to getting paid</strong><p>Review aging balances and prepare a customer reminder.</p></div><Button component={Link} to='/receivables' endIcon={<ArrowForwardRoundedIcon />}>Open collections</Button></div>
+        <SalesPreparation refreshKey={draftRefresh} onChanged={() => setDraftRefresh(value => value + 1)} onCreateQuotation={() => { setQuotationMode(true); setEditingDraft(null); setOpenPopup(true); }} onResumeDraft={draft => { setQuotationMode(false); setEditingDraft(draft); setOpenPopup(true); }} />
+        <InvoiceDrafts refreshKey={draftRefresh} onResume={draft => { setQuotationMode(false); setEditingDraft(draft); setOpenPopup(true); }} />
+        {draftNotice && <p role='status' className='draft-message'>{draftNotice}</p>}
         <section className='finance-panel'>
             <div className='invoice-tabs' role='group' aria-label='Filter invoice status'>{statuses.map(value => <button key={value} aria-pressed={status === value} onClick={() => setStatus(value)} className={status === value ? 'selected' : ''}>{value}<span>{value === 'All' ? rows.length : rows.filter(row => row.status === value).length}</span></button>)}</div>
             <div className='invoice-filter-grid'>
@@ -45,6 +58,6 @@ export default function BillContainer() {
             <div className='result-summary'><span>{filtered.length} of {rows.length} invoices</span><strong>Filtered balance {money(filtered.reduce((sum, r) => sum + r.balance, 0))}</strong></div>
             {filtered.length ? <BillList searchResult={filtered} /> : <div className='finance-empty'><h3>{rows.length ? 'No invoices match this view' : 'Your next sale starts here'}</h3><p>{rows.length ? 'Clear a filter or try another customer name.' : 'Add a customer and a product, then create your first invoice.'}</p>{!rows.length && <Button component={Link} to='/customer'>Set up customers</Button>}</div>}
         </section>
-        <Popup title='Invoice Studio' openPopup={openPopup} setOpenPopup={setOpenPopup}><BillingForm setOpenPopup={setOpenPopup} /></Popup>
+        <Popup title={quotationMode ? 'Quotation studio' : editingDraft ? 'Resume invoice draft' : 'Invoice studio'} size='invoice' openPopup={openPopup} setOpenPopup={toggleEditor}><BillingForm key={editingDraft?._id || (quotationMode ? 'quotation' : 'new')} quotationMode={quotationMode} initialDraft={editingDraft} onQuotationSaved={quote => setDraftNotice(`${quote.number} saved as an offer. No sale was recorded.`)} onTemplateSaved={() => setDraftRefresh(value => value + 1)} onDraftSaved={draft => { setDraftNotice(`“${draft.title}” saved as a draft. No invoice number or receivable was created.`); }} setOpenPopup={toggleEditor} /></Popup>
     </section>;
 }

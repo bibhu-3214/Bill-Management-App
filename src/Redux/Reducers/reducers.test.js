@@ -1,9 +1,14 @@
 import billReducer from './billReducer';
 import customersReducer from './customersReducer';
 import productReducer from './productReducer';
-import { GET_BILL_BY_ID, REMOVE_CUSTOMER, REMOVE_PRODUCT } from '../actionTypes';
+import { ADD_BILL, GET_BILL_BY_ID, REMOVE_CUSTOMER, REMOVE_PRODUCT } from '../actionTypes';
 
 describe('reducers', () => {
+    test('an idempotent invoice issuance retry does not duplicate invoice rows', () => {
+        const bill = { _id: 'b1', invoiceNumber: 'BF/2627/000001' };
+        const first = billReducer(undefined, { type: ADD_BILL, payload: bill });
+        expect(billReducer(first, { type: ADD_BILL, payload: bill }).bills).toEqual([bill]);
+    });
     test('unknown actions preserve state references', () => {
         const products = [{ _id: 'p1' }];
         const customers = [{ _id: 'c1' }];

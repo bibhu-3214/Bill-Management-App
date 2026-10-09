@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, TextField, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
+import { Button, TextField, MenuItem, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
+import WorkspaceDialog from '../WorkspaceDialog';
 import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded';
 import { agingSummary, receivableRows, reminderText } from '../../utils/receivables';
 import { money } from '../../utils/indiaBilling';
+import FollowUpDesk from './FollowUpDesk';
 
 export default function Receivables() {
     const { bills } = useSelector(state => state.bills);
@@ -27,6 +29,7 @@ export default function Receivables() {
     return <section className='workspace-page page-enter finance-workspace'>
         <header className='finance-heading'><div><span className='workspace-kicker'>CASH FLOW / COLLECTIONS</span><h1>Turn invoices into cash flow.</h1><p>Your follow-up queue, ordered by age and outstanding balance.</p></div><Button component={Link} to='/billing' variant='contained' color='primary' endIcon={<ArrowForwardRoundedIcon />}>Invoice workspace</Button></header>
         <div className='finance-metrics'>{[['Total receivables', outstanding, `${rows.length} open invoices`], ['Past due', overdue, 'Prioritise these conversations'], ['Due in the next 7 days', dueSoon, 'Includes invoices due today']].map(([label, amount, detail]) => <article key={label}><span>{label}</span><strong>{money(amount)}</strong><small>{detail}</small></article>)}</div>
+        <FollowUpDesk collectionsOnly />
         <section className='finance-panel'><div className='finance-section-title'><div><span className='workspace-kicker'>AGING ANALYSIS</span><h2>Where your balance sits</h2></div><button className='text-action' onClick={() => setBucket('All')}>Show all</button></div>
             <div className='aging-grid'>{aging.map(group => <button key={group.label} className={'aging-card ' + (bucket === group.label ? 'selected' : '')} aria-pressed={bucket === group.label} onClick={() => setBucket(bucket === group.label ? 'All' : group.label)}><span>{group.label}</span><strong>{money(group.amount)}</strong><div className='aging-track'><i style={{ width: `${outstanding ? group.amount / outstanding * 100 : 0}%` }} /></div><small>{group.count} invoices</small></button>)}</div>
         </section>
@@ -35,6 +38,6 @@ export default function Receivables() {
             {shown.length > 50 && <p className='finance-note'>Showing the first 50 priorities. Narrow your search or age filter for the remaining invoices.</p>}
             {!shown.length && <div className='finance-empty'><h3>{rows.length ? 'No matches in this view' : 'Nothing outstanding'}</h3><p>{rows.length ? 'Try a different age bucket or search.' : 'Unpaid and partially paid invoices will appear here.'}</p></div>}
         </section><p className='finance-note'>Based on manually recorded payments. This is not a bank balance or cash-flow forecast. No reminders are sent automatically.</p>
-        <Dialog open={Boolean(reminder)} onClose={() => setReminder('')} fullWidth maxWidth='sm'><DialogTitle>Review payment reminder</DialogTitle><DialogContent><TextField id='payment-reminder' label='Message' multiline rows={8} fullWidth value={reminder} onChange={e => setReminder(e.target.value)} /><p role='status'>{message}</p></DialogContent><DialogActions><Button onClick={() => setReminder('')}>Close</Button><Button color='primary' onClick={copy}>Copy message</Button></DialogActions></Dialog>
+        <WorkspaceDialog open={Boolean(reminder)} onClose={() => setReminder('')} aria-labelledby='reminder-title'><DialogTitle id='reminder-title'>Review payment reminder</DialogTitle><DialogContent><TextField id='payment-reminder' label='Message' multiline rows={8} fullWidth value={reminder} onChange={e => setReminder(e.target.value)} /><p role='status'>{message}</p></DialogContent><DialogActions><Button onClick={() => setReminder('')}>Close</Button><Button color='primary' onClick={copy}>Copy message</Button></DialogActions></WorkspaceDialog>
     </section>;
 }

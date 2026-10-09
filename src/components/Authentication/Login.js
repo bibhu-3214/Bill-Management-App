@@ -20,6 +20,7 @@ export default function Login({ history }) {
     });
 
     const fieldProps = name => ({
+        id: 'login-' + name,
         name,
         value: formik.values[name],
         onChange: formik.handleChange,

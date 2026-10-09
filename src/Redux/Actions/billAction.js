@@ -27,8 +27,9 @@ export const addBill = (formData, onSuccess) => async dispatch => {
         const bill = await localData.addBill(formData);
         dispatch({ type: ADD_BILL, payload: bill });
         onSuccess(bill._id);
+        return { ok: true, bill };
     } catch (error) {
-        showError(error);
+        return { ok: false, error: error.message };
     }
 };
 

@@ -15,12 +15,14 @@ BillFlow brings the core billing workflow into one focused dashboard. Create a l
 | Customers | Create, search, update, and remove customer records |
 | Products | Maintain a searchable catalog with names and prices |
 | Invoices | Build line-item invoices, calculate totals, review history, and download A4 PDFs |
-| Experience | Responsive Material UI interface, focused empty states, dialogs, notifications, and motion |
+| Experience | Content-sized dialogs, sectioned editors, live invoice review, responsive surfaces, keyboard navigation and reduced-motion support |
 | Data integrity | Prevents customers or products referenced by an invoice from being deleted |
 
 ## Indian invoicing workflow
 
 ### Daily operations workspace
+
+- **Saved invoice drafts:** save incomplete counter orders, search by internal reference/customer, resume, duplicate or remove with confirmation. Drafts are encrypted, included in backups, and excluded from issued invoice totals and receivables. Resuming reviews current catalog prices; missing customers/products require correction before issuance. Saving does not reserve an invoice number. Issuing consumes the draft atomically; retries reuse the same invoice, and revision checks reject stale editors. Copies use today's invoice date and require a new due date. Up to 200 drafts and 100 items per draft are supported. This is explicit Save draft, not background autosave; navigating away without saving can lose edits. It does not reserve or deduct stock.
 
 - **Customer and catalog studios:** sectioned editors with live previews, inline validation, save-state feedback and unsaved-change confirmation. Failed saves retain your entries. Customer profiles store company/contact details, billing address, state, GSTIN and internal notes; selecting a customer prefills invoice billing defaults. Catalog items support SKU, category and an internal description alongside pricing/tax defaults. Internal notes and descriptions are not printed on invoices.
 
@@ -31,6 +33,62 @@ BillFlow brings the core billing workflow into one focused dashboard. Create a l
 - **Quick search:** press `Ctrl+K` or `⌘K` to find pages, customers and invoices. Use Tab to select a result or Enter to open the first match.
 
 All insights use the records in this browser. Collections are not bank reconciliation or a cash-flow forecast. Multi-user roles, automatic reminder delivery, inventory movements, purchase accounting and recurring billing are not implemented.
+
+### Retailer feature delivery plan
+
+The current target is Indian retailers/traders, with encrypted browser-only storage. Features are delivered one milestone at a time; a planned capability is not advertised as available.
+
+| Milestone | Scope | Acceptance gate | Status |
+| --- | --- | --- | --- |
+| 1. Saved invoice drafts | Incomplete orders, search/resume, duplication, confirmed deletion, backup recovery | No numbering/revenue side effects; atomic issuance; retry and stale-edit protection; failed saves retain entries; desktop/tablet/phone review | Implemented and reviewed |
+| 2. Quotations → invoices | Validity date, customer/item/tax details, browser-print quotation, manually recorded accepted/rejected status, linked conversion | Expiry/state checks; one invoice per conversion; accepted prices and snapshots retained; quotations excluded from sales | Workflow implemented and reviewed; target-browser print-preview QA pending |
+| 3. Reusable templates | Named item bundles, quantities, discounts and notes, create new draft from template | No old customer, invoice number or date copied; removed items/current prices reviewed; template deletion never rewrites existing records | Implemented and reviewed |
+| 4. Cross-page operations | Manual stock counts/adjustments, low-stock attention, customer follow-ups/outcomes, catalog-quality review, recovery coverage | Versioned history; failed-save retention; no invoice stock deductions; backup and responsive checks | Implemented and reviewed |
+| 5. Deeper retail operations | Supplier purchases, expenses, returns, fractional units and stock valuation | Confirm purchasing, valuation and return rules before implementation | Future scope |
+| 6. Production platform | Shared database, server-side authorization, transactional numbering, roles and delivery integrations | Separate backend decision, tested recovery and deployment/security review | Deferred; frontend-only boundary remains |
+
+For every milestone: implement data rules first, add migration/backup compatibility, build the workflow UI, run automated failure-path tests, inspect responsive/keyboard/reduced-motion behavior, and sync README/architecture guidance. Existing GST limitations remain in effect; this roadmap does not claim statutory compliance or online customer approval. Reference workflows: [Zoho Invoice](https://www.zoho.com/in/invoice/features/) and [Vyapar business management](https://vyaparapp.in/business-management-software).
+
+### Sales preparation workflows
+
+Under **Invoices → Sales preparation**, create an immutable quotation with a separate `QT` reference, customer/address, item details, discounts, GST treatment, notes and validity date (15 days by default). Review it, use **Print quotation** for the browser print dialog, and manually record acceptance or rejection with confirmation. Decisions cannot be undone; create a new quotation for revised terms. Accepted, unexpired offers can be converted once, after confirming invoice/payment dates. Conversion uses quoted prices and saved party details even if the catalog changes, but still requires available customer/product references. A converted offer links to its invoice; repeated conversion attempts reuse that invoice rather than allocating another number. Offers never appear in sales/receivables until conversion. Printing uses native browser support, not the Kendo PDF exporter; printer settings and page breaks should be checked in the target browser before sending a document.
+
+In **Create invoice**, add items, give the internal reference a useful template name, and choose **Save item template**. This saves quantities, discounts, item tax/unit fields and notes without closing or issuing the current order. Under **Item templates**, choose **Create draft** to review a fresh order at current catalog prices and current supplier defaults. Customer/address/GSTIN/place-of-supply and payment due date are blank; no old invoice identifiers are copied. Removing a template requires confirmation and leaves existing drafts/invoices untouched. Replace obsolete templates by saving a new bundle; template editing and automatic recurring invoices are not implemented.
+
+Quotations and templates are encrypted and included in backup previews/restoration; older backups remain supported. Each collection supports up to 200 records, with up to 100 items per record. Quotations are retained as history and cannot be deleted through the UI. These features do not provide online approvals, electronic signatures, inventory movements, automatic delivery or multi-user authorization.
+
+### Cross-page operations
+
+- **Products:** the manual stock desk distinguishes untracked (unknown) from counted stock. Set a whole-unit opening count, record positive/negative adjustments with a required reason, or update the reorder threshold without moving stock. Balances cannot fall below zero or exceed 1,000,000 units. Movement history is retained, expected revisions reject stale editors, and products with stock history cannot be deleted. Changing the catalog unit does not convert old stock; restore the tracked unit before making new adjustments. Limits are 1,000 tracked products and 200 movements per product; reaching a limit never silently removes history. This is not stock valuation, procurement or fractional-unit inventory. Invoices, credits, drafts and quotations do not reserve or deduct stock.
+- **Catalog quality:** optional-detail filters flag missing SKU, unit/category and case-insensitive duplicate SKUs. These are setup suggestions, not GST or product-classification validation. Sum of list prices is not inventory value.
+- **Customers:** schedule dated, prioritised follow-ups for collection, order enquiry or account review, with an intended conversation channel and internal preparation notes. Review/reschedule, complete with an outcome, and reopen with a reason; history remains available. Customer account views scope the desk to that relationship. Limits are 500 tasks and 100 history events per task. Completed tasks are retained rather than deleted. If a customer is removed, their saved name/history remains visible, but scheduling changes require an available customer.
+- **Collections:** the same persisted tasks are filtered to collection conversations. No payment, invoice balance or bank reconciliation is changed by marking a conversation complete.
+- **Overview:** low-stock priorities and upcoming customer conversations link to their operational desks. Untracked products are not presented as known available stock.
+- **Settings/recovery:** backup coverage includes stock balances/movements and follow-up/outcome history. Coverage counts do not prove that a backup was downloaded or successfully restored. Validate recovery independently.
+
+All tasks are browser-local: no calls, WhatsApp/email delivery or background notifications are triggered. Same-page desks refresh after a saved follow-up; other pages reload their data when opened. Older accounts/backups without these collections remain supported. Manual stock and follow-up mutations use the encrypted queued write path and revision checks; they are not server-enforced roles or multi-device synchronization.
+
+### Interface standards
+
+Premium, polished design is the default for every page and new feature. Operational pages use a centered 1,104px maximum canvas, settings 880px, and document pages 960px. Calm white headers, compact metrics, bounded search controls, readable text measures and restrained shadows take priority over oversized banners or decorative motion. Phone layouts retain 16px page gutters and responsive controls rather than compressing desktop content.
+
+The sticky header separates brand/workspace identity and utilities from a dedicated navigation rail. It shows the actual business/account name, labels sample versus local workspaces, keeps search and sign-out separate, and links the account identity to business settings. Mobile navigation retains readable labels in a horizontally scrollable rail rather than hiding destinations behind tiny icons. Active routes, keyboard focus and reduced-motion preferences remain supported; no team, verification or cloud-sync status is implied.
+
+Record actions use compact outlined icon controls with neutral, theme-aware resting surfaces, descriptive tooltips and visible keyboard focus. Edit gains an accent on hover; delete gains a restrained warning tone without bright permanent tiles. Sign-out uses a separate line-icon utility button. Coarse-pointer devices receive 44px targets, and interaction motion respects reduced-motion preferences. Confirmation and linked-record deletion safeguards remain unchanged.
+
+Use the sun/moon button in the header to switch between light and dark appearance, including on public pages. On first use the app follows your system preference; a manual choice is remembered on this browser and takes priority over system changes. The non-sensitive `billflow.appearance` preference is stored separately from business records and synchronizes across tabs. If browser storage is unavailable, switching still works for the current session. Forms, menus, tables and dialogs share the selected Material UI palette and custom surface tokens. Invoice/quotation previews and printed documents stay ink-on-white; no business data is changed by the toggle.
+
+BillFlow uses task-specific widths rather than stretching every dialog across the screen: compact decisions (440px), search/reminders (600px), stock/follow-up forms (640px), account/document views (760px), record studios (920px), and the two-column invoice composer (960px). These are maximums, not fixed mobile widths. Dialogs keep viewport gutters, scroll within their content area, and retain reachable action footers. Invoice details and statements use document-friendly page widths; settings group identity, branding and payment instructions into separate sections. Interactive density rules are screen-only so printed documents keep their own layout.
+
+The invoice composer separates customer/schedule, tax treatment, line items and payment terms, with a live totals review and a guarded issue action. Visual feedback uses brief section arrivals, item insertion and hover/focus transitions. Operational screens avoid perpetual animation; `prefers-reduced-motion` disables animations and transitions. Navigation to a different page resets the scroll position; query-only changes keep the current position. Dirty-state confirmation, failed-save retention and browser-local data limitations remain unchanged.
+
+Quick payment terms—Due today, Net 7, Net 15 and Net 30—set the due date relative to the invoice date. A duplicated draft retains its item bundle but requires a fresh due date. Draft review includes automated coverage for storage failures, stale revisions, repeat issuance, older backups, failed-save retention and async editor cleanup, plus browser checks of save/reload/resume/issue and responsive layouts. The existing Kendo PDF license warning remains a separate release concern.
+
+UI changes must be reviewed on desktop, tablet and phone: inspect dialogs and select menus, long content, keyboard focus, scrolling/action reachability, reduced motion and empty states. Keep this section aligned with the shared styles and `WorkspaceDialog` size variants; passing tests does not replace visual review.
+
+Dialog text may wrap for long content, but outlined-input notch legends must stay single-line. Material UI deliberately collapses these hidden labels; wrapping them creates phantom scroll space beneath form actions. The shared dialog rule and regression test protect this boundary without imposing fixed modal heights or clipping real form content.
+
+Outlined field labels are bounded in both resting and floating states, with ellipsis only when space is genuinely constrained; their full accessible names remain intact. Follow-up search retains a useful desktop width, while compact stock filters and mobile layouts keep their own sizing. Review long labels in light/dark themes and at narrow viewport widths.
 
 Open **Invoices → Create invoice** to issue a domestic invoice with a financial-year number such as `BF/2627/000001`. Add quantities, units, line discounts, a due date and payment terms. For a GST-registered supplier, enable GST, provide the supplier GSTIN and state, confirm the place of supply, and enter each item's HSN/SAC and tax rate.
 
@@ -73,8 +131,8 @@ This model protects stored workspace contents from casual inspection, but a fron
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/)
-- [Yarn](https://yarnpkg.com/)
+- [Node.js 22 or 24](https://nodejs.org/)
+- [Yarn 1.22.22](https://yarnpkg.com/)
 
 ### Run locally
 
@@ -87,20 +145,27 @@ yarn start
 
 Open [http://localhost:3000](http://localhost:3000), create an account, and start building your workspace. No API keys, backend service, or environment variables are required.
 
+Start only one development server per port. If port 3000 is already in use, stop the previous server with Ctrl+C or accept the alternate port offered by `yarn start`.
+
+The app uses React Scripts 5 with a small CRACO configuration for the supported development-server middleware API and the PDF library's incomplete source maps. Application source maps, lint checks and build errors remain enabled. Hot reload polls once per second to avoid native file-watcher limits (`EMFILE`); dependency, build and cache directories are excluded. No OpenSSL compatibility flag is needed. npm and Yarn use an ignored project-local `.cache` folder, avoiding permissions on machine-wide package caches.
+
 ## Available commands
 
 | Command | Purpose |
 | --- | --- |
 | `yarn start` | Start the development server |
 | `yarn test --watchAll=false` | Run the automated test suite once |
+| `yarn test:tooling` | Check source-map filtering and development middleware |
 | `yarn build` | Create an optimized production bundle |
+
+Installation also applies two small, versioned patches to Jest's URL dependencies so they use the maintained `punycode` package instead of Node's deprecated built-in module. Keep install scripts enabled; a failed patch stops installation so dependency changes are visible.
 
 ## Technology
 
 - **Application:** React 17, React Router, Redux, Redux Thunk
 - **Interface:** Material UI, custom responsive CSS, CSS animations
 - **Forms:** Formik and Yup
-- **Dates:** date-fns and Moment.js
+- **Dates:** native date controls and Moment.js
 - **Documents:** KendoReact PDF Export
 - **Persistence:** Web Crypto API, `localStorage`, and `sessionStorage`
 - **Testing:** Jest and React Testing Library
@@ -138,16 +203,20 @@ Before submitting changes, run:
 
 ```bash
 yarn test --watchAll=false
+yarn test:tooling
+yarn exec eslint src
 yarn build
 ```
 
-The current test suite covers encrypted local persistence, Redux state transitions, and billing calculations.
+The test suite covers encrypted local persistence, Redux transitions, billing calculations, failed-save retention, discard confirmation, dialog variants, accessible authentication labels and route scroll resets. Also follow the interface review checklist above using fictional demo data.
+
+**Known release check:** browser review reports a missing-license warning from `@progress/kendo-react-pdf`. A successful build does not resolve that warning. Review the PDF dependency's licensing and activation before commercial distribution; do not hide the warning as a styling fix.
 
 ## Roadmap
 
 - Server-backed authentication and multi-device synchronization
 - Role-based workspace access
-- Credit notes, cancellations, payment reversals and broader GST workflows
+- Partial credit notes and broader GST workflows
 - Import and export for customer and product data
 - Expanded accessibility and end-to-end testing
 

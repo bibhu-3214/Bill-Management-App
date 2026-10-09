@@ -29,6 +29,7 @@ export default function Registration({ history }) {
     });
 
     const fieldProps = name => ({
+        id: 'register-' + name,
         name,
         value: formik.values[name],
         onChange: formik.handleChange,

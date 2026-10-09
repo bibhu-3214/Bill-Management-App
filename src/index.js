@@ -9,8 +9,7 @@ import { usersDetails } from './Redux/Actions/usersAction';
 import { getCustomers } from './Redux/Actions/customersAction';
 import { getProducts } from './Redux/Actions/productAction';
 import { getBills } from './Redux/Actions/billAction';
-import { CssBaseline, ThemeProvider } from '@material-ui/core';
-import theme from './theme';
+import AppearanceProvider from './AppearanceProvider';
 import localData from './data/localData';
 
 const store = configureStore();
@@ -24,12 +23,11 @@ if (localData.hasActiveSession()) {
 
 ReactDOM.render(
     <Provider store={store}>
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
+        <AppearanceProvider>
             <BrowserRouter>
                 <App />
             </BrowserRouter>
-        </ThemeProvider>
+        </AppearanceProvider>
     </Provider>,
     document.getElementById('root'),
 );

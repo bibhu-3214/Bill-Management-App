@@ -5,7 +5,7 @@ const billsInitialState = { data: { bills: [], billDetails: {} } };
 const billReducer = (state = billsInitialState.data, action) => {
     switch (action.type) {
         case ADD_BILL: {
-            const billData = [action.payload, ...state.bills];
+            const billData = [action.payload, ...state.bills.filter(bill => bill._id !== action.payload._id)];
             return { ...state, bills: billData };
         }
         case GET_BILLS: {

@@ -6,12 +6,12 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from '@material-ui/icons/DeleteOutlineRounded';
 import TableContainer from '@material-ui/core/TableContainer';
 import ConfirmDialog from './ConfirmDialog';
 import ActionButton from '../../controls/ActionButton';
 import { getBillById, removeBill } from '../../../Redux/Actions/billAction';
-import { IconButton, TablePagination } from '@material-ui/core';
+import { TablePagination } from '@material-ui/core';
 import VisibilityTwoToneIcon from '@material-ui/icons/VisibilityTwoTone';
 import Popup from '../../Popup';
 import ShowBills from './ShowBills';
@@ -98,13 +98,13 @@ const BillList = ({ searchResult }) => {
                                     <TableCell>{money(bill.total)}</TableCell>
                                     <TableCell><span className={'payment-badge status-' + paymentSummary(bill).status.toLowerCase().replace(' ', '-')}>{paymentSummary(bill).status}</span><br />{money(paymentSummary(bill).balance)}</TableCell>
                                     <TableCell>
-                                        <IconButton aria-label={'View invoice ' + (bill.invoiceNumber || bill._id)} color='primary' onClick={() => showBillDetails(bill._id)}>
+                                        <ActionButton aria-label={'View invoice ' + (bill.invoiceNumber || bill._id)} color='primary' onClick={() => showBillDetails(bill._id)}>
                                             <VisibilityTwoToneIcon />
-                                        </IconButton>
+                                        </ActionButton>
                                     </TableCell>
                                     <TableCell style={{ display: 'flex' }}>
                                         {!bill.invoiceNumber && !bill.payments?.length && !bill.cancellation && !bill.creditNote && <ActionButton
-                                            aria-label='delete'
+                                            aria-label={'Delete invoice ' + (bill.invoiceNumber || bill._id)}
                                             color='secondary'
                                             onClick={() => {
                                                 setConfirmDialog({
@@ -122,7 +122,7 @@ const BillList = ({ searchResult }) => {
                 </Table>
             </TableContainer>
             <TablePagination component='div' count={searchResult.length} page={Math.min(page, Math.max(0, Math.ceil(searchResult.length / pageSize) - 1))} rowsPerPage={pageSize} rowsPerPageOptions={[10, 25, 50]} onPageChange={(event, next) => setPage(next)} onRowsPerPageChange={event => { setPageSize(Number(event.target.value)); setPage(0); }} />
-            <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
+            <Popup title='Invoice details' size='document' openPopup={openPopup} setOpenPopup={setOpenPopup}>
                 <ShowBills />
             </Popup>
             <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />

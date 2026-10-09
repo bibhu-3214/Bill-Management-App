@@ -48,6 +48,7 @@ export default function InvoiceDocument({ bill }) {
                     <section><h4>Bill to / deliver to</h4><strong>{customer.name || 'Customer unavailable'}</strong><p>{customer.address}</p><p>{customer.email}<br />{customer.mobile}</p>
                         {customer.gstin && <p>GSTIN: {customer.gstin}</p>}</section></div>
                 {bill.gst && <p>Place of supply: {bill.placeOfSupply} · {states[bill.placeOfSupply]}<br />Reverse charge: No</p>}
+                {bill.sourceQuotationNumber && <p className='studio-hint'>Converted from quotation {bill.sourceQuotationNumber}</p>}
                 {!bill.invoiceNumber && <p className='studio-hint'>Legacy record: customer and product names were not saved at issue time.</p>}
                 <table className='invoice-lines'><thead><tr><th>Description</th><th>Qty / unit</th><th>Rate</th><th>Disc.</th>{bill.gst && <><th>GST</th><th>Taxable</th></>}<th>Amount</th></tr></thead>
                     <tbody>{bill.lineItems.map(item => <tr key={item._id}><td>{item.name || products.find(p => p._id === item.product)?.name || 'Unavailable'}{item.hsn && <small>HSN/SAC {item.hsn}</small>}</td>

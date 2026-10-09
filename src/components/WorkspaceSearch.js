@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Dialog, DialogTitle, DialogContent, TextField, Button } from '@material-ui/core';
+import { DialogTitle, DialogContent, TextField, Button } from '@material-ui/core';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
+import WorkspaceDialog from './WorkspaceDialog';
 
 const destinations = [
     ['Overview', '/admin'], ['Invoices', '/billing'], ['Collections', '/receivables'],
@@ -35,7 +36,7 @@ export default function WorkspaceSearch() {
     }, [query, customers, bills]);
     const go = result => { history.push(result.path); setOpen(false); setQuery(''); };
     return <><button className='workspace-search-trigger' aria-label='Search workspace (Control or Command K)' onClick={() => setOpen(true)}><SearchRoundedIcon /><span>Search</span><kbd>⌘ / Ctrl K</kbd></button>
-        <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth='sm' aria-labelledby='workspace-search-title'>
+        <WorkspaceDialog open={open} onClose={() => setOpen(false)} aria-labelledby='workspace-search-title'>
             <DialogTitle id='workspace-search-title'>Find your next action</DialogTitle><DialogContent>
                 <TextField id='global-search' autoFocus fullWidth label='Search pages, customers or invoices' value={query} onChange={e => setQuery(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && results.length) { e.preventDefault(); go(results[0]); } }} />
                 <div className='workspace-search-results'>{results.map(result => <button key={result.path} onClick={() => go(result)}><div><strong>{result.name}</strong>{result.detail && <small>{result.detail}</small>}</div><span>{result.type}</span></button>)}</div>
@@ -43,5 +44,5 @@ export default function WorkspaceSearch() {
                 <p className='finance-note'>Enter opens the first result · Tab to choose another · Esc to close. Up to 12 matches.</p>
                 <Button onClick={() => setOpen(false)}>Close</Button>
             </DialogContent>
-        </Dialog></>;
+        </WorkspaceDialog></>;
 }

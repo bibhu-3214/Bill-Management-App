@@ -13,6 +13,8 @@ import { Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { receivableRows } from '../../../utils/receivables';
 import { money } from '../../../utils/indiaBilling';
+import StockDesk from '../StockDesk';
+import FollowUpDesk from '../FollowUpDesk';
 
 export default function Admin() {
     const customers = useSelector(state => state.customers);
@@ -94,6 +96,7 @@ export default function Admin() {
                 ))}
             </div>
             <div className='collection-callout'><div><span className='workspace-kicker'>YOUR NEXT ACTION</span><h2>{money(overdueInvoices.reduce((sum, row) => sum + row.balance, 0))} awaiting follow-up</h2><p>{overdueInvoices.length} overdue invoices · {openInvoices.length} open invoices overall</p></div><Button component={Link} to='/receivables' variant='contained' color='primary'>Review collections</Button></div>
+            <div className='overview-operations-grid'><StockDesk compact /><FollowUpDesk compact /></div>
             <div className='dashboard-grid'>
                 <article className='chart-card surface-card'>
                     <div className='card-heading'>

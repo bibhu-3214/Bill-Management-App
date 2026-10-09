@@ -8,6 +8,8 @@ import BillContainer from './BillContainer';
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
 jest.mock('./BillList', () => ({ __esModule: true, default: ({ searchResult }) => <div data-testid='results'>{searchResult.map(b => b.invoiceNumber).join(',')}</div> }));
 jest.mock('./BillingForm', () => () => null);
+jest.mock('./InvoiceDrafts', () => () => null);
+jest.mock('./SalesPreparation', () => () => null);
 
 test('filters by customer, status and issue dates and resets the view', () => {
     useSelector.mockImplementation(select => select({ customers: [{ _id: 'c', name: 'Acme' }], bills: { bills: [

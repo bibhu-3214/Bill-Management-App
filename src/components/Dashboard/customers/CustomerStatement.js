@@ -21,8 +21,8 @@ export default function CustomerStatement() {
     useEffect(() => { localData.getSettings().then(setBusiness).catch(e => setError(e.message)); }, []);
     const rows = statementRows(bills, selected);
     const customer = customers.find(c => c._id === selected);
-    return <section className='workspace-page page-enter'><div className='workspace-heading'><div><h1>Customer statements</h1><p>Invoices, payments and corrections in one chronological account.</p></div></div>
-        <div className='invoice-toolbar'><TextField id='statement-customer' label='Customer' select variant='outlined' value={selected} onChange={e => setSelected(e.target.value)} style={{ minWidth: 240 }}>{customers.map(c => <MenuItem key={c._id} value={c._id}>{c.name}</MenuItem>)}</TextField>
+    return <section className='workspace-page page-enter statement-workspace'><div className='workspace-heading'><div><span className='workspace-kicker'>CUSTOMERS / ACCOUNT LEDGER</span><h1>Customer statements</h1><p>Invoices, payments and corrections in one chronological account.</p></div></div>
+        <div className='invoice-toolbar'><TextField className='statement-customer-picker' id='statement-customer' label='Customer' select variant='outlined' value={selected} onChange={e => setSelected(e.target.value)}>{customers.map(c => <MenuItem key={c._id} value={c._id}>{c.name}</MenuItem>)}</TextField>
             <Button variant='contained' color='primary' disabled={!customer || !business} onClick={() => pdf.current?.save()}>Download statement PDF</Button></div>
         {error && <p role='alert'>{error}</p>}
         {customer && business ? <PDFExport ref={pdf} paperSize='A4' margin='1cm' scale={0.7} repeatHeaders keepTogether='.invoice-lines tr' fileName={'Statement-' + today() + '.pdf'}>

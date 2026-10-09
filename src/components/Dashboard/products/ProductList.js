@@ -7,8 +7,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
-import DeleteIcon from '@material-ui/icons/Delete';
+import EditTwoToneIcon from '@material-ui/icons/EditOutlined';
+import DeleteIcon from '@material-ui/icons/DeleteOutlineRounded';
 import TableContainer from '@material-ui/core/TableContainer';
 import ConfirmDialog from './ConfirmDialog';
 import Popup from '../../Popup';
@@ -128,7 +128,7 @@ const ProductList = ({ searchResult }) => {
                 </Table>
             </TableContainer>
             {Object.keys(editData).length > 0 && toggle ? (
-                <Popup title='Catalog studio' openPopup={openPopup} setOpenPopup={setOpenPopup}>
+            <Popup title='Catalog studio' size='editor' openPopup={openPopup} setOpenPopup={setOpenPopup}>
                     <ProductForm editData={editData} setOpenPopup={setOpenPopup} />
                 </Popup>
             ) : null}

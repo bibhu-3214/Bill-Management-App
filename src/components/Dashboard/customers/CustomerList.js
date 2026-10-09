@@ -7,8 +7,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
-import DeleteIcon from '@material-ui/icons/Delete';
+import EditTwoToneIcon from '@material-ui/icons/EditOutlined';
+import DeleteIcon from '@material-ui/icons/DeleteOutlineRounded';
 import TableContainer from '@material-ui/core/TableContainer';
 import ConfirmDialog from './ConfirmDialog';
 import Popup from '../../Popup';
@@ -129,9 +129,9 @@ const CustomerList = ({ searchResult }) => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Popup title='Customer account' openPopup={Boolean(account)} setOpenPopup={() => setAccount(null)}>{account && <CustomerAccount customer={account} />}</Popup>
+            <Popup title='Customer account' size='document' openPopup={Boolean(account)} setOpenPopup={() => setAccount(null)}>{account && <CustomerAccount customer={account} />}</Popup>
             {Object.keys(editData).length > 0 && toggle ? (
-                <Popup title='Customer studio' openPopup={openPopup} setOpenPopup={setOpenPopup}>
+                <Popup title='Customer studio' size='editor' openPopup={openPopup} setOpenPopup={setOpenPopup}>
                     <CustomerForm editData={editData} handleToggle={handleToggle} setOpenPopup={setOpenPopup} />
                 </Popup>
             ) : null}

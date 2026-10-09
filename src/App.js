@@ -14,11 +14,13 @@ import ShowBillsById from './components/Dashboard/bills/ShowBillsById';
 import BusinessSettings from './components/Dashboard/BusinessSettings';
 import CustomerStatement from './components/Dashboard/customers/CustomerStatement';
 import Receivables from './components/Dashboard/Receivables';
+import RouteScrollReset from './helper/RouteScrollReset';
 
 const App = () => {
     const isDemo = useSelector(state => state.users.userDetails.isDemo);
     return (
         <div className="app-shell">
+            <RouteScrollReset />
             <a className="skip-link" href="#main-content">Skip to content</a>
             <Navigation />
             <main className="app-content" id="main-content" tabIndex={-1}>
