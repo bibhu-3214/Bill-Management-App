@@ -18,7 +18,7 @@ No API keys or environment secrets are required. The rewrite sends client-side r
 - Test sample entry, navigation, invoice creation and sign-out/reset.
 - Confirm demo mutations do not alter an existing local account.
 - Check desktop and mobile layouts and keyboard navigation.
-- Review and resolve the KendoReact PDF missing-license warning before commercial distribution.
+- Verify PDF downloads, fonts, logos, repeated table headers and totals using `docs/PDF_EXPORTS.md`. Retain the bundled third-party notices. This change is not a license audit of every dependency.
 - Capture screenshots from the actual deployed UI with fictional sample data.
 - Add the verified live URL to the repository About field and profile README.
 

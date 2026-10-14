@@ -1,19 +1,25 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, TextField, MenuItem } from '@material-ui/core';
-import { PDFExport } from '@progress/kendo-react-pdf';
 import { useDispatch, useSelector } from 'react-redux';
 import { recordPayment, correctInvoice } from '../../../Redux/Actions/billAction';
 import { money as formatMoney, paymentSummary, states, today } from '../../../utils/indiaBilling';
 
-// Standard PDF fonts do not reliably contain the rupee glyph.
+// Retain the screen preview format; PDF downloads embed a rupee-capable font.
 const money = value => formatMoney(value).replace('₹', 'INR ');
 
 export default function InvoiceDocument({ bill }) {
     const products = useSelector(state => state.products);
     const customers = useSelector(state => state.customers);
     const dispatch = useDispatch();
-    const pdf = useRef(null);
-    const creditPdf = useRef(null);
+    const [pdfBusy, setPdfBusy] = useState(false);
+    const [pdfError, setPdfError] = useState('');
+    const download = async (credit = false) => {
+        if (pdfBusy) return;
+        setPdfBusy(true); setPdfError('');
+        try { const { downloadInvoicePdf } = await import('../../../utils/pdfDocuments'); await downloadInvoicePdf({ bill, customer, products, credit }); }
+        catch (error) { setPdfError(error.message || 'PDF download failed. Please try again.'); }
+        finally { setPdfBusy(false); }
+    };
     const [correction, setCorrection] = useState({ action: 'cancel', reason: '', paymentId: '' });
     const [correctionOpen, setCorrectionOpen] = useState(false);
     const [payment, setPayment] = useState({ amount: '', date: today(), method: 'UPI', reference: '' });
@@ -37,9 +43,9 @@ export default function InvoiceDocument({ bill }) {
         setBusy(false);
     };
     return <div className='invoice-document'>
+        {pdfError && <p role='alert'>{pdfError}</p>}
         <div className='invoice-toolbar'><span className={'payment-badge status-' + summary.status.toLowerCase().replace(' ', '-')}>{summary.status}</span>
-            <Button color='primary' variant='contained' onClick={() => pdf.current?.save()}>Download PDF</Button></div>
-        <PDFExport ref={pdf} paperSize='A4' margin='1cm' scale={0.7} keepTogether='.invoice-lines tr, .studio-totals, .invoice-signature' repeatHeaders fileName={(bill.invoiceNumber || 'Invoice').replace(/\//g, '-') + '.pdf'}>
+            <Button color='primary' variant='contained' disabled={pdfBusy} onClick={() => download()}>Download PDF</Button></div>
             <article className='invoice-paper'>
                 <div className='invoice-header'>{supplier.logo && <img className='business-logo' src={supplier.logo} alt='Business logo' />}<div className='eyebrow'>BILLFLOW</div><h2>{bill.gst ? 'Tax invoice' : 'Invoice'}</h2>
                     <strong>{bill.invoiceNumber || 'Legacy invoice'}</strong>{bill.cancellation && <p className='correction-notice'>CANCELLED · {bill.cancellation.date}<br />{bill.cancellation.reason}</p>}{bill.creditNote && <p className='correction-notice'>Fully credited by {bill.creditNote.number}</p>}<p>Issued {bill.date?.slice(0, 10)}{bill.dueDate && ' · Due ' + bill.dueDate}</p></div>
@@ -65,9 +71,8 @@ export default function InvoiceDocument({ bill }) {
                 {bill.notes && <p className='invoice-notes'>{bill.notes}</p>}
                 {bill.gst && <div className='invoice-signature'>For {supplier.name}<br /><br /><br />Authorised signatory</div>}
             </article>
-        </PDFExport>
-        {bill.creditNote && <section className='payment-panel'><Button onClick={() => creditPdf.current?.save()} color='primary'>Download credit note PDF</Button>
-            <PDFExport ref={creditPdf} paperSize='A4' margin='1cm' scale={0.7} repeatHeaders keepTogether='.invoice-lines tr, .studio-totals, .invoice-signature' fileName={bill.creditNote.number.replace(/\//g, '-') + '.pdf'}>
+
+        {bill.creditNote && <section className='payment-panel'><Button disabled={pdfBusy} onClick={() => download(true)} color='primary'>Download credit note PDF</Button>
                 <article className='invoice-paper'><h2>Credit note</h2><strong>{bill.creditNote.number}</strong><p>Date: {bill.creditNote.date}</p>
                     <p>Original invoice: {bill.invoiceNumber} · {bill.date.slice(0, 10)}</p>
                     <p><strong>{supplier.name}</strong><br />{supplier.address}<br />GSTIN: {supplier.gstin || 'Not applicable'}</p>
@@ -80,7 +85,7 @@ export default function InvoiceDocument({ bill }) {
                     <p>Recorded by {bill.creditNote.actor}. This document does not submit a GST return or process a refund.</p>
                     <div className='invoice-signature'>For {supplier.name}<br /><br /><br />Authorised signatory</div>
                 </article>
-            </PDFExport></section>}
+            </section>}
         <section className='payment-panel'><h3>Payment history</h3><p className='studio-hint'>Record payments received outside BillFlow. This does not collect or verify bank payments.</p>
             {(bill.payments || []).length ? <ul className='payment-history'>{bill.payments.map(p => <li key={p._id}><strong>{money(p.amount)}</strong><span>{p.date} · {p.method}</span><span>{p.reference || 'No reference'}</span>{(bill.reversals || []).filter(r => r.paymentId === p._id).map(r => <span key={r._id}>Reversed {r.date}: {r.reason}</span>)}</li>)}</ul> : <p>No payments recorded yet.</p>}
             {summary.balance > 0 && <form onSubmit={submit}><fieldset disabled={busy} className='studio-fields'><div className='studio-grid'>

@@ -51,7 +51,7 @@ For every milestone: implement data rules first, add migration/backup compatibil
 
 ### Sales preparation workflows
 
-Under **Invoices → Sales preparation**, create an immutable quotation with a separate `QT` reference, customer/address, item details, discounts, GST treatment, notes and validity date (15 days by default). Review it, use **Print quotation** for the browser print dialog, and manually record acceptance or rejection with confirmation. Decisions cannot be undone; create a new quotation for revised terms. Accepted, unexpired offers can be converted once, after confirming invoice/payment dates. Conversion uses quoted prices and saved party details even if the catalog changes, but still requires available customer/product references. A converted offer links to its invoice; repeated conversion attempts reuse that invoice rather than allocating another number. Offers never appear in sales/receivables until conversion. Printing uses native browser support, not the Kendo PDF exporter; printer settings and page breaks should be checked in the target browser before sending a document.
+Under **Invoices → Sales preparation**, create an immutable quotation with a separate `QT` reference, customer/address, item details, discounts, GST treatment, notes and validity date (15 days by default). Review it, use **Print quotation** for the browser print dialog, and manually record acceptance or rejection with confirmation. Decisions cannot be undone; create a new quotation for revised terms. Accepted, unexpired offers can be converted once, after confirming invoice/payment dates. Conversion uses quoted prices and saved party details even if the catalog changes, but still requires available customer/product references. A converted offer links to its invoice; repeated conversion attempts reuse that invoice rather than allocating another number. Offers never appear in sales/receivables until conversion. Printing uses native browser support, separate from the data-driven PDF downloads; printer settings and page breaks should be checked in the target browser before sending a document.
 
 In **Create invoice**, add items, give the internal reference a useful template name, and choose **Save item template**. This saves quantities, discounts, item tax/unit fields and notes without closing or issuing the current order. Under **Item templates**, choose **Create draft** to review a fresh order at current catalog prices and current supplier defaults. Customer/address/GSTIN/place-of-supply and payment due date are blank; no old invoice identifiers are copied. Removing a template requires confirmation and leaves existing drafts/invoices untouched. Replace obsolete templates by saving a new bundle; template editing and automatic recurring invoices are not implemented.
 
@@ -82,7 +82,7 @@ BillFlow uses task-specific widths rather than stretching every dialog across th
 
 The invoice composer separates customer/schedule, tax treatment, line items and payment terms, with a live totals review and a guarded issue action. Visual feedback uses brief section arrivals, item insertion and hover/focus transitions. Operational screens avoid perpetual animation; `prefers-reduced-motion` disables animations and transitions. Navigation to a different page resets the scroll position; query-only changes keep the current position. Dirty-state confirmation, failed-save retention and browser-local data limitations remain unchanged.
 
-Quick payment terms—Due today, Net 7, Net 15 and Net 30—set the due date relative to the invoice date. A duplicated draft retains its item bundle but requires a fresh due date. Draft review includes automated coverage for storage failures, stale revisions, repeat issuance, older backups, failed-save retention and async editor cleanup, plus browser checks of save/reload/resume/issue and responsive layouts. The existing Kendo PDF license warning remains a separate release concern.
+Quick payment terms—Due today, Net 7, Net 15 and Net 30—set the due date relative to the invoice date. A duplicated draft retains its item bundle but requires a fresh due date. Draft review includes automated coverage for storage failures, stale revisions, repeat issuance, older backups, failed-save retention and async editor cleanup, plus browser checks of save/reload/resume/issue and responsive layouts.
 
 UI changes must be reviewed on desktop, tablet and phone: inspect dialogs and select menus, long content, keyboard focus, scrolling/action reachability, reduced motion and empty states. Keep this section aligned with the shared styles and `WorkspaceDialog` size variants; passing tests does not replace visual review.
 
@@ -147,7 +147,7 @@ Open [http://localhost:3000](http://localhost:3000), create an account, and star
 
 Start only one development server per port. If port 3000 is already in use, stop the previous server with Ctrl+C or accept the alternate port offered by `yarn start`.
 
-The app uses React Scripts 5 with a small CRACO configuration for the supported development-server middleware API and the PDF library's incomplete source maps. Application source maps, lint checks and build errors remain enabled. Hot reload polls once per second to avoid native file-watcher limits (`EMFILE`); dependency, build and cache directories are excluded. No OpenSSL compatibility flag is needed. npm and Yarn use an ignored project-local `.cache` folder, avoiding permissions on machine-wide package caches.
+The app uses React Scripts 5 with a small CRACO configuration for the supported development-server middleware API. Application source maps, lint checks and build errors remain enabled. Hot reload polls once per second to avoid native file-watcher limits (`EMFILE`); dependency, build and cache directories are excluded. No OpenSSL compatibility flag is needed. npm and Yarn use an ignored project-local `.cache` folder, avoiding permissions on machine-wide package caches.
 
 ## Available commands
 
@@ -155,7 +155,7 @@ The app uses React Scripts 5 with a small CRACO configuration for the supported 
 | --- | --- |
 | `yarn start` | Start the development server |
 | `yarn test --watchAll=false` | Run the automated test suite once |
-| `yarn test:tooling` | Check source-map filtering and development middleware |
+| `yarn test:tooling` | Check development middleware and watcher configuration |
 | `yarn build` | Create an optimized production bundle |
 
 Installation also applies two small, versioned patches to Jest's URL dependencies so they use the maintained `punycode` package instead of Node's deprecated built-in module. Keep install scripts enabled; a failed patch stops installation so dependency changes are visible.
@@ -166,7 +166,7 @@ Installation also applies two small, versioned patches to Jest's URL dependencie
 - **Interface:** Material UI, custom responsive CSS, CSS animations
 - **Forms:** Formik and Yup
 - **Dates:** native date controls and Moment.js
-- **Documents:** KendoReact PDF Export
+- **Documents:** jsPDF + jsPDF-AutoTable (MIT), embedded Noto Sans (SIL OFL 1.1)
 - **Persistence:** Web Crypto API, `localStorage`, and `sessionStorage`
 - **Testing:** Jest and React Testing Library
 
@@ -210,7 +210,7 @@ yarn build
 
 The test suite covers encrypted local persistence, Redux transitions, billing calculations, failed-save retention, discard confirmation, dialog variants, accessible authentication labels and route scroll resets. Also follow the interface review checklist above using fictional demo data.
 
-**Known release check:** browser review reports a missing-license warning from `@progress/kendo-react-pdf`. A successful build does not resolve that warning. Review the PDF dependency's licensing and activation before commercial distribution; do not hide the warning as a styling fix.
+**PDF downloads:** invoices, full credit notes and customer statements use data-driven jsPDF + AutoTable layouts with repeated table headings, page numbers and embedded Noto Sans text. Rupee amounts and supported accented Latin text are searchable. Unsupported scripts/emoji fail with a visible error instead of missing glyphs; use Latin text for this export. PDFs do not inherit light/dark screen styles. PNG/JPEG logos retain aspect ratio; unreadable logos stop the download with an error. See [PDF validation and limitations](docs/PDF_EXPORTS.md) and [third-party notices](public/THIRD_PARTY_NOTICES.txt).
 
 ## Roadmap
 
