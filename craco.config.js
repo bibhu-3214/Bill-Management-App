@@ -13,18 +13,6 @@ module.exports = {
                 ignored: /[\\/](?:node_modules|\.cache|\.git|build)(?:[\\/]|$)/,
                 poll: 1000,
             };
-            const sourceMapLoader = config.module.rules.find(rule =>
-                rule && typeof rule.loader === 'string' && rule.loader.includes('source-map-loader')
-            );
-            if (sourceMapLoader) {
-                sourceMapLoader.options = {
-                    ...sourceMapLoader.options,
-                    // Kendo PDF 4 publishes maps referencing TypeScript files it does not ship.
-                    // Remove only those unusable references; retain maps for our app and other dependencies.
-                    filterSourceMappingUrl: (url, resourcePath) =>
-                        !/[\\/]node_modules[\\/]@progress[\\/]kendo-react-pdf[\\/]/.test(resourcePath),
-                };
-            }
             return config;
         },
     },

@@ -10,16 +10,6 @@ test('the test DOM uses the maintained Punycode package without Node deprecation
     assert.equal(output, 'xn--maana-pta.com');
 });
 
-test('PDF map workaround leaves application and unrelated dependency maps enabled', () => {
-    const rule = { loader: require.resolve('source-map-loader') };
-    config.webpack.configure({ module: { rules: [false, rule] } });
-    const filter = rule.options.filterSourceMappingUrl;
-    assert.equal(filter('missing.ts.map', '/app/node_modules/@progress/kendo-react-pdf/dist/es/PDFExport.js'), false);
-    assert.equal(filter('missing.ts.map', 'C:\\app\\node_modules\\@progress\\kendo-react-pdf\\dist\\es\\PDFExport.js'), false);
-    assert.equal(filter('component.js.map', '/app/src/components/Popup.js'), true);
-    assert.equal(filter('valid.js.map', '/app/node_modules/@progress/kendo-drawing/dist/es/main.js'), true);
-});
-
 test('hot reload watches app files without watching generated dependency and cache trees', () => {
     const webpack = config.webpack.configure({ module: { rules: [] } });
     assert.equal(webpack.watchOptions.poll, 1000);
